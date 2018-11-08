@@ -20,7 +20,7 @@ class ReportBoard extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
-      mDashboard: {}, //m_dashboard表
+      mDashboard: {}, //m_dashboard表11
       mCharts: {},    // m_charts表   控件表  主要放控件的配置
       dataList: {},    // 查询结束后所有的 图表的 数据  key：chartID  value:data  (数据是根据 mDashboard 中的 search 中的  props  参数  进行的有参数查询)
       searchItems: {},  // 搜索框所拥有的子组件 的 数据
