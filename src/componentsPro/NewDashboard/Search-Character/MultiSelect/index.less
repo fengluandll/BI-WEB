@@ -1,0 +1,118 @@
+.multi-select-panel{
+  position:relative;
+
+  .multi-select-dropdown{
+    width: 120px;
+    border: 1px solid #ccc;
+    position: relative;
+    height: 24px;
+    line-height: 24px;
+    cursor:pointer;
+    outline: none;
+
+    .multi-select-dropdown-value{
+      display: block;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      width: calc(100% - 12px);
+      text-indent: 2px;
+      font-size: 12px;
+    }
+    .multi-select-dropdown-dropdown{
+      position: absolute;
+      right: 3px;
+      top: 6px;
+      font-size: 10px;
+      color: rgb(153,153,153);
+    }
+  }
+  .multi-select{
+    position: absolute;
+    min-width: 240px;
+    left: 0;
+    top:0;
+    padding: 0;
+    width: 240px;
+    min-height: 30px;
+    font-size: 0;
+    z-index: 1000;
+    background-color: #fff;
+    box-shadow: 0 0 2px rgba(0,0,0,.2);
+    background-clip: padding-box;
+    border: 1px solid #ccc;
+    outline: none;
+
+    .multi-select-split{
+      height:100%;
+      width:0.5px;
+      background-color:#ccc;
+      position:absolute;
+      top:0;
+      left:50%;
+    }
+
+    .multi-select-menu{
+      font-size: 12px;
+      vertical-align: top;
+      padding: 5px;
+      width: 50%;
+      display: inline-block;
+
+      .multi-select-menu-title{
+        height:22px;
+
+        .multi-select-input{
+          border: 1px solid #ccc;
+          font-size: 12px;
+          text-indent: 2px;
+          width:100%;
+        }
+      }
+
+      .multi-select-list{
+        border: none;
+        width: 100%;
+        height: 200px;
+        overflow: hidden;
+        overflow-y: auto;
+
+        .multi-select-list-item{
+          position: relative;
+          display: block;
+          padding: 5px 20px 5px 0;
+          text-overflow: ellipsis;
+          overflow: hidden;
+          color: #333;
+          white-space: nowrap;
+          width: 100%;
+          cursor: pointer;
+
+          .multi-select-list-item-add-btn{
+            position: absolute;
+            right: 5px;
+            top: 7px;
+            font-size: 13px;
+          }
+        }
+        .multi-select-list-item.selected{
+          background-color: #e3f4ff;
+        }
+        .multi-select-list-item:hover{
+          color: #17b4d6;
+        }
+      }
+      .multi-select-all{
+        text-align:right;
+      }
+      .hint-add{
+        height: 210px;
+        text-align: center;
+        line-height: 210px;
+      }
+    }
+  }
+}
+.hide{
+  display:none;
+}

@@ -1,0 +1,57 @@
+@import "../../default.less";
+
+.extraContentSearch {
+  width: 272px;
+}
+.dataSourceHeader{
+  padding: 10px 0 10px 10px;
+}
+.workTable{
+  width: calc(~"100% - 200px");
+  height : 100%;
+  display : inline-block;
+  vertical-align : top;
+}
+.toolBar{
+  text-align: right;
+  padding: 3px 3px 3px 0;
+  box-shadow: 0 0 3px 0 rgba(0,0,0,.3);
+}
+.sider_tree{
+  width : 200px;
+  height : 100%;
+  border-right:1px solid gray;
+  background-color:@content;
+  display : inline-block;
+  vertical-align : top;
+}
+.tree_right_menu{
+  z-index : 10;
+  border : 1px solid #cccccc;
+  box-shadow: 0 0 4px 0 rgba(0,0,0,.12), 0 1px 2px 0 rgba(0,0,0,.24);
+}
+.tree_right_menu .tree_right_menu_item{
+  line-height: 22px;
+  height: 30px;
+  padding: 4px 10px 0 15px;
+  color: #666;
+  cursor: pointer;
+  display: block;
+  text-decoration: none;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 12px;
+  margin: 0!important;
+}
+.iconCls{
+  cursor:pointer;
+}
+:global{
+  .ant-spin-nested-loading{
+    height:100%;
+  }
+  .ant-spin-container{
+    height:100%;
+  }
+}

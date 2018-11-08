@@ -1,0 +1,33 @@
+{
+  "entry": "src/index.js",
+  "publicPath":"https://www-cache.zhisiyun.com/smart_report/",
+  "hash": true,
+  "extraBabelPlugins": [
+      "transform-runtime",
+      "transform-decorators-legacy",
+      "transform-class-properties"
+    ],
+  "env": {
+    "development": {
+      "extraBabelPlugins": [
+        "dva-hmr",
+        "transform-runtime",
+        ["import", { "libraryName": "antd", "libraryDirectory": "es", "style": "css" }]
+      ]
+    },
+    "production": {
+      "extraBabelPlugins": [
+        "transform-runtime",
+        ["import", { "libraryName": "antd", "libraryDirectory": "es", "style": "css" }]
+      ]
+    }
+  },
+  "proxy": {
+    "/server": {
+      "target": "http://localhost:8080/",
+      "changeOrigin": true,
+      "pathRewrite": { "^/server" : "" }
+    }
+  }
+
+}

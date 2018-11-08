@@ -1,0 +1,234 @@
+@import "./default.less";
+
+html, body, :global(#root) {
+  height: 100%;
+  font-family: 'Helvetica Neue,Verdana,Tahoma,Lantinghei SC,Hiragino Sans GB,Microsoft YaHei,\\5FAE\8F6F\96C5\9ED1,sans-serif'!important;
+  margin:0;
+  padding:0;
+}
+:global {
+  ul,li{
+    margin:0;
+    padding:0;
+  }
+  li{
+    list-style:none;
+  }
+  .label-12{
+    font-size:12px;
+  }
+  .tool{
+    text-align:right;
+  }
+  .tool-icon{
+    font-size:16px;
+    padding:3px;
+    cursor:pointer;
+  }
+  ::-webkit-scrollbar-track-piece{
+    -webkit-border-radius:0;
+  }
+  ::-webkit-scrollbar{
+    width:5px;
+    height:8px;
+  }
+  ::-webkit-scrollbar-track {
+    background-color: rgba(0,0,0,0);
+  }
+  ::-webkit-scrollbar-thumb{
+    height:50px;
+    background-color:#c5c5c5;
+    border-radius:4px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    height: 50px;
+    background-color: #adadad;
+    -webkit-border-radius: 4px;
+  }
+  .ant-list-bordered{
+    border-radius:0;
+  }
+  .ant-input-affix-wrapper .ant-input{
+    border-radius:0;
+  }
+  .full-height{
+    height:100%;
+  }
+  .full-width{
+    width:100%;
+  }
+  .pull-left{
+    float:left;
+  }
+  .pull-right{
+    float:right;
+  }
+  // layout
+  .ant-layout{
+    //background-color : #ffffff;
+  }
+
+  #bi-content{
+    .btn-primary{
+      background-color: #1890ff;
+      border-color: #1890ff;
+      border-radius: 3px;
+      font-size: 12px;
+      line-height: 1;
+      height: 25px;
+    }
+    // table
+    .ant-table-thead > tr > th,.ant-table-tbody > tr > td {
+      padding: 10px;
+      font-weight: normal;
+      cursor: pointer;
+    }
+    //collapse
+    .ant-collapse{
+      border-radius:0;
+
+      .ant-collapse-content{
+        padding:0;
+      }
+      .ant-collapse-content > .ant-collapse-content-box{
+        padding:5px;
+      }
+    }
+    .ant-collapse > .ant-collapse-item > .ant-collapse-header .arrow{
+      line-height:25px;
+      left:5px;
+    }
+    .ant-collapse > .ant-collapse-item > .ant-collapse-header{
+      padding:0 0 0 25px;
+      font-size:13px;
+      line-height:24px;
+    }
+    // checkbox
+    .ant-checkbox-wrapper{
+      font-size:12px;
+      display:block;
+    }
+    .ant-checkbox-inner{
+      width:14px;
+      height:14px;
+    }
+    .ant-checkbox-wrapper + span, .ant-checkbox + span{
+      padding-right:0;
+    }
+    .ant-checkbox-inner:after{
+      width:5.414286px;
+      left:3.9142857px;
+    }
+
+    //radio
+    .ant-radio-wrapper{
+      font-size:12px;
+    }
+    span.ant-radio + *{
+      padding-right:0;
+    }
+  }
+
+  div[name='search']{
+    //input
+    .ant-input{
+      border-radius:0;
+      font-size:12px;
+      height:24px;
+      width:90px;
+    }
+    .ant-input-group{
+      display:flex;
+    }
+    .ant-input-group-addon{
+      border-radius: 0;
+      font-size: 12px;
+      width: 65px;
+      display: inline-block;
+      height: 24px;
+      line-height: 24px;
+      text-align: center;
+      padding: 0;
+    }
+
+    //datepicker
+    .ant-calendar-picker{
+      .ant-input{
+        width:120px;
+      }
+    }
+  }
+
+  // tabs
+  .ant-tabs{
+    background-color:#fff;
+  }
+
+  // tags
+  .ant-tag{
+    margin-bottom:5px!important;
+    user-select : none;
+  }
+  .ant-tag-text{
+    user-select : none;
+  }
+
+  // tree
+  .ant-tree li{
+    padding : 0!important;
+  }
+  .ant-tree li .ant-tree-node-content-wrapper{
+    width : calc(~"100% - 24px");
+  }
+
+  // menu
+  .ant-menu-item-active{
+    background-color:rgb(230,247,255);
+  }
+
+  // form
+  .ant-modal-body .ant-form-item{
+    margin-bottom:14px;
+  }
+  // card
+  .ant-layout-content{
+    .ant-card{
+      .ant-card-body{
+        padding:0;
+      }
+      .ant-card-head{
+        cursor:pointer;
+        padding:0 5px;
+      }
+    }
+  }
+  .ant-card{
+    .ant-card-head{
+      padding : 0 4px;
+      background: #f8f8f8;
+      min-height:initial;
+      border:none;
+    }
+    .ant-card-body{
+      height: calc(~"100% - 25.2px");
+      overflow: auto;
+    }
+    .ant-card-head-title{
+      padding:3px 0;
+      font-size:13px;
+    }
+    .ant-card-extra{
+      padding:3.5px 0;
+      font-size:12px;
+    }
+  }
+}
+// layout - content
+.content{
+  height : calc(~"108vh - @{layout-header-height} - @{layout-footer-height}");
+  overflow : auto;
+  background-color : @content;
+  position : relative;
+}
+
+
