@@ -2,7 +2,7 @@ export default class Index extends PureComponent {
     // ReportBoard.js 临时不用的类进行备份
 
     /*************************右侧每个数据集的参数都可以选的关联方法**********************************/
-    // 关联关系点击回调
+    // 关联关系点击回调//
     // 修改 搜索的 item 增加或减少
     // id 是当前图表的uuuid  
     changeSearchItem = (id, value) => {
