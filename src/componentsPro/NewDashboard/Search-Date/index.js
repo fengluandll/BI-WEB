@@ -48,6 +48,9 @@ export default class Index extends PureComponent {
         case '2':
           type = 'months';
           break;
+        case '4':
+          type = 'months';
+          break;
         default:
           type = 'years';
       }
@@ -114,9 +117,18 @@ export default class Index extends PureComponent {
             {...opts}
             value={this.state.startTime}
             onChange={this.changeDate.bind(this, 0)}
+          />
+          {relaJson.from_type === '0' && <span className={styles['time-join']}>-</span>}
+          {relaJson.from_type === '0' && <MonthPicker {...opts} value={this.state.endTime} onChange={this.changeDate.bind(this, 1)} />}
+        </div>);
+      case '4':
+        return (<div className={styles['query-field']}>
+          <MonthPicker
+            {...opts}
+            value={this.state.startTime}
+            onChange={this.changeDate.bind(this, 0)}
             monthCellContentRender={(current) => {
               const data = current._d.toString();
-              console.log(JSON.stringify(data) + "-----------------------");
               let content = "一季度";
               if (data.indexOf("Jan") != -1) {
                 content = "一季度";
@@ -150,7 +162,43 @@ export default class Index extends PureComponent {
             }}
           />
           {relaJson.from_type === '0' && <span className={styles['time-join']}>-</span>}
-          {relaJson.from_type === '0' && <MonthPicker {...opts} value={this.state.endTime} onChange={this.changeDate.bind(this, 1)} />}
+          {relaJson.from_type === '0' &&
+            <MonthPicker {...opts} value={this.state.endTime}
+              onChange={this.changeDate.bind(this, 1)}
+              monthCellContentRender={(current) => {
+                const data = current._d.toString();
+                let content = "一季度";
+                if (data.indexOf("Jan") != -1) {
+                  content = "一季度";
+                  return (
+                    <div className="ant-calendar-date" >
+                      {content}
+                    </div>
+                  );
+                } else if (data.indexOf("Apr") != -1) {
+                  content = "二季度";
+                  return (
+                    <div className="ant-calendar-date" >
+                      {content}
+                    </div>
+                  );
+                } else if (data.indexOf("Jul") != -1) {
+                  content = "三季度";
+                  return (
+                    <div className="ant-calendar-date" >
+                      {content}
+                    </div>
+                  );
+                } else if (data.indexOf("Oct") != -1) {
+                  content = "四季度";
+                  return (
+                    <div className="ant-calendar-date" >
+                      {content}
+                    </div>
+                  );
+                }
+              }}
+            />}
         </div>);
       default:
         return (<div className={styles['query-field']}>
