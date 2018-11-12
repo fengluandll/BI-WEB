@@ -24,7 +24,7 @@ export default class Index extends PureComponent {
   }
   componentWillReceiveProps(nextProps) {
     const { rela } = nextProps;
-    const {relaJson} = this.props;
+    const { relaJson } = this.props;
     const arr = this.calcDate(rela.props, relaJson);
     // 参数先放到state里
     this.state = {
@@ -33,23 +33,23 @@ export default class Index extends PureComponent {
     };
   }
   calcDate = (val, relaJson) => {
-    const { from_type, time_from,time_to, date_type,time_type } = relaJson;
+    const { from_type, time_from, time_to, date_type, time_type } = relaJson;
     let startTime = null;
     let endTime = null;
     if (time_type === '0') {
       let type = '';
       switch (date_type) {
-      case '0':
-        type = 'days';
-        break;
-      case '1':
-        type = 'weeks';
-        break;
-      case '2':
-        type = 'months';
-        break;
-      default:
-        type = 'years';
+        case '0':
+          type = 'days';
+          break;
+        case '1':
+          type = 'weeks';
+          break;
+        case '2':
+          type = 'months';
+          break;
+        default:
+          type = 'years';
       }
       startTime = objectUtils.isNumber(time_from)
         ? moment().subtract(time_from, type)
@@ -114,6 +114,40 @@ export default class Index extends PureComponent {
             {...opts}
             value={this.state.startTime}
             onChange={this.changeDate.bind(this, 0)}
+            monthCellContentRender={(current) => {
+              const data = current._d.toString();
+              console.log(JSON.stringify(data) + "-----------------------");
+              let content = "一季度";
+              if (data.indexOf("Jan") != -1) {
+                content = "一季度";
+                return (
+                  <div className="ant-calendar-date" >
+                    {content}
+                  </div>
+                );
+              } else if (data.indexOf("Apr") != -1) {
+                content = "二季度";
+                return (
+                  <div className="ant-calendar-date" >
+                    {content}
+                  </div>
+                );
+              } else if (data.indexOf("Jul") != -1) {
+                content = "三季度";
+                return (
+                  <div className="ant-calendar-date" >
+                    {content}
+                  </div>
+                );
+              } else if (data.indexOf("Oct") != -1) {
+                content = "四季度";
+                return (
+                  <div className="ant-calendar-date" >
+                    {content}
+                  </div>
+                );
+              }
+            }}
           />
           {relaJson.from_type === '0' && <span className={styles['time-join']}>-</span>}
           {relaJson.from_type === '0' && <MonthPicker {...opts} value={this.state.endTime} onChange={this.changeDate.bind(this, 1)} />}
