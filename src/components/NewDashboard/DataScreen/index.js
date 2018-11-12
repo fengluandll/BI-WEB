@@ -84,6 +84,9 @@ export default class Index extends PureComponent {
       case '2':
         type = 'months';
         break;
+      case '4':
+        type = 'months';
+        break;
       default:
         type = 'years';
       }
@@ -117,6 +120,7 @@ export default class Index extends PureComponent {
             <RadioButton value="0">日</RadioButton>
             <RadioButton value="1">周</RadioButton>
             <RadioButton value="2">月</RadioButton>
+            <RadioButton value="4">季</RadioButton>
             <RadioButton value="3">年</RadioButton>
           </RadioGroup>
         </div>

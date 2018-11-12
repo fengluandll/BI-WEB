@@ -356,11 +356,13 @@ class Report extends PureComponent {
           let searchParam = searchControlParams[comp.name];
           searchParam = searchParam || [];
           searchParam.forEach((item) => {
-            params[item.subColumn.rscName] = {
-              value: item.val,
-              column: item.subColumn,
-              rule: item.rule,
-            };
+            if (item.val.length > 0) {
+              params[item.subColumn.rscName] = {
+                value: item.val,
+                column: item.subColumn,
+                rule: item.rule,
+              };
+            }
           });
           searchParams.push({
             type: comp.type,
@@ -401,7 +403,7 @@ class Report extends PureComponent {
   };
   // 请求图表数据
   reqChartData = (conditions) => {
-    if(conditions.length < 1){// 没有搜索条件时  用初始化时候的条件
+    if (conditions.length < 1) {// 没有搜索条件时  用初始化时候的条件
       conditions = this.state.conditions;
     }
     for (let i = 0; i < conditions.length; i += 1) {

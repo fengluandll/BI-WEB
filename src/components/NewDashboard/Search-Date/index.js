@@ -36,17 +36,20 @@ export default class Index extends PureComponent {
     if (timeType === '0') {
       let type = '';
       switch (dateType) {
-      case '0':
-        type = 'days';
-        break;
-      case '1':
-        type = 'weeks';
-        break;
-      case '2':
-        type = 'months';
-        break;
-      default:
-        type = 'years';
+        case '0':
+          type = 'days';
+          break;
+        case '1':
+          type = 'weeks';
+          break;
+        case '2':
+          type = 'months';
+          break;
+        case '4':
+          type = 'months';
+          break;
+        default:
+          type = 'years';
       }
       startTime = objectUtils.isNumber(relativeItems[0])
         ? moment().subtract(relativeItems[0], type)
@@ -83,51 +86,129 @@ export default class Index extends PureComponent {
       placeholder: '请选择日期',
     };
     switch (rule.dateType) {
-    case '0':
-      return (<div className={styles['query-field']}>
-        <DatePicker
-          {...opts}
-          showToday={false}
-          value={this.state.startTime}
-          onChange={this.changeDate.bind(this, 0)}
-          allowClear={false}
-        />
-        {rule.rangeType === '0' && <span className={styles['time-join']}>-</span>}
-        {rule.rangeType === '0' && <DatePicker {...opts} showToday={false} value={this.state.endTime} onChange={this.changeDate.bind(this, 1)} allowClear={false} />}
-      </div>);
-    case '1':
-      return (<div className={styles['query-field']}>
-        <WeekPicker
-          {...opts}
-          value={this.state.startTime}
-          onChange={this.changeDate.bind(this, 0)}
-          allowClear={false}
-        />
-        { rule.rangeType === '0' && <span className={styles['time-join']}>-</span> }
-        { rule.rangeType === '0' && <WeekPicker {...opts} value={this.state.endTime} onChange={this.changeDate.bind(this, 1)} allowClear={false} /> }
-      </div>);
-    case '2':
-      return (<div className={styles['query-field']}>
-        <MonthPicker
-          {...opts}
-          value={this.state.startTime}
-          onChange={this.changeDate.bind(this, 0)}
-          allowClear={false}
-        />
-        { rule.rangeType === '0' && <span className={styles['time-join']}>-</span> }
-        { rule.rangeType === '0' && <MonthPicker {...opts} value={this.state.endTime} onChange={this.changeDate.bind(this, 1)} allowClear={false} /> }
-      </div>);
-    default:
-      return (<div className={styles['query-field']}>
-        <YearPicker
-          {...opts}
-          value={this.state.startTime}
-          onChange={this.changeDate.bind(this, 0)}
-          allowClear={false}
-        />
-        { rule.rangeType === '0' && <span className={styles['time-join']}>-</span> }
-        { rule.rangeType === '0' && <YearPicker {...opts} value={this.state.endTime} onChange={this.changeDate.bind(this, 1)} allowClear={false} /> }
-      </div>);
+      case '0':
+        return (<div className={styles['query-field']}>
+          <DatePicker
+            {...opts}
+            showToday={false}
+            value={this.state.startTime}
+            onChange={this.changeDate.bind(this, 0)}
+            allowClear={false}
+          />
+          {rule.rangeType === '0' && <span className={styles['time-join']}>-</span>}
+          {rule.rangeType === '0' && <DatePicker {...opts} showToday={false} value={this.state.endTime} onChange={this.changeDate.bind(this, 1)} allowClear={false} />}
+        </div>);
+      case '1':
+        return (<div className={styles['query-field']}>
+          <WeekPicker
+            {...opts}
+            value={this.state.startTime}
+            onChange={this.changeDate.bind(this, 0)}
+            allowClear={false}
+          />
+          {rule.rangeType === '0' && <span className={styles['time-join']}>-</span>}
+          {rule.rangeType === '0' && <WeekPicker {...opts} value={this.state.endTime} onChange={this.changeDate.bind(this, 1)} allowClear={false} />}
+        </div>);
+      case '2':
+        return (<div className={styles['query-field']}>
+          <MonthPicker
+            {...opts}
+            value={this.state.startTime}
+            onChange={this.changeDate.bind(this, 0)}
+            allowClear={false}
+          />
+          {rule.rangeType === '0' && <span className={styles['time-join']}>-</span>}
+          {rule.rangeType === '0' && <MonthPicker {...opts} value={this.state.endTime} onChange={this.changeDate.bind(this, 1)} allowClear={false} />}
+        </div>);
+      case '4':
+        return (<div className={styles['query-field']}>
+          <MonthPicker
+            {...opts}
+            value={this.state.startTime}
+            onChange={this.changeDate.bind(this, 0)}
+            allowClear={false}
+            monthCellContentRender={(current) => {
+              const data = current._d.toString();
+              let content = "一季度";
+              if (data.indexOf("Jan") != -1) {
+                content = "一季度";
+                return (
+                  <div className="ant-calendar-date" >
+                    {content}
+                  </div>
+                );
+              } else if (data.indexOf("Apr") != -1) {
+                content = "二季度";
+                return (
+                  <div className="ant-calendar-date" >
+                    {content}
+                  </div>
+                );
+              } else if (data.indexOf("Jul") != -1) {
+                content = "三季度";
+                return (
+                  <div className="ant-calendar-date" >
+                    {content}
+                  </div>
+                );
+              } else if (data.indexOf("Oct") != -1) {
+                content = "四季度";
+                return (
+                  <div className="ant-calendar-date" >
+                    {content}
+                  </div>
+                );
+              }
+            }}
+          />
+          {rule.rangeType === '0' && <span className={styles['time-join']}>-</span>}
+          {rule.rangeType === '0' && <MonthPicker {...opts} value={this.state.endTime} onChange={this.changeDate.bind(this, 1)} allowClear={false}
+            monthCellContentRender={(current) => {
+              const data = current._d.toString();
+              let content = "一季度";
+              if (data.indexOf("Jan") != -1) {
+                content = "一季度";
+                return (
+                  <div className="ant-calendar-date" >
+                    {content}
+                  </div>
+                );
+              } else if (data.indexOf("Apr") != -1) {
+                content = "二季度";
+                return (
+                  <div className="ant-calendar-date" >
+                    {content}
+                  </div>
+                );
+              } else if (data.indexOf("Jul") != -1) {
+                content = "三季度";
+                return (
+                  <div className="ant-calendar-date" >
+                    {content}
+                  </div>
+                );
+              } else if (data.indexOf("Oct") != -1) {
+                content = "四季度";
+                return (
+                  <div className="ant-calendar-date" >
+                    {content}
+                  </div>
+                );
+              }
+            }}
+          />}
+        </div>);
+      default:
+        return (<div className={styles['query-field']}>
+          <YearPicker
+            {...opts}
+            value={this.state.startTime}
+            onChange={this.changeDate.bind(this, 0)}
+            allowClear={false}
+          />
+          {rule.rangeType === '0' && <span className={styles['time-join']}>-</span>}
+          {rule.rangeType === '0' && <YearPicker {...opts} value={this.state.endTime} onChange={this.changeDate.bind(this, 1)} allowClear={false} />}
+        </div>);
     }
   }
 }
