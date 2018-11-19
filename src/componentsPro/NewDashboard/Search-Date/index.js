@@ -87,7 +87,7 @@ export default class Index extends PureComponent {
     const opts = {
       showToday: false,
       locale,
-      placeholder: '请选择日期',
+      placeholder: '请选择季度',
     };
     switch (relaJson.date_type) {
       case '0':
