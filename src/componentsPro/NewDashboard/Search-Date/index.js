@@ -127,34 +127,74 @@ export default class Index extends PureComponent {
             {...opts}
             value={this.state.startTime}
             onChange={this.changeDate.bind(this, 0)}
+            defaultValue={moment('2018-01', 'YYYY-MM')}
+            format={monthFormat}
+            // 禁止日期控件
+            disabledDate = {(current) => {
+              var data = current._d.toString();
+              var content = "一季度";
+              if(data.indexOf("Jan") != -1){
+                content = "一季度";
+                <div>
+                    {content}
+                </div>
+              } else if (data.indexOf("Apr") != -1) {
+                content = "二季度";
+                  <div>
+                    {content}
+                  </div>
+              }else if (data.indexOf("Jul") != -1) {
+                content = "三季度";
+                  <div>
+                    {content}
+                  </div>
+              }else if (data.indexOf("Oct") != -1) {
+                content = "四季度";
+                  <div>
+                    {content}
+                  </div>
+              }else{
+                // return current;
+                return;
+              }
+            }}
+            // 季度
             monthCellContentRender={(current) => {
               const data = current._d.toString();
               let content = "一季度";
+              const style = {};
+              style.width = '260px';
               if (data.indexOf("Jan") != -1) {
                 content = "一季度";
                 return (
-                  <div className="ant-calendar-date" >
+                  <div style={style}>
                     {content}
                   </div>
                 );
               } else if (data.indexOf("Apr") != -1) {
                 content = "二季度";
+                const style = {};
+                style.width = '260px';
                 return (
-                  <div className="ant-calendar-date" >
+                  <div style={style}>
                     {content}
                   </div>
                 );
               } else if (data.indexOf("Jul") != -1) {
                 content = "三季度";
+                const style = {};
+                style.width = '260px';
                 return (
-                  <div className="ant-calendar-date" >
+                  <div style={style}>
                     {content}
                   </div>
                 );
               } else if (data.indexOf("Oct") != -1) {
                 content = "四季度";
+                const style = {};
+                style.width = '260px';
                 return (
-                  <div className="ant-calendar-date" >
+                  <div style={style}>
                     {content}
                   </div>
                 );
@@ -170,29 +210,37 @@ export default class Index extends PureComponent {
                 let content = "一季度";
                 if (data.indexOf("Jan") != -1) {
                   content = "一季度";
+                  const style = {};
+                  style.width = '260px';
                   return (
-                    <div className="ant-calendar-date" >
+                    <div style={style}>
                       {content}
                     </div>
                   );
                 } else if (data.indexOf("Apr") != -1) {
                   content = "二季度";
+                  const style = {};
+                  style.width = '260px';
                   return (
-                    <div className="ant-calendar-date" >
+                    <div style={style}>
                       {content}
                     </div>
                   );
                 } else if (data.indexOf("Jul") != -1) {
                   content = "三季度";
+                  const style = {};
+                  style.width = '260px';
                   return (
-                    <div className="ant-calendar-date" >
+                    <div style={style}>
                       {content}
                     </div>
                   );
                 } else if (data.indexOf("Oct") != -1) {
                   content = "四季度";
+                  const style = {};
+                  style.width = '260px';
                   return (
-                    <div className="ant-calendar-date" >
+                    <div style={style}>
                       {content}
                     </div>
                   );

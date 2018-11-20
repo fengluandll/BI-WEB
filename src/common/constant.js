@@ -35,6 +35,7 @@ const dateRule = {
   dateType: '0', // 0-日 1-周 2-月 3-年
   timeType: '0',  // 0-相对 1-绝对
   relativeItems: ['', ''],  // 相对时间对应计算因子
+  relativeItemsQuarter:[''],  // 给季度用的  addbywangliu  20181114
 };
 export default class Constant {
   getNumRule = () => {

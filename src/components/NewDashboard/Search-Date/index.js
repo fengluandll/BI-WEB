@@ -30,7 +30,7 @@ export default class Index extends PureComponent {
     });
   }
   calcDate = (val, rule) => {
-    const { timeType, relativeItems, dateType } = rule;
+    const { timeType, relativeItems, dateType, relativeItemsQuarter } = rule;
     let startTime = null;
     let endTime = null;
     if (timeType === '0') {
@@ -57,6 +57,12 @@ export default class Index extends PureComponent {
       endTime = objectUtils.isNumber(relativeItems[1])
         ? moment().subtract(relativeItems[1], type)
         : (val[1] ? moment(val[1]) : null);
+      if (relativeItemsQuarter != null && objectUtils.isNumber(relativeItemsQuarter[0])) {
+        // 如果是季度偏移
+        let currentQuarter = moment().quarter();
+        //startTime = moment(moment().month(currentQuarter * 3 - 3 - relativeItemsQuarter[0] * 3).format('YYYY-MM'));
+        //endTime = moment(moment().month(currentQuarter * 3 - 1 - relativeItemsQuarter[0] * 3).format('YYYY-MM'));
+      }
     } else {
       startTime = val[0] ? moment(val[0]) : null;
       endTime = val[1] ? moment(val[0]) : null;
@@ -127,35 +133,53 @@ export default class Index extends PureComponent {
             value={this.state.startTime}
             onChange={this.changeDate.bind(this, 0)}
             allowClear={false}
+            defaultValue={moment('2018-01', 'YYYY-MM')}
+            // 禁止日期控件
+            disabledDate = {(current) => {
+              const data = current._d.toString();
+              if (data.indexOf("Jan") == -1 && data.indexOf("Apr") == -1 &&data.indexOf("Jul") == -1 &&data.indexOf("Oct") == -1) {
+                return current;
+              }
+            }}
+            // 季度
             monthCellContentRender={(current) => {
               const data = current._d.toString();
-              let content = "一季度";
+              let content = "一--季";
+              const style = {};
+              style.width = '260px';
+              style.float = 'left';
               if (data.indexOf("Jan") != -1) {
-                content = "一季度";
+                content = "一--季";
                 return (
-                  <div className="ant-calendar-date" >
+                  <div style={style}>
                     {content}
                   </div>
                 );
               } else if (data.indexOf("Apr") != -1) {
-                content = "二季度";
+                content = "二--季";
                 return (
-                  <div className="ant-calendar-date" >
+                  <div style={style}>
                     {content}
                   </div>
                 );
               } else if (data.indexOf("Jul") != -1) {
-                content = "三季度";
+                content = "三--季";
                 return (
-                  <div className="ant-calendar-date" >
+                  <div style={style}>
                     {content}
                   </div>
                 );
               } else if (data.indexOf("Oct") != -1) {
-                content = "四季度";
+                content = "四--季";
                 return (
-                  <div className="ant-calendar-date" >
+                  <div style={style}>
                     {content}
+                  </div>
+                );
+              }else{
+                return (
+                  <div>
+                   
                   </div>
                 );
               }
@@ -163,35 +187,57 @@ export default class Index extends PureComponent {
           />
           {rule.rangeType === '0' && <span className={styles['time-join']}>-</span>}
           {rule.rangeType === '0' && <MonthPicker {...opts} value={this.state.endTime} onChange={this.changeDate.bind(this, 1)} allowClear={false}
+            defaultValue={moment('2018-04', 'YYYY-MM')}
+            // 禁止日期控件
+            disabledDate = {(current) => {
+              const data = current._d.toString();
+              if (data.indexOf("Jan") == -1 && data.indexOf("Apr") == -1 &&data.indexOf("Jul") == -1 &&data.indexOf("Oct") == -1) {
+                return current;
+              }
+            }}
+            // 季度
             monthCellContentRender={(current) => {
               const data = current._d.toString();
-              let content = "一季度";
+              let content = "一--季";
+              const style = {};
+              style.width = '260px';
+              style.float = 'left';
               if (data.indexOf("Jan") != -1) {
-                content = "一季度";
+                content = "一--季";
                 return (
-                  <div className="ant-calendar-date" >
+                  <div style={style}>
                     {content}
                   </div>
                 );
               } else if (data.indexOf("Apr") != -1) {
-                content = "二季度";
+                content = "二--季";
                 return (
-                  <div className="ant-calendar-date" >
+                  <div style={style}>
                     {content}
                   </div>
                 );
               } else if (data.indexOf("Jul") != -1) {
-                content = "三季度";
+                content = "三--季";
                 return (
-                  <div className="ant-calendar-date" >
+                  <div style={style}>
                     {content}
                   </div>
                 );
               } else if (data.indexOf("Oct") != -1) {
-                content = "四季度";
+                content = "四--季";
                 return (
-                  <div className="ant-calendar-date" >
+                  <div style={style}>
                     {content}
+                  </div>
+                );
+              }else{
+                const style = {};
+                style.width = '0px';
+                style.minWidth = '0px';
+                style.height = '0px';
+                return (
+                  <div style={style}>
+                   
                   </div>
                 );
               }

@@ -64,6 +64,11 @@ export default class Index extends PureComponent {
       styleConfigs.horizontal = e.target.checked;
     });
   };
+  changeLegend = (e) => {
+    this.change((styleConfigs) => {
+      styleConfigs.legend.visible = e.target.checked;
+    });
+  };
   changeStack = (e) => {
     this.change((styleConfigs) => {
       styleConfigs.stack = e.target.checked;
@@ -247,7 +252,7 @@ export default class Index extends PureComponent {
           <Col span={12}><Checkbox onChange={() => { }}>显示Y轴</Checkbox></Col>
         </Row>
         <Row>
-          <Col span={12}><Checkbox onChange={() => { }}>显示图例</Checkbox></Col>
+          <Col span={12}><Checkbox defaultChecked={styleConfigs.legend.visible} onChange={this.changeLegend}>显示图例</Checkbox></Col>
         </Row>
         <Row>
           <Col span={24}><Checkbox onChange={() => { }}>显示ToolTip</Checkbox></Col>

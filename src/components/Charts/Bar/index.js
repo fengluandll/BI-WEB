@@ -42,11 +42,14 @@ class Bar extends PureComponent {
     return (<div className={styles.empty}><span>数据返回为空</span></div>);
   };
   renderChart(props) {
-    const {
+    let {
       fit = true,
       padding = ['10%', 30, '25%', 40],
     } = props;
     const { styleConfigs, data } = props;
+    if (!styleConfigs.legend.visible) {
+      padding = ['10%', 30, '25%', 150];
+    }
 
     if (!data || (data && data.length < 1)) {
       ReactDom.render(this.renderEmpty(), this.node);
@@ -105,24 +108,24 @@ class Bar extends PureComponent {
           type: 'dodge',
           marginRatio: 0,
         }])
-        .select(true,{
-          mode : 'single',
-          style: {fill:'#0000CD'},
-          cancelable : true,
-        })
-        .label(`${y}`,{
-          offset: 10
-        });
+          .select(true, {
+            mode: 'single',
+            style: { fill: '#0000CD' },
+            cancelable: true,
+          })
+          .label(`${y}`, {
+            offset: 10
+          });
       } else {
         chart.interval().position(`${x}*${y}`)
-        .select(true,{
-          mode : 'single',
-          style: {fill:'#0000CD'},
-          cancelable : true,
-        })
-        .label(`${y}`,{
-          offset: 10
-        });
+          .select(true, {
+            mode: 'single',
+            style: { fill: '#0000CD' },
+            cancelable: true,
+          })
+          .label(`${y}`, {
+            offset: 10
+          });
       }
     }
     // init legend
@@ -131,9 +134,17 @@ class Bar extends PureComponent {
     // const tooltip = styleConfigs.tooltip.visible ? chartHelper.tooltip() : false;
     //chart.legend(legend);
     //chart.tooltip(tooltip);
+    if (!styleConfigs.legend.visible) {
+      chart.legend({
+        position: 'left', // 设置图例的显示位置
+        itemGap: 20 // 图例项之间的间距
+      });
+    }else{
+      chart.legend(false);
+    }
 
     //add by wangliu 0820
-    chart.legend(false); // 隐藏全部图例
+    //chart.legend(false); // 隐藏全部图例
     chart.tooltip(false); // 关闭 tooltip
     /*for (let tmp = 0; tmp < data.length; tmp++) {
       let contentNum = data[tmp].y;
@@ -169,7 +180,7 @@ class Bar extends PureComponent {
           fill: '#404040', // 文本的颜色
           fontSize: '12', // 文本大小
           //fontWeight: 'bold', // 文本粗细
-          rotate: 20, 
+          rotate: 20,
           textBaseline: 'top' // 文本基准线，可取 top middle bottom，默认为middle
         },
         autoRotate: true, // 是否需要自动旋转，默认为 true

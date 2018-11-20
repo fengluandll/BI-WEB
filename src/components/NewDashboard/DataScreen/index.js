@@ -67,6 +67,14 @@ export default class Index extends PureComponent {
     this.calcDate();
     this.props.onChange();
   };
+  // 修改日期相对时间计算因子 新的季度的 addby wangliu  20171114
+  changeRelativeItemsQuarter = (index, val) => {
+    const { props } = this.getFiledRelation();
+    props.rule.relativeItemsQuarter[0] = val;
+    this.calcDate();
+    this.props.onChange();
+  };
+
   // 计算日期
   calcDate = () => {
     const { props } = this.getFiledRelation();
@@ -75,20 +83,20 @@ export default class Index extends PureComponent {
     if (timeType === '0') {
       let type = '';
       switch (dateType) {
-      case '0':
-        type = 'days';
-        break;
-      case '1':
-        type = 'weeks';
-        break;
-      case '2':
-        type = 'months';
-        break;
-      case '4':
-        type = 'months';
-        break;
-      default:
-        type = 'years';
+        case '0':
+          type = 'days';
+          break;
+        case '1':
+          type = 'weeks';
+          break;
+        case '2':
+          type = 'months';
+          break;
+        case '4':
+          type = 'months';
+          break;
+        default:
+          type = 'years';
       }
       props.val[0] = objectUtils.isNumber(relativeItems[0])
         ? moment().subtract(relativeItems[0], type).toDate()
@@ -103,9 +111,9 @@ export default class Index extends PureComponent {
     return (
       <div className={styles['select']}>
         <select onChange={this.changeNumberScreenType} value={relation.props.rule.value}>
-          { constant.getNumRule().map((item) => {
+          {constant.getNumRule().map((item) => {
             return (<option value={item.value} key={item.value}>{item.label}</option>);
-          }) }
+          })}
         </select>
       </div>
     );
@@ -136,10 +144,10 @@ export default class Index extends PureComponent {
             <RadioButton value="1">绝对时间</RadioButton>
           </RadioGroup>
         </div>
-        { rule.timeType === '0' ? (
+        {rule.timeType === '0' ? (
           <div className={styles['screen-panel-row']}>
             <span>设置数据日期的默认显示范围</span>
-            { rule.rangeType === '0' ? (
+            {rule.rangeType === '0' ? (
               <div className={styles['time-tip']}>
                 <span> T -</span>
                 <NumberInput
@@ -156,23 +164,34 @@ export default class Index extends PureComponent {
                 />
               </div>
             ) : (
-              <div className={styles['time-tip']}>
-                <span> T -</span>
-                <NumberInput
-                  defaultValue={rule.relativeItems[0]}
-                  onlyNatural
-                  onChange={this.changeRelativeItems.bind(this, 0)}
-                />
-              </div>
-            ) }
+                <div className={styles['time-tip']}>
+                  <span> T -</span>
+                  <NumberInput
+                    defaultValue={rule.relativeItems[0]}
+                    onlyNatural
+                    onChange={this.changeRelativeItems.bind(this, 0)}
+                  />
+                </div>
+              )}
             <p>T代表今年，示例:T-0代表今年,T-1代表上一年</p>
           </div>
         ) : (
-          <div className={styles['screen-panel-row']}>
-            <p>绝对时间请直接选择默认时间并保存</p>
-          </div>
-        )
+            <div className={styles['screen-panel-row']}>
+              <p>绝对时间请直接选择默认时间并保存</p>
+            </div>
+          )
         }
+        <div className={styles['screen-panel-row']}>
+          <span>设置季度偏移量一旦设了，其他月的设置不起作用</span>
+          <div className={styles['time-tip']}>
+            <span> T -</span>
+            <NumberInput
+              defaultValue={rule.relativeItemsQuarter != null ? rule.relativeItemsQuarter[0] : null}
+              onlyNatural
+              onChange={this.changeRelativeItemsQuarter.bind(this, 0)}
+            />
+          </div>
+        </div>
       </div>
     );
   };
@@ -183,9 +202,9 @@ export default class Index extends PureComponent {
         defaultValue={relation.props.rule.value}
         onChange={this.changeCharacterScreenType}
       >
-        { constant.getCharacterRule().map((item) => {
+        {constant.getCharacterRule().map((item) => {
           return (<RadioButton value={item.value} key={item.value}>{item.label}</RadioButton>);
-        }) }
+        })}
       </RadioGroup>
     );
   };
@@ -193,14 +212,14 @@ export default class Index extends PureComponent {
     const { comp, child } = this.props;
     let row = null;
     switch (child.rscType) {
-    case 1:
-      row = this.renderNumberScreen();
-      break;
-    case 2:
-      row = this.renderCharacterScreen();
-      break;
-    default:
-      row = this.renderDateScreen();
+      case 1:
+        row = this.renderNumberScreen();
+        break;
+      case 2:
+        row = this.renderCharacterScreen();
+        break;
+      default:
+        row = this.renderDateScreen();
     }
     return (
       <div className={styles['screen-panel']} id={`screen-${comp.name}`}>
@@ -211,7 +230,7 @@ export default class Index extends PureComponent {
           </label>
         </div>
         <div className={styles['screen-panel-row']}>
-          { row }
+          {row}
         </div>
       </div>
     );
