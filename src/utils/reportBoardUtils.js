@@ -57,9 +57,61 @@ class ReportBoardUtils {
     }
 
     // 新增一个搜索框item的时候，为搜索框的每个item自动关联上和图表的关联
-    addSearchChartRelationAutoSearch = () => {
-
+    addSearchChartRelationAutoSearch = (relation, key, mDashboard, idColumns) => {
+        // 拼接relationItem存入
+        const relationItem = { label: "", relationFields: {}, props: [] }
+        // 获取item的idColumn
+        const itemIdColumn = idColumns[key];
+        const children = JSON.parse(mDashboard.style_config).children;
+        //  循环children
+        children.map((item, index) => {
+            // 如果是搜索框自己就return
+            if (item.name == key) {
+                return;
+            }
+            const relation = item.relation;
+            for (let relaKey in relation) {
+                const relaIdColumn = idColumns[relaKey];//每个children里的字段
+                //判断每个children里的字段是否和item的字段名称相同
+                if (itemIdColumn.rsc_name == relaIdColumn.rsc_name) {
+                    // 拼接relationFields json
+                    const idColumnValue = [];
+                    idColumnValue.push(relaIdColumn.id);
+                    relationItem.relationFields[relaKey.toString()] = idColumnValue;
+                }
+            }
+        });
+        relation[key] = relationItem;
     }
+
+
+
+    /***************************通用方法***************************************/
+
+    // 根据 chartId  children里name  获取  mChart
+    getMChartByChartId = (mCharts, chartId) => {
+        let mChart;
+        mCharts.map((item, index) => {
+            if (item.id.toString() == chartId) {
+                mChart = item;
+            }
+        });
+        return mChart;
+    }
+
+    // 根据 chartId 获取 dataSet (dataSetName在mChart中)
+    getDataSetByChartId = (mCharts, tableIdColumns, chartId) => {
+        let mChart;
+        mCharts.map((item, index) => {
+            if (item.id.toString() == chartId) {
+                mChart = item;
+            }
+        });
+        const dataSetName = JSON.parse(mChart.config).dataSetName;
+        return tableIdColumns[dataSetName];
+    }
+
+
 }
 
 export default ReportBoardUtils;
