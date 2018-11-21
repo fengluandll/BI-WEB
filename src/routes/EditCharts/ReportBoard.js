@@ -643,6 +643,7 @@ class ReportBoard extends PureComponent {
             }
           }
           if (!flag) {
+            // 增加一个Item，自动配置Item和已有的图表的关联关系
             reportBoardUtils.addSearchChartRelationAutoSearch();
             const relationItem = { label: "", relationFields: {}, props: [] }
             relation[value_keys[i]] = relationItem;
