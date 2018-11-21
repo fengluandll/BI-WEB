@@ -16,14 +16,29 @@ export default class Index extends PureComponent {
     super(props);
     const { val, rule } = props;
     const arr = this.calcDate(val, rule);
+    // 参数先放到state里
     this.state = {
       startTime: arr[0],
       endTime: arr[1],
+      value :'2018-1',
     };
   }
+  // 时间季度
+  onChange = (date, dateString) => {
+    if(moment(dateString).month() == '3'){
+        this.setState({ value: moment(dateString).year() + '-2' });
+    }else if(moment(dateString).month() == '6'){
+        this.setState({ value: moment(dateString).year() + '-3' });
+    }else if(moment(dateString).month() == '9'){
+        this.setState({ value: moment(dateString).year() + '-4' });
+    }else{
+        this.setState({ value: moment(dateString).year() + '-1' });
+    }
+    }
   componentWillReceiveProps(nextProps) {
     const { val, rule } = nextProps;
-    const arr = this.calcDate(val, rule);
+    const arr = this.calcDate(val, rule);   
+    // 参数先放到state里
     this.setState({
       startTime: arr[0],
       endTime: arr[1],
@@ -57,20 +72,16 @@ export default class Index extends PureComponent {
       endTime = objectUtils.isNumber(relativeItems[1])
         ? moment().subtract(relativeItems[1], type)
         : (val[1] ? moment(val[1]) : null);
-      if (relativeItemsQuarter != null && objectUtils.isNumber(relativeItemsQuarter[0])) {
-        // 如果是季度偏移
-        let currentQuarter = moment().quarter();
-        //startTime = moment(moment().month(currentQuarter * 3 - 3 - relativeItemsQuarter[0] * 3).format('YYYY-MM'));
-        //endTime = moment(moment().month(currentQuarter * 3 - 1 - relativeItemsQuarter[0] * 3).format('YYYY-MM'));
-      }
     } else {
       startTime = val[0] ? moment(val[0]) : null;
       endTime = val[1] ? moment(val[0]) : null;
     }
     return [startTime, endTime];
   };
+
   changeDate = (index, date) => {
     const { val, rule } = this.props;
+    //  时间的参数为 数组
     val[index] = date ? date.toDate() : null;
     rule.relativeItems[index] = null;
     if (index === 0) {
@@ -85,6 +96,7 @@ export default class Index extends PureComponent {
     this.props.onChange(val);
   };
   render() {
+    const monthFormat = 'YYYY-M';
     const { rule } = this.props;
     const opts = {
       showToday: false,
@@ -131,113 +143,106 @@ export default class Index extends PureComponent {
           <MonthPicker
             {...opts}
             value={this.state.startTime}
+            value={moment(this.state.value, monthFormat)}
             onChange={this.changeDate.bind(this, 0)}
+            defaultValue={moment('2018-01', monthFormat)}
+            format={monthFormat}
+            dropdownClassName="jidu"
+            // onChange时间季度
+            onChange={this.onChange}
             allowClear={false}
-            defaultValue={moment('2018-01', 'YYYY-MM')}
-            // 禁止日期控件
-            disabledDate = {(current) => {
-              const data = current._d.toString();
-              if (data.indexOf("Jan") == -1 && data.indexOf("Apr") == -1 &&data.indexOf("Jul") == -1 &&data.indexOf("Oct") == -1) {
-                return current;
-              }
-            }}
             // 季度
             monthCellContentRender={(current) => {
               const data = current._d.toString();
-              let content = "一--季";
+              let content = "一季度";
               const style = {};
-              style.width = '260px';
-              style.float = 'left';
+              style.width = '278px';
               if (data.indexOf("Jan") != -1) {
-                content = "一--季";
+                content = "一季度";
                 return (
                   <div style={style}>
                     {content}
                   </div>
                 );
               } else if (data.indexOf("Apr") != -1) {
-                content = "二--季";
+                content = "二季度";
+                const style = {};
+                style.width = '278px';
                 return (
                   <div style={style}>
                     {content}
                   </div>
                 );
               } else if (data.indexOf("Jul") != -1) {
-                content = "三--季";
+                content = "三季度";
+                const style = {};
+                style.width = '278px';
                 return (
                   <div style={style}>
                     {content}
                   </div>
                 );
               } else if (data.indexOf("Oct") != -1) {
-                content = "四--季";
+                content = "四季度";
+                const style = {};
+                style.width = '278px';
                 return (
                   <div style={style}>
                     {content}
-                  </div>
-                );
-              }else{
-                return (
-                  <div>
-                   
                   </div>
                 );
               }
             }}
           />
           {rule.rangeType === '0' && <span className={styles['time-join']}>-</span>}
-          {rule.rangeType === '0' && <MonthPicker {...opts} value={this.state.endTime} onChange={this.changeDate.bind(this, 1)} allowClear={false}
-            defaultValue={moment('2018-04', 'YYYY-MM')}
-            // 禁止日期控件
-            disabledDate = {(current) => {
-              const data = current._d.toString();
-              if (data.indexOf("Jan") == -1 && data.indexOf("Apr") == -1 &&data.indexOf("Jul") == -1 &&data.indexOf("Oct") == -1) {
-                return current;
-              }
-            }}
-            // 季度
+          {rule.rangeType === '0' && 
+          <MonthPicker 
+            {...opts} 
+            value={this.state.endTime} 
+            onChange={this.changeDate.bind(this, 1)} 
+            allowClear={false}
+            value={moment(this.state.value, monthFormat)}
+            defaultValue={moment('2018-1', monthFormat)}
+            format={monthFormat}
+            dropdownClassName="jidu"
+            onChange={this.onChange}
             monthCellContentRender={(current) => {
               const data = current._d.toString();
-              let content = "一--季";
-              const style = {};
-              style.width = '260px';
-              style.float = 'left';
+              let content = "一季度";
               if (data.indexOf("Jan") != -1) {
-                content = "一--季";
+                content = "一季度";
+                const style = {};
+                style.width = '278px';
                 return (
                   <div style={style}>
                     {content}
                   </div>
                 );
               } else if (data.indexOf("Apr") != -1) {
-                content = "二--季";
+                content = "二季度";
+                const style = {};
+                style.width = '278px';
                 return (
                   <div style={style}>
                     {content}
                   </div>
                 );
               } else if (data.indexOf("Jul") != -1) {
-                content = "三--季";
+                content = "三季度";
+                const style = {};
+                style.width = '278px';
                 return (
                   <div style={style}>
                     {content}
                   </div>
                 );
               } else if (data.indexOf("Oct") != -1) {
-                content = "四--季";
+                content = "四季度";
+                const style = {};
+                style.width = '278px';
                 return (
                   <div style={style}>
                     {content}
-                  </div>
-                );
-              }else{
-                const style = {};
-                style.width = '0px';
-                style.minWidth = '0px';
-                style.height = '0px';
-                return (
-                  <div style={style}>
-                   
                   </div>
                 );
               }
