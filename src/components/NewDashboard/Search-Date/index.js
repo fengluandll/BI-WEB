@@ -25,7 +25,7 @@ export default class Index extends PureComponent {
     };
   }
   // 时间季度
-  onChange1 = (date, dateString) => {
+  onChange1 = (date,index,dateString) => {
     if(moment(dateString).month() == '3'){
         this.setState({ value: moment(dateString).year() + '-2' });
     }else if(moment(dateString).month() == '6'){
@@ -35,9 +35,23 @@ export default class Index extends PureComponent {
     }else{
         this.setState({ value: moment(dateString).year() + '-1' });
     }
+    const { val, rule } = this.props;
+    //  时间的参数为 数组
+    val[index] = date ? date.toDate() : null;
+    rule.relativeItems[index] = null;
+    if (index === 0) {
+      this.setState({
+        startTime: date,
+      });
+    } else {
+      this.setState({
+        endTime: date,
+      });
+    }
+    this.props.onChange(val);
     }
 
-    onChange2 = (date, dateString) => {
+    onChange2 = (date,index,dateString) => {
       if(moment(dateString).month() == '3'){
           this.setState({ value1: moment(dateString).year() + '-2' });
       }else if(moment(dateString).month() == '6'){
@@ -47,6 +61,20 @@ export default class Index extends PureComponent {
       }else{
           this.setState({ value1: moment(dateString).year() + '-1' });
       }
+      const { val, rule } = this.props;
+      //  时间的参数为 数组
+      val[index] = date ? date.toDate() : null;
+      rule.relativeItems[index] = null;
+      if (index === 0) {
+        this.setState({
+          startTime: date,
+        });
+      } else {
+        this.setState({
+          endTime: date,
+        });
+      }
+      this.props.onChange(val);
       }
   componentWillReceiveProps(nextProps) {
     const { val, rule } = nextProps;
@@ -162,7 +190,7 @@ export default class Index extends PureComponent {
             format={monthFormat}
             dropdownClassName="jidu"
             // onChange时间季度
-            onChange={this.onChange1}
+            onChange={this.onChange1.bind(this,0)}
             allowClear={false}
             // 季度
             monthCellContentRender={(current) => {
@@ -218,7 +246,7 @@ export default class Index extends PureComponent {
             defaultValue={moment('2018-1', monthFormat)}
             format={monthFormat}
             dropdownClassName="jidu"
-            onChange={this.onChange2}
+            onChange={this.onChange2.bind(this,1)}
             monthCellContentRender={(current) => {
               const data = current._d.toString();
               let content = "一季度";
