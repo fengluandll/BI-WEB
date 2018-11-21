@@ -69,7 +69,7 @@ export default class Index extends PureComponent {
 
   changeDate = (index, date) => {
     const { rela, relaJson } = this.props;
-    //  时间的参数为 数组
+    //  时间的参数为 数组1
     rela.props[index] = date ? date : null;
     if (index === 0) {
       this.setState({
