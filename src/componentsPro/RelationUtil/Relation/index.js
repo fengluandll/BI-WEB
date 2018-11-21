@@ -147,12 +147,6 @@ export default class Index extends PureComponent {
         ReactDom.render(relation, node);
     }
 
-
-    // 图表的关联UI
-    renderRelationChart() {
-
-    }
-
     render() {
         return (
             <div>
