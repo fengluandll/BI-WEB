@@ -21,10 +21,11 @@ export default class Index extends PureComponent {
       startTime: arr[0],
       endTime: arr[1],
       value :'2018-1',
+      value1 :'2018-1',
     };
   }
   // 时间季度
-  onChange = (date, dateString) => {
+  onChange1 = (date, dateString) => {
     if(moment(dateString).month() == '3'){
         this.setState({ value: moment(dateString).year() + '-2' });
     }else if(moment(dateString).month() == '6'){
@@ -35,6 +36,18 @@ export default class Index extends PureComponent {
         this.setState({ value: moment(dateString).year() + '-1' });
     }
     }
+
+    onChange2 = (date, dateString) => {
+      if(moment(dateString).month() == '3'){
+          this.setState({ value1: moment(dateString).year() + '-2' });
+      }else if(moment(dateString).month() == '6'){
+          this.setState({ value1: moment(dateString).year() + '-3' });
+      }else if(moment(dateString).month() == '9'){
+          this.setState({ value1: moment(dateString).year() + '-4' });
+      }else{
+          this.setState({ value1: moment(dateString).year() + '-1' });
+      }
+      }
   componentWillReceiveProps(nextProps) {
     const { val, rule } = nextProps;
     const arr = this.calcDate(val, rule);   
@@ -149,7 +162,7 @@ export default class Index extends PureComponent {
             format={monthFormat}
             dropdownClassName="jidu"
             // onChange时间季度
-            onChange={this.onChange}
+            onChange={this.onChange1}
             allowClear={false}
             // 季度
             monthCellContentRender={(current) => {
@@ -201,11 +214,11 @@ export default class Index extends PureComponent {
             value={this.state.endTime} 
             onChange={this.changeDate.bind(this, 1)} 
             allowClear={false}
-            value={moment(this.state.value, monthFormat)}
+            value={moment(this.state.value1, monthFormat)}
             defaultValue={moment('2018-1', monthFormat)}
             format={monthFormat}
             dropdownClassName="jidu"
-            onChange={this.onChange}
+            onChange={this.onChange2}
             monthCellContentRender={(current) => {
               const data = current._d.toString();
               let content = "一季度";
