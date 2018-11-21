@@ -25,7 +25,7 @@ export default class Index extends PureComponent {
     };
   }
   // 时间季度
-  onChange1 = (date,index,dateString) => {
+  onChange1 = (index,date,dateString) => {
     if(moment(dateString).month() == '3'){
         this.setState({ value: moment(dateString).year() + '-2' });
     }else if(moment(dateString).month() == '6'){
@@ -51,7 +51,7 @@ export default class Index extends PureComponent {
     this.props.onChange(val);
     }
 
-    onChange2 = (date,index,dateString) => {
+    onChange2 = (index,date,dateString) => {
       if(moment(dateString).month() == '3'){
           this.setState({ value1: moment(dateString).year() + '-2' });
       }else if(moment(dateString).month() == '6'){
