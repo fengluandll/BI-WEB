@@ -487,7 +487,7 @@ class ReportBoard extends PureComponent {
     style_config_obj.dragactStyle = dragactStyle;
     mDashboard.style_config = JSON.stringify(style_config_obj);
     // 加上为搜索框全部Item自动配置和图表的关联 20181101
-    reportBoardUtils.addSearchChartRelationAuto(mDashboard, this.props.model.tableIdColumns, mChart, this.props.model.mCharts);
+    reportBoardUtils.addSearchChartRelationAuto(mDashboard, this.props.model.tableIdColumns, this.props.model.idColumns, mChart, this.props.model.mCharts);
     this.setState({
       mDashboard: mDashboard,
     });
@@ -644,7 +644,7 @@ class ReportBoard extends PureComponent {
           }
           if (!flag) {
             // 增加一个Item，自动配置Item和已有的图表的关联关系
-            reportBoardUtils.addSearchChartRelationAutoSearch(relation, value_keys[i], this.state.mDashboard, this.props.model.idColumns);
+            reportBoardUtils.addSearchChartRelationAutoSearch(relation, value_keys[i], this.state.mDashboard, this.props.model.tableIdColumns, this.props.model.idColumns, this.props.model.mCharts);
           }
         }
       }

@@ -2,10 +2,11 @@ class ReportBoardUtils {
 
     // 新增一个图表时，为搜索框的每个item自动关联上和图表的关联
     // 参数  mChart 新加的图表的mChart
-    addSearchChartRelationAuto = (mDashboard, tableIdColumns, mChart, mCharts) => {
+    addSearchChartRelationAuto = (mDashboard, tableIdColumns, idColumns, mChart, mCharts) => {
         const { style_config } = mDashboard;
         const style_config_obj = JSON.parse(style_config);
         const md_children = style_config_obj.children;
+        const dataSetRelation = style_config_obj.dataSetRelation;
         // 找到search
         let searchChart;   // 搜索图表
         md_children.map((item, index) => {
@@ -22,33 +23,25 @@ class ReportBoardUtils {
             const config = mChart.config;
             const dataSetName = JSON.parse(config).dataSetName;
             // 寻找图表id后面的字段的id,要从数据集表中取
-            const searchName = searchChart.name; // 搜索框的name,也就是chartId
-            let search_chart; //搜索框的mChart
-            // 根据 searchName 寻找搜索框的 m_chart 
-            mCharts.map((obj) => {
-                if (obj.id == searchName) {
-                    search_chart = obj;
-                }
-            });
-            const tableIdColumnsSearchList = tableIdColumns[JSON.parse(search_chart.config).dataSetName]; // 搜索框所在的数据集
             const tableIdColumnsChartList = tableIdColumns[dataSetName];  // 新增的图表所有的数据集
-            let rsColumnConfSearch;   //搜索框每个item所在的字段表
-            let rsColumnConfChart;    // 新增图表的和Item相同rsc_name的字段
-            tableIdColumnsSearchList.map((rsColumn, index) => {
-                if (rsColumn.id == key) {
-                    rsColumnConfSearch = rsColumn;
-                }
-            });
+            let rsColumnConfSearch = idColumns[key];   //搜索框每个item所在的字段表
             // 判断新增图表的所有字段里有没有和搜索框item的rsc_name是一样的
             tableIdColumnsChartList.map((rsColumn, index) => {
                 if (rsColumn.rsc_name == rsColumnConfSearch.rsc_name) {
-                    rsColumnConfChart = rsColumn;
+                    // 拼接relationFields json
+                    const idColumnValue = [];
+                    idColumnValue.push(rsColumn.id);
+                    relationFields[mChartId.toString()] = idColumnValue;
+                } else {
+                    //  根据 dataSetRelation 添加关联关系
+                    if (this.getColumnYNrelationed(rsColumnConfSearch.id, rsColumn.id, dataSetRelation)) {
+                        // 如果 两个字段有关联关系 拼接relationFields json
+                        const idColumnValue = [];
+                        idColumnValue.push(rsColumn.id);
+                        relationFields[mChartId.toString()] = idColumnValue;
+                    }
                 }
             });
-            // 拼接relationFields json
-            const idColumnValue = [];
-            idColumnValue.push(rsColumnConfChart.id);
-            relationFields[mChartId.toString()] = idColumnValue;
         }
 
         // md_children转回string  然后刷新state
@@ -57,29 +50,38 @@ class ReportBoardUtils {
     }
 
     // 新增一个搜索框item的时候，为搜索框的每个item自动关联上和图表的关联
-    addSearchChartRelationAutoSearch = (relation, key, mDashboard, idColumns) => {
+    addSearchChartRelationAutoSearch = (relation, key, mDashboard, tableIdColumns, idColumns, mCharts) => {
         // 拼接relationItem存入
         const relationItem = { label: "", relationFields: {}, props: [] }
         // 获取item的idColumn
         const itemIdColumn = idColumns[key];
         const children = JSON.parse(mDashboard.style_config).children;
+        const dataSetRelation = JSON.parse(mDashboard.style_config).dataSetRelation;
         //  循环children
         children.map((item, index) => {
             // 如果是搜索框自己就return
             if (item.name == key) {
                 return;
             }
-            const relation = item.relation;
-            for (let relaKey in relation) {
-                const relaIdColumn = idColumns[relaKey];//每个children里的字段
-                //判断每个children里的字段是否和item的字段名称相同
-                if (itemIdColumn.rsc_name == relaIdColumn.rsc_name) {
+            // 找到 mChart
+            const mChart = this.getMChartByChartId(mCharts, item.chartId);
+            const itemDataSet = tableIdColumns[JSON.parse(mChart.config).dataSetName]; //children里的数据集
+            itemDataSet.map((rsColumn, index) => {
+                if (rsColumn.rsc_name == itemIdColumn.rsc_name) {
                     // 拼接relationFields json
                     const idColumnValue = [];
-                    idColumnValue.push(relaIdColumn.id);
-                    relationItem.relationFields[relaKey.toString()] = idColumnValue;
+                    idColumnValue.push(rsColumn.id);
+                    relationItem.relationFields[mChart.id.toString()] = idColumnValue;
+                } else {
+                    //  根据 dataSetRelation 添加关联关系
+                    if (this.getColumnYNrelationed(itemIdColumn.id, rsColumn.id, dataSetRelation)) {
+                        // 如果 两个字段有关联关系 拼接relationFields json
+                        const idColumnValue = [];
+                        idColumnValue.push(rsColumn.id);
+                        relationItem.relationFields[mChart.id.toString()] = idColumnValue;
+                    }
                 }
-            }
+            });
         });
         relation[key] = relationItem;
     }
@@ -109,6 +111,27 @@ class ReportBoardUtils {
         });
         const dataSetName = JSON.parse(mChart.config).dataSetName;
         return tableIdColumns[dataSetName];
+    }
+
+    // 判断两个字段在数据集字段关联中是否有关联  "dataSetRelation":[[],[]],
+    getColumnYNrelationed = (column1, column2, dataSetRelation) => {
+        for (let i = 0; i < dataSetRelation.length; i++) {
+            const arr = dataSetRelation[i];
+            let flag1 = false;   // 第一个字段是否在关联子项的flag
+            let flag2 = false;   // 第二个字段是否在关联子项的flag
+            for (let j = 0; j < arr.length; j++) {
+                if (arr[j] == column1) {
+                    flag1 = true;
+                } else if (arr[j] == column2) {
+                    flag2 = true;
+                }
+            }
+            //  如果一个循环里两个字段都有,那就返回true,说明两个字段是关联的
+            if (flag1 && flag2) {
+                return true;
+            }
+        }
+        return false;
     }
 
 
