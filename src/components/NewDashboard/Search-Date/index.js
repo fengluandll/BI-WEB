@@ -18,23 +18,31 @@ export default class Index extends PureComponent {
     const arr = this.calcDate(val, rule);
     // 参数先放到state里
     this.state = {
-      startTime: arr[0],
-      endTime: arr[1],
-      value :'2018-1',
-      value1 :'2018-1',
+      startTime: this.startTiemAndEndTime(arr[0]),
+      endTime: this.startTiemAndEndTime(arr[1]),
+      value : this.startTiemAndEndTime(arr[0]),
+      value1 : this.startTiemAndEndTime(arr[1]),
     };
+  }
+  // 返回季度方法
+  startTiemAndEndTime(date){
+    let time = null;
+    if(date){
+      if([3, 4, 5].includes(moment(date).month())){
+        time = moment(date).year() + '-2';
+      }else if([6 , 7, 8].includes(moment(date).month())){
+        time = moment(date).year() + '-3';
+      }else if([9, 10, 11].includes(moment(date).month())){
+        time = moment(date).year() + '-4';
+      }else if([0, 1, 2].includes(moment(date).month())){
+        time = moment(date).year() + '-1';
+      }
+    }
+    return time;
   }
   // 时间季度
   onChange1 = (index,date,dateString) => {
-    if(moment(dateString).month() == '3'){
-        this.setState({ value: moment(dateString).year() + '-2' });
-    }else if(moment(dateString).month() == '6'){
-        this.setState({ value: moment(dateString).year() + '-3' });
-    }else if(moment(dateString).month() == '9'){
-        this.setState({ value: moment(dateString).year() + '-4' });
-    }else{
-        this.setState({ value: moment(dateString).year() + '-1' });
-    }
+    this.setState({ value: this.startTiemAndEndTime(dateString)});
     const { val, rule } = this.props;
     //  时间的参数为 数组
     val[index] = date ? date.toDate() : null;
@@ -52,15 +60,7 @@ export default class Index extends PureComponent {
     }
 
     onChange2 = (index,date,dateString) => {
-      if(moment(dateString).month() == '3'){
-          this.setState({ value1: moment(dateString).year() + '-2' });
-      }else if(moment(dateString).month() == '6'){
-          this.setState({ value1: moment(dateString).year() + '-3' });
-      }else if(moment(dateString).month() == '9'){
-          this.setState({ value1: moment(dateString).year() + '-4' });
-      }else{
-          this.setState({ value1: moment(dateString).year() + '-1' });
-      }
+      this.setState({ value1: this.startTiemAndEndTime(dateString)});
       const { val, rule } = this.props;
       //  时间的参数为 数组
       val[index] = date ? date.toDate() : null;
@@ -183,10 +183,10 @@ export default class Index extends PureComponent {
         return (<div className={styles['query-field']}>
           <MonthPicker
             {...opts}
-            value={this.state.startTime}
+            // value={this.state.startTime}
             value={moment(this.state.value, monthFormat)}
             onChange={this.changeDate.bind(this, 0)}
-            defaultValue={moment('2018-01', monthFormat)}
+            // defaultValue={moment('2018-01', monthFormat)}
             format={monthFormat}
             dropdownClassName="jidu"
             // onChange时间季度
@@ -239,11 +239,11 @@ export default class Index extends PureComponent {
           {rule.rangeType === '0' && 
           <MonthPicker 
             {...opts} 
-            value={this.state.endTime} 
+            // value={this.state.endTime} 
             onChange={this.changeDate.bind(this, 1)} 
             allowClear={false}
             value={moment(this.state.value1, monthFormat)}
-            defaultValue={moment('2018-1', monthFormat)}
+            // defaultValue={moment('2018-1', monthFormat)}
             format={monthFormat}
             dropdownClassName="jidu"
             onChange={this.onChange2.bind(this,1)}
