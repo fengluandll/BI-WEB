@@ -18,8 +18,8 @@ export default class Index extends PureComponent {
     const arr = this.calcDate(val, rule);
     // 参数先放到state里
     this.state = {
-      startTime: this.startTiemAndEndTime(arr[0]),
-      endTime: this.startTiemAndEndTime(arr[1]),
+      startTime: arr[0],
+      endTime: arr[1],
       value : this.startTiemAndEndTime(arr[0]),
       value1 : this.startTiemAndEndTime(arr[1]),
     };
