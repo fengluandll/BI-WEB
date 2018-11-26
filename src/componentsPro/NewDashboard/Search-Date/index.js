@@ -23,7 +23,7 @@ export default class Index extends PureComponent {
       value :'2018-1',
     };
   }
-  // 时间季度1
+  // 时间季度
   onChange = (date, dateString) => {
     if(moment(dateString).month() == '3'){
         this.setState({ value: moment(dateString).year() + '-2' });
