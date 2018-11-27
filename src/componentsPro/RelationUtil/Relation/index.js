@@ -94,6 +94,8 @@ export default class Index extends PureComponent {
 
     // 修改 搜索的 item 增加或减少  参数 id  图表的 uuuid
     changeSearchItem = (checkValue) => {
+        // 先清除右侧的样式
+        ReactDom.render(<div></div>, this.node);
         // 选中图表的uuuid
         const id = this.props.name;
         this.props.changeSearchItem(id, checkValue);
