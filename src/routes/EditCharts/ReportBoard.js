@@ -137,7 +137,7 @@ class ReportBoard extends PureComponent {
             mCharts={this.props.model.mCharts}
             tableIdColumns={this.props.model.tableIdColumns}
             changeSearchItem={this.changeSearchItem}
-            changeCheckRelation={this.changeCheckRelation}
+            changeSearchRelation={this.changeSearchRelation}
             name={name}
           />, rightRelation);
       }
@@ -588,7 +588,7 @@ class ReportBoard extends PureComponent {
     });
   }
 
-  // 点击保存
+  // 编辑界面点击保存
   saveDashBoard = () => {
     //  获取变量 
     this.props.dispatch({
@@ -644,7 +644,61 @@ class ReportBoard extends PureComponent {
           }
           if (!flag) {
             // 增加一个Item，自动配置Item和已有的图表的关联关系
-            reportBoardUtils.addSearchChartRelationAutoSearch(relation, value_keys[i], this.state.mDashboard, this.props.model.tableIdColumns, this.props.model.idColumns, this.props.model.mCharts);
+            reportBoardUtils.addSearchChartRelationAutoSearch(relation, id, value_keys[i], this.state.mDashboard, this.props.model.tableIdColumns, this.props.model.idColumns, this.props.model.mCharts);
+          }
+        }
+      }
+    });
+    // md_children转回string  然后刷新state
+    style_config_obj.children = md_children;
+    mDashboard.style_config = JSON.stringify(style_config_obj);
+    this.setState({
+      mDashboard: mDashboard,
+    });
+    // 重新调用展示右侧
+    const rightProps = this.state.rightProps;
+    this.disPlayRight(rightProps[0], rightProps[1]);
+    // 更新ui(主要是搜索框的子项个数)
+    this.refreshDashboard();
+  }
+
+  // 右侧搜索框配置关联关系  参数 searchItem 搜索框item的子项id
+  changeSearchRelation = (id, searchItem, checkValue) => {
+    const { mDashboard } = this.state;
+    const { style_config } = mDashboard;
+    const style_config_obj = JSON.parse(style_config);
+    const md_children = style_config_obj.children;
+    md_children.map((item, index) => {
+      if (item.name == id) {
+        // relation 关联关系
+        const relation = item.relation;
+        const relation_item = relation[searchItem]; // relation子项
+        const relationFields = relation_item.relationFields;
+        const keys = Object.keys(relationFields); // relationFields里的keys(其他图表的id)
+        const value_keys = checkValue;// 点击后传过来的keys(图表Id) 因为怕重复所有后面加了searchItem
+        // 本地有就删除
+        for (let i = 0; i < keys.length; i++) {
+          let flag = false;
+          for (let j = 0; j < value_keys.length; j++) {
+            if (keys[i] == value_keys[j]) {
+              flag = true;
+            }
+          }
+          if (!flag) {
+            delete relationFields[keys[i]];
+          }
+        }
+        // 本地没有就增加一个
+        for (let i = 0; i < value_keys.length; i++) {
+          let flag = false;
+          for (let j = 0; j < keys.length; j++) {
+            if (value_keys[i] == keys[j]) {
+              flag = true;
+            }
+          }
+          if (!flag) {
+            // params relationFields,value_keys[i]:图表id,searchItem:搜索子项id,tableIdColumns数据集,idColumns
+            reportBoardUtils.addSearchChartRelation(relationFields, value_keys[i], searchItem, this.state.mDashboard, this.props.model.tableIdColumns, this.props.model.idColumns, this.props.model.mCharts);
           }
         }
       }

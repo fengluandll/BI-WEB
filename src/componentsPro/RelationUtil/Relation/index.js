@@ -1,11 +1,12 @@
 import React, { PureComponent } from 'react';
 import ReactDom from 'react-dom';
-import { Collapse, Tag, Card, Icon, Button, message, Input, Dropdown, Menu, Checkbox } from 'antd';
+import { Collapse, Checkbox } from 'antd';
 import styles from './index.less';
+import ReportBoardUtils from '../../../utils/reportBoardUtils';
 
 const Panel = Collapse.Panel;
 const CheckboxGroup = Checkbox.Group;
-
+const reportBoardUtils = new ReportBoardUtils();
 
 //  仪表板 右侧的  图表列表 组件
 export default class Index extends PureComponent {
@@ -98,11 +99,11 @@ export default class Index extends PureComponent {
         this.props.changeSearchItem(id, checkValue);
     };
 
-    // 修改图表之间的关联关系  参数 name 图表的uuuid
-    changeCheckRelation = (name, chart_item_name, checkValue) => {
+    // 修改搜索框和图表的关联  参数 searchItem 搜索框item的子项id
+    changeSearchRelation = (searchItem, checkValue) => {
         // 选中图表的uuuid
         const id = this.props.name;
-        this.props.changeCheckRelation(id, name, chart_item_name, checkValue);
+        this.props.changeSearchRelation(id, searchItem, checkValue);
     }
 
 
@@ -139,6 +140,46 @@ export default class Index extends PureComponent {
                                     />
                                 </div>
                             </div>
+
+                            {/* 选择字段后显示关联列表 */}
+
+                            {this.state.searchItemIds ? this.state.searchItemIds.map((searchItem, searchIndex) => {
+                                // 搜索框子项 的 rs_column_config 表数据
+                                const searchColumn = this.props.searchItems[searchItem];
+                                const { relation, mCharts, searchItems, chart_children, search_item } = this.props;
+                                // 配置下拉图表的数据
+                                const arr = [];
+                                chart_children.map((item, index) => {
+                                    const chartId = item.chartId;
+                                    const mChart = reportBoardUtils.getMChartByChartId(mCharts, chartId);
+                                    arr.push({
+                                        "label": mChart.name,
+                                        "value": chartId, // tips  为了不和其他的冲突所以后缀加了 searchItem `${chartId}:${searchItem}`
+                                    });
+                                });
+                                const relationFields = relation[searchItem].relationFields;//当前搜索Item的关联
+                                const keys = Object.keys(relationFields);// 默认选中值
+                                const value = [];
+                                keys.map((item, index) => {
+                                    value.push(item);// `${item}:${searchItem}`
+                                });
+                                return (
+                                    <div className={styles['field-relation']} key={searchIndex}>
+                                        <div className={styles['field-name']} title={`源字段-${searchColumn.rsc_display}`}>
+                                            <i className="anticon anticon-down" onClick={this.toogle.bind(this, searchIndex)} style={{ cursor: 'pointer' }} />{`源字段-${searchColumn.rsc_display}`}
+                                        </div>
+                                        <div className={styles['field-content']} ref={this.handleFieldContent.bind(this, searchIndex)}>
+                                            <CheckboxGroup
+                                                options={arr}
+                                                defaultValue={value}
+                                                style={{ display: 'block' }}
+                                                onChange={this.changeSearchRelation.bind(this, searchItem)}
+                                            />
+                                        </div>
+                                    </div>
+                                )
+                            }) : ""}
+
                         </div>
                     </Panel>
                 </Collapse>

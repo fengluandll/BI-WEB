@@ -50,7 +50,8 @@ class ReportBoardUtils {
     }
 
     // 新增一个搜索框item的时候，为搜索框的每个item自动关联上和图表的关联
-    addSearchChartRelationAutoSearch = (relation, key, mDashboard, tableIdColumns, idColumns, mCharts) => {
+    // param id:搜索框图表id,key:搜索框字段id
+    addSearchChartRelationAutoSearch = (relation, id, key, mDashboard, tableIdColumns, idColumns, mCharts) => {
         // 拼接relationItem存入
         const relationItem = { label: "", relationFields: {}, props: [] }
         // 获取item的idColumn
@@ -60,7 +61,7 @@ class ReportBoardUtils {
         //  循环children
         children.map((item, index) => {
             // 如果是搜索框自己就return
-            if (item.name == key) {
+            if (item.name == id) {
                 return;
             }
             // 找到 mChart
@@ -86,7 +87,28 @@ class ReportBoardUtils {
         relation[key] = relationItem;
     }
 
-
+    // 手动增加搜索框和图表的关联
+    addSearchChartRelation = (relationFields, id, searchItem, mDashboard, tableIdColumns, idColumns, mCharts) => {
+        // 思路 根据searchItem找到rs_column_conf 再找到图表(id)的数据集 判断有没有名称相同或者有关联关系的字段 就赋值给item[]
+        // "relationFields":{"70":[11343]}
+        const item = [];
+        const relation_key_column = idColumns[searchItem];// relation的key字段表
+        const mChart = this.getMChartByChartId(mCharts, id);
+        const tableDataSet = tableIdColumns[JSON.parse(mChart.config).dataSetName];//图表的数据集
+        const dataSetRelation = JSON.parse(mDashboard.style_config).dataSetRelation;
+        tableDataSet.map((rsColumn, index) => {
+            if (rsColumn.rsc_name == relation_key_column.rsc_name) {
+                // 如果有相同名称的字段就赋值item
+                item.push(rsColumn.id);
+            } else {
+                // 根据 dataSetRelation 添加关联关系
+                if (this.getColumnYNrelationed(relation_key_column.id, rsColumn.id, dataSetRelation)) {
+                    item.push(rsColumn.id);
+                }
+            }
+        });
+        relationFields[id] = item;
+    }
 
     /***************************通用方法***************************************/
 

@@ -87,7 +87,7 @@ export default class Index extends PureComponent {
             const config = JSON.parse(mChart.config);
             // 取 数据集的 名称
             const dataSetName = config.dataSetName;
-            // 判断两个数据集是否有相同的字段名
+            // 判断两个数据集是否有相同的字段名  todo  读取m_dashboard中配置的字段关联
             const tableIdColumns = this.props.tableIdColumns;
             const plotColumns = tableIdColumns[plotDataSetName];
             const columns = tableIdColumns[dataSetName];
