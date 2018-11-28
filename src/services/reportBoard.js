@@ -1,9 +1,17 @@
 import { stringify } from 'qs';
 import request from '../utils/request';
 
-// 初始化时获取全部数据
+// 初始化时获取结构数据
 export async function fetch(params) {
   return request(`http://localhost:8088/api/reportBoard/fetch?${stringify(params)}`, {
+    method: 'POST',
+    mode: 'cors',
+  });
+}
+
+// 初始化时获取全部数据
+export async function fetchData(params) {
+  return request(`http://localhost:8088/api/reportBoard/fetchData?${stringify(params)}`, {
     method: 'POST',
     mode: 'cors',
   });

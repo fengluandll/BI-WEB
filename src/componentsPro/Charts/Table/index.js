@@ -47,9 +47,9 @@ class Table extends PureComponent {
       array.map((item, index) => {
         if (item.key == mChart.id.toString()) {
           if (this.props.editModel == "true") {
-            height = item.h * 40 - 10;
+            height = item.h * 40 - 20;
           } else {
-            height = item.h * 40;
+            height = item.h * 40 - 20;
           }
         }
       });

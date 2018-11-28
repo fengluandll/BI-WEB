@@ -907,7 +907,7 @@ class ReportBoard extends PureComponent {
       layout: data,
       placeholder: true,
       style: {
-        border: "1px solid #E8E8E8",
+        //border: "1px solid #E8E8E8",
       }
     }
     // dragact样式
@@ -942,7 +942,8 @@ class ReportBoard extends PureComponent {
                     ...provided.props.style,
                     //监听每一个组件的拖拽状态
                     ...getblockStyle(provided.isDragging),
-                    zIndex: zIndex
+                    zIndex: zIndex,
+                    backgroundColor: this.state.editModel == "true" ? '#fff' : '#fff'
                   }}
                 >
                   {this.state.editModel == "true" ?
@@ -951,7 +952,8 @@ class ReportBoard extends PureComponent {
                       {...provided.resizeHandle}
                       style={{
                         position: 'absolute',
-                        width: 10, height: 10, right: 2, bottom: 2, cursor: 'se-resize',
+                        width: 10, height: 10, right: 12, bottom: 10, cursor: 'se-resize',
+                        zIndex : 1,
                         borderRight: '2px solid rgba(15,15,15,0.2)',
                         borderBottom: '2px solid rgba(15,15,15,0.2)'
                       }}

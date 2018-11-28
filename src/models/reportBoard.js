@@ -24,6 +24,13 @@ export default {
       yield put({ type: 'save', payload: { mDashboard, mCharts, dataList } });
       callback();
     },
+    *fetchData({ payload: { boardId, callback } }, { call, put }) {
+      const response = yield call(fetchData, { boardId });
+      const data = response.data;
+      const { dataList } = data;
+      yield put({ type: 'save', payload: { dataList } });
+      callback();
+    },
     *fetchEdit({ payload: { boardId, callback } }, { call, put }) {
       const response = yield call(fetchEdit, { boardId });
       const data = response.data;
