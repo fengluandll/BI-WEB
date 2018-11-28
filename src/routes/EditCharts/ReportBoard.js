@@ -1,19 +1,17 @@
 import { connect } from 'dva';
 import React, { PureComponent } from 'react';
 import ReactDom from 'react-dom';
-import { Spin, Icon, Button, Switch, message } from 'antd';
+import { Switch, message } from 'antd';
 import DashBoardUtils from '../../utils/dashboardUtils';
 import ReportBoardUtils from '../../utils/reportBoardUtils';
 import { ChartList } from '../../componentsPro/ChartList';
-import { Relation, RelationCharts, RelationChartsAuto } from '../../componentsPro/RelationUtil';
+import { Relation, RelationChartsAuto } from '../../componentsPro/RelationUtil';
 import { Bar, Pie, Line, Table } from '../../componentsPro/Charts';
 import { Search } from '../../componentsPro/NewDashboard';
 import { Dragact } from 'dragact';
 import styles from './index.less';
 
 
-
-const dashboardUtils = new DashBoardUtils();
 const reportBoardUtils = new ReportBoardUtils();
 
 class ReportBoard extends PureComponent {
@@ -43,20 +41,33 @@ class ReportBoard extends PureComponent {
   }
   componentWillMount() {
     const boardId = this.boardId;
+
+    // 请求回结构数据后再请求图表数据 数据先请求可以快0.5秒
+    this.props.dispatch({
+      type: 'reportBoard/fetchData',
+      payload: {
+        boardId,
+        callback: () => {
+          const { dataList } = this.props.model;
+          this.setState({
+            dataList,
+          });
+        }
+      }
+    });
+
+    // 初始化先请求结构数据
     this.props.dispatch({
       type: 'reportBoard/fetch',
       payload: {
         boardId,
         callback: () => {
-          const { mDashboard, mCharts, dataList } = this.props.model;
+          const { mDashboard, mCharts } = this.props.model;
           const { id, name, style_config } = mDashboard;
-          const md_children = JSON.parse(style_config).children;
           const dragactStyle = JSON.parse(style_config).dragactStyle;
           this.setState({
             mDashboard,
             mCharts,
-            md_children,
-            dataList,
             dragactStyle,
           });
         }
@@ -225,15 +236,16 @@ class ReportBoard extends PureComponent {
       children.map((item, index) => {
         const { type, name, chartId, styleConfig, relation } = item;
         // 从 datalist 中 根据 chartId 取出  数据
-        const dateSetList = this.state.dataList[name];
+        let dateSetList = this.state.dataList[name];
+
+        // 数据 如果前期进来数据为空那就遭些假数据用用  add by wangliu 20181128
+        if (null == dateSetList) {
+          dateSetList = reportBoardUtils.getFakeData(type);
+        }
+
         const mCharts = this.props.model.mCharts;
-        let mChart;
-        // 根据 chartId 寻找 m_charts 
-        mCharts.map((obj) => {
-          if (obj.id == chartId) {
-            mChart = obj;
-          }
-        });
+        // 根据 chartId 寻找 m_charts
+        const mChart = reportBoardUtils.getMChartByChartId(mCharts, chartId);
         if (type == "line") {
           this.renderLine(name, dateSetList, mChart, styleConfig);
         } else if (type == "bar") {
@@ -953,7 +965,7 @@ class ReportBoard extends PureComponent {
                       style={{
                         position: 'absolute',
                         width: 10, height: 10, right: 12, bottom: 10, cursor: 'se-resize',
-                        zIndex : 1,
+                        zIndex: 1,
                         borderRight: '2px solid rgba(15,15,15,0.2)',
                         borderBottom: '2px solid rgba(15,15,15,0.2)'
                       }}

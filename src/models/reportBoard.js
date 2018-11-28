@@ -1,4 +1,4 @@
-import { fetch, fetchEdit, saveDashBoard, searchItemData, searchDate } from '../services/reportBoard';
+import { fetch, fetchData, fetchEdit, saveDashBoard, searchItemData, searchDate } from '../services/reportBoard';
 
 export default {
   // model 的命名空间，同时也是他在全局 state 上的属性，只能用字符串，不支持通过 . 的方式创建多层命名空间。
@@ -20,8 +20,8 @@ export default {
     *fetch({ payload: { boardId, callback } }, { call, put }) {
       const response = yield call(fetch, { boardId });
       const data = response.data;
-      const { mDashboard, mCharts, dataList } = data;
-      yield put({ type: 'save', payload: { mDashboard, mCharts, dataList } });
+      const { mDashboard, mCharts } = data;
+      yield put({ type: 'save', payload: { mDashboard, mCharts } });
       callback();
     },
     *fetchData({ payload: { boardId, callback } }, { call, put }) {
