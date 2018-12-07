@@ -988,7 +988,7 @@ class ReportBoard extends PureComponent {
             {(item, provided) => {
               let zIndex = 1;
               if (item.type && item.type == "search") {
-                zIndex = 10;
+                zIndex = 5;
               }
               return (
                 <div
