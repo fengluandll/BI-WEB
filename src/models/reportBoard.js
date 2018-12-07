@@ -1,4 +1,4 @@
-import { fetch, fetchData, fetchEdit, saveDashBoard, searchItemData, searchDate } from '../services/reportBoard';
+import { fetch, fetchData, fetchEdit, saveDashBoard, searchItemData, searchDate, pullSynchronizationTab } from '../services/reportBoard';
 
 export default {
   // model 的命名空间，同时也是他在全局 state 上的属性，只能用字符串，不支持通过 . 的方式创建多层命名空间。
@@ -21,11 +21,11 @@ export default {
       const response = yield call(fetch, { boardId });
       const data = response.data;
       const { mDashboard, mCharts } = data;
-      yield put({ type: 'save', payload: { mDashboard, mCharts } });
+      yield put({ type: 'save', payload: { mDashboard_old: mDashboard, mCharts } });
       callback();
     },
-    *fetchData({ payload: { boardId, callback } }, { call, put }) {
-      const response = yield call(fetchData, { boardId });
+    *fetchData({ payload: { boardId, mDashboard, callback } }, { call, put }) {
+      const response = yield call(fetchData, { boardId, mDashboard });
       const data = response.data;
       const { dataList } = data;
       yield put({ type: 'save', payload: { dataList } });
@@ -34,8 +34,8 @@ export default {
     *fetchEdit({ payload: { boardId, callback } }, { call, put }) {
       const response = yield call(fetchEdit, { boardId });
       const data = response.data;
-      const { mDashboard, searchItems, idColumns, tableIdColumns } = data;
-      yield put({ type: 'save', payload: { mDashboard, searchItems, idColumns, tableIdColumns } });
+      const { searchItems, idColumns, tableIdColumns } = data;
+      yield put({ type: 'save', payload: { searchItems, idColumns, tableIdColumns } });
       callback();
     },
     *searchData({ payload: { mdashboard, boardId, value, callback } }, { call, put }) {
@@ -45,8 +45,8 @@ export default {
       yield put({ type: 'save', payload: { dataList } });
       callback();
     },
-    *saveDashBoard({ payload: { mDashboard_porp, callback } }, { call, put }) {
-      const response = yield call(saveDashBoard, { mDashboard_porp });
+    *saveDashBoard({ payload: { mDashboard_porp, dashboard_type, callback } }, { call, put }) {
+      const response = yield call(saveDashBoard, { mDashboard_porp, dashboard_type });
       const data = response.data;
       const { success } = data;
       callback(success);
@@ -57,6 +57,12 @@ export default {
       const { list } = data;
       yield put({ type: 'save', payload: { searchEnum: list } });
       callback();
+    },
+    *pullSynchronizationTab({ payload: { id, callback } }, { call, put }) {
+      const response = yield call(pullSynchronizationTab, { id });
+      const data = response.data;
+      const { success } = data;
+      callback(success);
     },
   },
   // 以 key/value 格式定义 reducer。用于处理同步操作，唯一可以修改 state 的地方。由 action 触发。

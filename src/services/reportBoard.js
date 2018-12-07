@@ -11,9 +11,12 @@ export async function fetch(params) {
 
 // 初始化时获取全部数据
 export async function fetchData(params) {
-  return request(`http://localhost:8088/api/reportBoard/fetchData?${stringify(params)}`, {
+  const formData = new FormData();
+  formData.append('params', JSON.stringify(params));
+  return request('http://localhost:8088/api/reportBoard/fetchData', {
     method: 'POST',
     mode: 'cors',
+    body: formData,
   });
 }
 
@@ -40,7 +43,7 @@ export async function searchDate(params) {
 // 保存dashboard
 export async function saveDashBoard(params) {
   const formData = new FormData();
-  formData.append('mDashboard', JSON.stringify(params));
+  formData.append('params', JSON.stringify(params));
   return request('http://localhost:8088/api/reportBoard/saveBoard', {
     method: 'POST',
     mode: 'cors',
@@ -51,6 +54,14 @@ export async function saveDashBoard(params) {
 // 查询 搜索栏 子项 str 的下拉列表数据
 export async function searchItemData(params) {
   return request(`http://localhost:8088/api/reportBoard/searchItemData?${stringify(params)}`, {
+    method: 'POST',
+    mode: 'cors',
+  });
+}
+
+// 拉取每个tab同步
+export async function pullSynchronizationTab(params) {
+  return request(`http://localhost:8088/api/reportBoard/pullSynchronizationTab?${stringify(params)}`, {
     method: 'POST',
     mode: 'cors',
   });

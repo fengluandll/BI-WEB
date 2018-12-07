@@ -171,6 +171,17 @@ class ReportBoardUtils {
         });
         return mChart;
     }
+    //  找到搜索框的chart
+    getMChartOfSearch = (mCharts) => {
+        let mChart;
+        mCharts.map((item, index) => {
+            const config = JSON.parse(item.config);
+            if (config.type == "11") {
+                mChart = item;
+            }
+        });
+        return mChart;
+    }
 
     // 根据 chartId 获取 dataSet (dataSetName在mChart中)
     getDataSetByChartId = (mCharts, tableIdColumns, chartId) => {
@@ -205,6 +216,78 @@ class ReportBoardUtils {
         return false;
     }
 
+    // m_dashboard取第一次进来时候,order最小值的
+    getStyle_configByOrder = (mDashboard_old, tagName, tagNames) => {
+        let style_config = JSON.parse(mDashboard_old.style_config);
+        let children = style_config.children;//m_dashboard中的children
+        const child = []; // children中的每个报表
+        const keys = [];
+        for (let key in children) {
+            child.push(children[key]);
+            keys.push(key);
+        }
+        // 设置当前 tagName
+        tagName[keys[0]] = child[0].name;
+        // 设置所有 tagName
+        for (let i = 0; i < keys.length; i++) {
+            tagNames[keys[i]] = child[i].name;
+        }
+        // 拼接 mDashboard
+        let mDashboard = {};
+        mDashboard.id = mDashboard_old.id;
+        mDashboard.name = mDashboard_old.name;
+        mDashboard.style_config = JSON.stringify(child[0]);
+        mDashboard.template_id = mDashboard_old.template_id;
+        mDashboard.group_id = mDashboard_old.group_id;
+        mDashboard.privilege = mDashboard_old.privilege;
+        return mDashboard;
+    }
+
+    // mDashboard_old加上当前的mDashboard
+    getMDashboard_oldByMDashboard = (mDashboard_old, mDashboard, tagName) => {
+        let style_config = mDashboard_old.style_config;
+        const style_config_obj = JSON.parse(style_config);
+        // mDashboard
+        const style_config_m = mDashboard.style_config;
+        const style_config_obj_m = JSON.parse(style_config_m);
+        let name = "";// 子报表的uuuid
+        for (let key in tagName) {
+            name = key;
+        }
+        // 合并
+        style_config_obj.children[name] = style_config_obj_m;
+        mDashboard_old.style_config = JSON.stringify(style_config_obj);
+    }
+
+    // 从mDashboard_old根据key获取mDashboard
+    getMDashboardByKey = (mDashboard_old, mDashboard, activeKey) => {
+        const style_config = mDashboard_old.style_config;
+        const style_config_obj = JSON.parse(style_config);
+        const children = style_config_obj.children;
+        const value = children[activeKey];// 取好的值
+        const style_config_m = mDashboard.style_config;
+        let style_config_obj_m = JSON.parse(style_config_m);
+        style_config_obj_m = value;
+        // 合并到mDashboard
+        mDashboard.style_config = JSON.stringify(style_config_obj_m);
+    }
+
+    /***************************通用方法***************************************/
+
+    // 获取uuuid
+    getUUUID = () => {
+        var s = [];
+        var hexDigits = "0123456789abcdef";
+        for (var i = 0; i < 36; i++) {
+            s[i] = hexDigits.substr(Math.floor(Math.random() * 0x10), 1);
+        }
+        s[14] = "4"; // bits 12-15 of the time_hi_and_version field to 0010
+        s[19] = hexDigits.substr((s[19] & 0x3) | 0x8, 1); // bits 6-7 of the clock_seq_hi_and_reserved to 01
+        s[8] = s[13] = s[18] = s[23] = "-";
+
+        var uuid = s.join("");
+        return uuid;
+    }
 
 }
 

@@ -1,23 +1,25 @@
 import { connect } from 'dva';
 import React, { PureComponent } from 'react';
 import ReactDom from 'react-dom';
-import { Switch, message } from 'antd';
-import DashBoardUtils from '../../utils/dashboardUtils';
+import { Switch, message, Tabs, Button } from 'antd';
 import ReportBoardUtils from '../../utils/reportBoardUtils';
+import TabUtils from '../../utils/tabUtils';
 import { ChartList } from '../../componentsPro/ChartList';
-import { Relation, RelationChartsAuto } from '../../componentsPro/RelationUtil';
+import { Relation, RelationChartsAuto, TabName } from '../../componentsPro/RelationUtil';
 import { Bar, Pie, Line, Table } from '../../componentsPro/Charts';
 import { Search } from '../../componentsPro/NewDashboard';
 import { Dragact } from 'dragact';
 import styles from './index.less';
 
-
+const TabPane = Tabs.TabPane;
 const reportBoardUtils = new ReportBoardUtils();
+const tabUtils = new TabUtils();
 
 class ReportBoard extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
+      mDashboard_old: {}, // m_dashboard原始数据 addby wangliu 20181130,这个为m_dashboard表原始数据,mDashboard是取得其中一个children
       mDashboard: {}, //m_dashboard表
       mCharts: {},    // m_charts表   控件表  主要放控件的配置
       dataList: {},    // 查询结束后所有的 图表的 数据  key：chartID  value:data  (数据是根据 mDashboard 中的 search 中的  props  参数  进行的有参数查询)
@@ -25,8 +27,11 @@ class ReportBoard extends PureComponent {
       idColumns: {},   // 每个图表所拥有的 维度 度量图例 和 搜索框的 子组件 所在 字段 的对应的表数据
       tableIdColumns: {},  // 每个图表 所拥有的 数据集 的 所有字段 的表数据
 
-      activeName: "",    //  每个 图表 的 uuid名称
+      activeName: "",    //  每个报表的uuid名称,也就是m_dashboard中style_config的name
       fatherActiveName: "",    //  父组件 名称  root  或者 tab_panel 名称
+
+      tagName: {}, // 当前tag的名称 {key,value}存储
+      tagNames: [], // 所有tag的名称
 
       refreshUI: 0,   //   state 用来刷新ui 
       rightProps: [],      //   右侧选择框的参数
@@ -37,24 +42,9 @@ class ReportBoard extends PureComponent {
     };
     // get boardId
     this.boardId = this.props.match.params.boardId;
-    this.mDashboardVia = {};   // mDashboard 从后端取过来后 放到这个变量里 对布局的任何修改都保存到这个变量，提交保存的时候提交这个变量。
   }
   componentWillMount() {
     const boardId = this.boardId;
-
-    // 请求回结构数据后再请求图表数据 数据先请求可以快0.5秒
-    this.props.dispatch({
-      type: 'reportBoard/fetchData',
-      payload: {
-        boardId,
-        callback: () => {
-          const { dataList } = this.props.model;
-          this.setState({
-            dataList,
-          });
-        }
-      }
-    });
 
     // 初始化先请求结构数据
     this.props.dispatch({
@@ -62,13 +52,19 @@ class ReportBoard extends PureComponent {
       payload: {
         boardId,
         callback: () => {
-          const { mDashboard, mCharts } = this.props.model;
+          const { mDashboard_old, mCharts } = this.props.model;
+          const { tagName, tagNames } = this.state;
+          const mDashboard = reportBoardUtils.getStyle_configByOrder(mDashboard_old, tagName, tagNames);
           const { id, name, style_config } = mDashboard;
           const dragactStyle = JSON.parse(style_config).dragactStyle;
+          this.fetchData(boardId, mDashboard);//查询数据
           this.setState({
+            mDashboard_old,
             mDashboard,
             mCharts,
             dragactStyle,
+            tagName,
+            tagNames,
           });
         }
       }
@@ -91,13 +87,29 @@ class ReportBoard extends PureComponent {
   componentWillUnmount() {
 
   }
+  fetchData = (boardId, mDashboard) => {
+    // 请求回结构数据后再请求图表数据 数据先请求可以快0.5秒
+    this.props.dispatch({
+      type: 'reportBoard/fetchData',
+      payload: {
+        boardId,
+        mDashboard,
+        callback: () => {
+          const { dataList } = this.props.model;
+          this.setState({
+            dataList,
+          });
+        }
+      }
+    });
+  }
 
   /****************************************展示左侧仪表盘*****************************************************************/
 
   // 展示 左侧控件列表
   disPlayLeft() {
     const left = this.left;
-    const { mDashboard, mCharts } = this.props.model;
+    const { mDashboard, mCharts } = this.state;
     ReactDom.render(<ChartList
       mCharts={mCharts}
       mDashboard={mDashboard}
@@ -201,6 +213,24 @@ class ReportBoard extends PureComponent {
     });
   }
 
+  // 展示右侧tab的名称
+  displayTabName = () => {
+    //  如果不是编辑模式 右侧不相应监听事件
+    if (this.state.editModel == "false") {
+      return;
+    }
+    // 先清除右侧的样式
+    ReactDom.render(<div></div>, this.rightRelation);
+    const rightRelation = this.rightRelation;
+    const { tagName } = this.state;
+    ReactDom.render(
+      <TabName
+        tagName={tagName}
+        changeTabName={this.changeTabName}
+      />, rightRelation);
+
+  }
+
 
   /****************************************展示中间仪表盘*****************************************************************/
   //  展示中间的图表
@@ -215,19 +245,46 @@ class ReportBoard extends PureComponent {
   }
 
   //  展示 tab
-  renderTab(tabChildren) {
-    if (tabChildren && tabChildren.size > 0) {
-      tabChildren.map((item, index) => {
-        const { children, name, title } = item;
-        return (
-          <TabPane tab={item.title} key={item.name} closable={false}>
-            <div>
-              {this.renderContent(children)}
-            </div>
-          </TabPane>
-        );
-      });
+  renderTab = () => {
+    // 如果后端请求没过来 就不执行 省的报错
+    if (null == this.state.mDashboard.style_config) {
+      return;
     }
+    // 拼接panes
+    const panes = [];
+    const { tagName, tagNames, editModel } = this.state;
+    for (let key in tagNames) {
+      const obj = {};
+      obj.title = tagNames[key];
+      obj.key = key;
+      panes.push(obj);
+    }
+    let activeKey; // 当前tab
+    for (let key in tagName) {
+      activeKey = key;
+    }
+    // tab的样式类型
+    let type = "card";
+    if (editModel == "true") {
+      type = "editable-card";
+    }
+    return (
+      <div
+        onClick={(ev) => {
+          this.displayTabName();
+        }}
+      >
+        <Tabs
+          onChange={this.tabOnChange}
+          activeKey={activeKey}
+          type={type}
+          onEdit={this.onTabsEdit}
+          size="small"
+        >
+          {panes.map(pane => <TabPane tab={pane.title} key={pane.key} closable={pane.closable}></TabPane>)}
+        </Tabs>
+      </div>
+    );
   }
 
   //  循环自己 然后展示出所有的 图表
@@ -257,9 +314,6 @@ class ReportBoard extends PureComponent {
         } else if (type == "search") {
           //return this.renderSearch(relation, mChart, styleConfig);
           this.renderSearch(item, mChart);
-        } else if (type == "tab") {
-          const tabChildren = item.children;  //  取得 tab 下的  tab_tabel
-          return this.renderTab(tabChildren);
         }
       });
     }
@@ -523,9 +577,8 @@ class ReportBoard extends PureComponent {
         payload: {
           boardId,
           callback: () => {
-            const { mDashboard, searchItems, idColumns, tableIdColumns } = this.props.model;
+            const { searchItems, idColumns, tableIdColumns } = this.props.model;
             this.setState({
-              mDashboard,
               searchItems,
               idColumns,
               tableIdColumns,
@@ -544,6 +597,56 @@ class ReportBoard extends PureComponent {
 
   }
   /****************************************点击事件*****************************************************************/
+
+  // 点击tab进行初始化数据查询
+  tabOnChange = (activeKey) => {
+    //请求后端数据dataList
+    const { mDashboard_old, mDashboard, tagName, tagNames } = this.state;
+    reportBoardUtils.getMDashboardByKey(mDashboard_old, mDashboard, activeKey);//生成新的mDashboard
+    const boardId = this.boardId;
+    this.fetchData(boardId, mDashboard);//使用初始化查询方法
+    //更新state中的tab
+    tabUtils.changeActiveKey(activeKey, tagName, tagNames);
+    this.setState({
+      tagName: tagName,
+      mDashboard: mDashboard,
+    });
+  }
+
+  // tab编辑事件
+  onTabsEdit = (targetKey, action) => {
+    const { mDashboard_old, mDashboard, tagName, tagNames, mCharts } = this.state;
+    if (action == "remove") {
+      // 删除
+      tabUtils.removeTab(targetKey, mDashboard_old, mDashboard, tagName, tagNames);
+    } else if (action == "add") {
+      // 新建
+      tabUtils.addTab(mCharts, mDashboard_old, mDashboard, tagName, tagNames);
+    }
+    this.setState({
+      mDashboard_old: mDashboard_old,
+      mDashboard: mDashboard,
+      tagName: tagName,
+      tagNames: tagNames,
+    });
+    const boardId = this.boardId;
+    this.fetchData(boardId, mDashboard);//使用初始化查询方法
+  }
+
+  //修改tab的名称
+  changeTabName = (key, value) => {
+    const { mDashboard_old, mDashboard, tagName, tagNames } = this.state;
+    //修改
+    tabUtils.changeTabName(mDashboard_old, mDashboard, tagName, tagNames, key, value);
+    this.setState({
+      mDashboard_old: mDashboard_old,
+      mDashboard: mDashboard,
+      tagName: tagName,
+      tagNames: tagNames,
+    });
+    // 刷新页面
+    this.refreshDashboard();
+  }
 
   //  点击搜索查询
   searchData = (value) => {
@@ -603,16 +706,47 @@ class ReportBoard extends PureComponent {
   // 编辑界面点击保存
   saveDashBoard = () => {
     //  获取变量 
+    const dashboard_type = "customer"; // 变量判断是客户还是自己
+    // 把单独的报表mDashboard拼成主题提交
+    const { mDashboard_old, mDashboard, tagName } = this.state;
+    // closedby wangliu 20181206 reason:页面已经有了保存按钮了,
+    //reportBoardUtils.getMDashboard_oldByMDashboard(mDashboard_old, mDashboard, tagName);
     this.props.dispatch({
       type: 'reportBoard/saveDashBoard',
       payload: {
-        mDashboard_porp: this.state.mDashboard,
+        mDashboard_porp: mDashboard_old,
+        dashboard_type,
         callback: (success) => {
           // alert 保存成功
           if (success) {
             message.success('保存成功');
           } else {
             message.error('保存失败');
+          }
+        }
+      }
+    });
+  }
+
+  // 保存当前mDashboard到mDashboard_old中
+  saveCurrent = () => {
+    // 把单独的报表mDashboard拼成主题
+    const { mDashboard_old, mDashboard, tagName } = this.state;
+    reportBoardUtils.getMDashboard_oldByMDashboard(mDashboard_old, mDashboard, tagName);
+  }
+  // 用户拉取同步,从t_dashboard中刷到m_dashboard中
+  pullSynchronization = () => {
+    const { mDashboard_old, tagName } = this.state;
+    const id = mDashboard_old.id;
+    this.props.dispatch({
+      type: 'reportBoard/pullSynchronizationTab',
+      payload: {
+        id,
+        callback: (success) => {
+          if (success) {
+            message.success('同步成功,请刷新浏览器');
+          } else {
+            message.error('同步失败');
           }
         }
       }
@@ -886,6 +1020,8 @@ class ReportBoard extends PureComponent {
     this.setState({
       dragactStyle: array,
     });
+    // 刷新页面
+    this.refreshDashboard();
   }
   // 初始化的时候获取数据库里的 dragact数据
   getDragactData = () => {
@@ -934,6 +1070,7 @@ class ReportBoard extends PureComponent {
         <div style={{ width: 30, height: 300, border: '2px solid #ccc', borderRadius: 6, borderLeft: '0', opacity: 0, position: 'absolute', top: '50%', marginTop: -150, left: 0, zIndex: 1000, fontSize: 26, textAlign: 'center', lineHeight: 11, cursor: 'pointer' }} onClick={this.changeEditeMode} onMouseEnter={this.onMouseEnterShow.bind(this)} onMouseLeave={this.onMouseLeaveHide.bind(this)}>||</div>
         {this.state.editModel == "true" ? <div className={styles['boardLeft']} ref={(instance) => { this.left = instance; }} > </div> : <div></div>}
         <div id="contents" className={`boardcenter_report`} ref={(instance) => { this.center = instance; }} style={{ paddingLeft: (this.state.editModel == "true") ? "200px" : "0", paddingRight: (this.state.editModel == "true") ? "200px" : "0", }}>
+          {this.renderTab()}
           <Dragact
             {...dragactInit}
             ref={node => node ? this.dragactNode = node : null}
@@ -978,6 +1115,8 @@ class ReportBoard extends PureComponent {
         </div>
         {this.state.editModel == "true" ? <div className={styles['boardRight']} ref={(instance) => { this.right = instance; }} >
           <div><Switch checkedChildren="开" unCheckedChildren="关" checked={this.state.dragMoveChecked} onChange={this.changeDragMoveChecked} /></div>
+          <div>{/*报表保存*/}<Button type="primary" onClick={this.saveCurrent}>保存当前</Button></div>
+          <div>{/*报表保存*/}<Button type="primary" onClick={this.pullSynchronization}>拉取同步</Button></div>
           <div ref={(instance) => { this.rightRelation = instance; }}></div>
         </div> : <div></div>}
       </div>
