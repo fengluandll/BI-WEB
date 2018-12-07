@@ -20,8 +20,8 @@ export default {
     *fetch({ payload: { boardId, callback } }, { call, put }) {
       const response = yield call(fetch, { boardId });
       const data = response.data;
-      const { mDashboard, mCharts } = data;
-      yield put({ type: 'save', payload: { mDashboard_old: mDashboard, mCharts } });
+      const { mDashboard, mCharts, user_type } = data;
+      yield put({ type: 'save', payload: { mDashboard_old: mDashboard, mCharts, user_type } });
       callback();
     },
     *fetchData({ payload: { boardId, mDashboard, callback } }, { call, put }) {

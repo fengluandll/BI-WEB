@@ -39,6 +39,8 @@ class ReportBoard extends PureComponent {
       editModel: "false",   // 是否编辑模式
       dragMoveChecked: false,  // 是否静止dragact移动，移动就点击无法显示右侧的编辑界面。
       dragactStyle: [],  // dragactStyle 数据
+
+      user_type: "", // 权限控制,用户类型
     };
     // get boardId
     this.boardId = this.props.match.params.boardId;
@@ -52,7 +54,7 @@ class ReportBoard extends PureComponent {
       payload: {
         boardId,
         callback: () => {
-          const { mDashboard_old, mCharts } = this.props.model;
+          const { mDashboard_old, mCharts, user_type } = this.props.model;
           const { tagName, tagNames } = this.state;
           const mDashboard = reportBoardUtils.getStyle_configByOrder(mDashboard_old, tagName, tagNames);
           const { id, name, style_config } = mDashboard;
@@ -65,6 +67,7 @@ class ReportBoard extends PureComponent {
             dragactStyle,
             tagName,
             tagNames,
+            user_type,
           });
         }
       }
@@ -615,17 +618,15 @@ class ReportBoard extends PureComponent {
 
   // 编辑界面点击保存
   saveDashBoard = () => {
-    //  获取变量 
-    const dashboard_type = "customer"; // 变量判断是客户还是自己
     // 把单独的报表mDashboard拼成主题提交
-    const { mDashboard_old, mDashboard, tagName } = this.state;
+    const { mDashboard_old, mDashboard, tagName, user_type } = this.state;
     // closedby wangliu 20181206 reason:页面已经有了保存按钮了,
     //reportBoardUtils.getMDashboard_oldByMDashboard(mDashboard_old, mDashboard, tagName);
     this.props.dispatch({
       type: 'reportBoard/saveDashBoard',
       payload: {
         mDashboard_porp: mDashboard_old,
-        dashboard_type,
+        dashboard_type: user_type,
         callback: (success) => {
           // alert 保存成功
           if (success) {
