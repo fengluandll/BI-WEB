@@ -950,7 +950,7 @@ class ReportBoard extends PureComponent {
   /****************************************************************************************************************/
   render() {
     const data = this.getDragactData();
-    //  设置dragact静止拖动  展示的时候和右侧开关为开的时候静止拖动1
+    //  设置dragact静止拖动  展示的时候和右侧开关为开的时候静止拖动
     if (this.state.editModel == "false" || this.state.dragMoveChecked == true) {
       data.map((item, index) => {
         item.static = "true";
