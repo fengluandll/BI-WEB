@@ -1,5 +1,101 @@
 class ReportBoardUtils {
 
+    // 添加新的图表chart
+    addNewChart = (mChart, mDashboard) => {
+        // 获取接受的数据
+        const chartId = mChart.id;
+        const config = JSON.parse(mChart.config);
+        const { type } = config;
+        let tmpType;
+
+        // 制造json数据 
+        // relation:{ id:{ label:,relationFields:[],props:[], }},
+        const relation = {};
+        let dragactW;  // dragact宽度
+        let dragactH;  // dragact高度
+        if (type == "0") {
+            // 折线图
+            tmpType = "line";
+            const dimension = config.dimension;
+            const measure = config.measure;
+            const color = config.color;
+            const item = {};
+            item.relationFields = {};
+            relation[dimension] = item;
+            relation[measure] = item;
+            relation[color] = item;
+            dragactW = 20;
+            dragactH = 10;
+        } else if (type == "1") {
+            // 柱状图
+            tmpType = "bar";
+            const dimension = config.dimension;
+            const measure = config.measure;
+            const color = config.color;
+            const item = {};
+            item.relationFields = {};
+            relation[dimension] = item;
+            relation[measure] = item;
+            relation[color] = item;
+            dragactW = 20;
+            dragactH = 10;
+        } else if (type == "2") {
+            // 饼图
+            tmpType = "pie";
+            const dimension = config.dimension;
+            const measure = config.measure;
+            const item = {};
+            item.relationFields = {};
+            relation[dimension] = item;
+            relation[measure] = item;
+            dragactW = 20;
+            dragactH = 10;
+        } else if (type == "3") {
+            //  交叉表
+            tmpType = "table";
+            const column = config.column;
+            relation.column = column;
+            dragactW = 20;
+            dragactH = 10;
+        } else if (type == "11") {
+            //  搜索框
+            tmpType = "search";
+            const searchJson = config.searchJson;
+            const keys = Object.keys(searchJson);
+            for (let i; i < keys.length; i++) {
+                const search = searchJson[keys[i]];
+                const label = search.name;
+                const item = {};
+                item.label = label;
+                item.relationFields = {};
+                item.props = [];
+                relation[keys[i]] = item;
+            }
+
+        }
+        const item = {
+            name: chartId.toString(),
+            type: tmpType,
+            chartId: chartId.toString(),
+            fatherName: "root",
+            styleConfig: "",
+            relation: relation,
+        };
+        //  放入children
+        const { style_config } = mDashboard;
+        const style_config_obj = JSON.parse(style_config);
+        const md_children = style_config_obj.children;
+        md_children.push(item);
+        // 增加dragact样式
+        const dragactStyle = style_config_obj.dragactStyle;
+        const dragact_item = { GridX: 0, GridY: 25, w: dragactW, h: dragactH, key: chartId.toString() };
+        dragactStyle.push(dragact_item);
+        // md_children转回string  然后刷新state
+        style_config_obj.children = md_children;
+        style_config_obj.dragactStyle = dragactStyle;
+        mDashboard.style_config = JSON.stringify(style_config_obj);
+    }
+
     // 新增一个图表时，为搜索框的每个item自动关联上和图表的关联
     // 参数  mChart 新加的图表的mChart
     addSearchChartRelationAuto = (mDashboard, tableIdColumns, idColumns, mChart, mCharts) => {
