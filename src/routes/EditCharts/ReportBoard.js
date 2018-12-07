@@ -906,7 +906,7 @@ class ReportBoard extends PureComponent {
   /****************************************************dragact*****************************************************/
   // 拖拽后本地缓存
   handleOnDragEnd = () => {
-    //新的布局,通过getLayout方法获取拖拽节点
+    //新的布局,通过getLayout方法获取拖拽节点1
     const newLayout = this.dragactNode.getLayout();
     const array = [];
     newLayout.map((item, index) => {
