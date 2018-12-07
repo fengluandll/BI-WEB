@@ -977,7 +977,7 @@ class ReportBoard extends PureComponent {
 
     return (
       <div>
-        <div style={{ width: 30, height: 300, border: '2px solid #ccc', borderRadius: 6, borderLeft: '0', opacity: 0, position: 'absolute', top: '50%', marginTop: -150, left: 0, zIndex: 1000, fontSize: 26, textAlign: 'center', lineHeight: 11, cursor: 'pointer' }} onClick={this.changeEditeMode} onMouseEnter={this.onMouseEnterShow.bind(this)} onMouseLeave={this.onMouseLeaveHide.bind(this)}>||</div>
+        <div style={{ width: 30, height: 300, border: '2px solid #ccc', borderRadius: 6, borderLeft: '0', opacity: 0, position: 'fixed', top: '50%', marginTop: -150, left: 0, zIndex: 1000, fontSize: 26, textAlign: 'center', lineHeight: 11, cursor: 'pointer' }} onClick={this.changeEditeMode} onMouseEnter={this.onMouseEnterShow.bind(this)} onMouseLeave={this.onMouseLeaveHide.bind(this)}>||</div>
         {this.state.editModel == "true" ? <div className={styles['boardLeft']} ref={(instance) => { this.left = instance; }} > </div> : <div></div>}
         <div id="contents" className={`boardcenter_report`} ref={(instance) => { this.center = instance; }} style={{ paddingLeft: (this.state.editModel == "true") ? "200px" : "0", paddingRight: (this.state.editModel == "true") ? "200px" : "0", }}>
           {this.renderTab()}

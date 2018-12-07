@@ -147,8 +147,29 @@ class Bar extends PureComponent {
     }
 
     chart.legend(false); // 隐藏全部图例
-    chart.tooltip(false); // 关闭 tooltip
-
+    chart.tooltip(true,{
+      showTitle: false,
+      containerTpl: '<div class="g2-tooltip">'
+      + '<p class="g2-tooltip-title"></p>'
+      + '<table class="g2-tooltip-list"></table>'
+      + '</div>', // tooltip的外层模板
+    itemTpl: '<tr class="g2-tooltip-list-item"><td style="color:{color}">{name}</td><td>{value}</td></tr>', // 支持的字段 index,color,name,value
+    offset: 50,
+    'g2-tooltip': {
+      position: 'absolute',
+      visibility: 'hidden',
+      border : '1px solid #efefef',
+      backgroundColor: 'white',
+      color: '#000',
+      opacity: '0',
+      padding: '5px 15px',
+      'transition': 'top 200ms,left 200ms'
+    }, // 设置 tooltip 的 css 样式
+    'g2-tooltip-list': {
+      margin: '10px'
+    }
+    }); // 关闭 tooltip
+    
     chart.axis(`${x}`, {
       label: {
         offset: 4, // 设置坐标轴文本 label 距离坐标轴线的距离
@@ -169,7 +190,28 @@ class Bar extends PureComponent {
     // plot点击事件
     chart.on('plotclick', (ev) => {
       const dimension = config.dimension;
-      this.props.onPlotClick(ev.data, dimension, mChart.id);
+      // 用于点图的构建
+      let point = {
+        // 画布坐标，返回一个数组
+        x: ev.x,
+        y: ev.y
+      }
+      // getTooltipItems,根据传入的坐标点point，获取当前坐标点上的tooltip信息
+      // 获取当前坐标点上tooltip信息,
+      var data = chart.getTooltipItems(point)[0].point;
+      const _origin = data._origin;
+      // 获取图表中标记对象,返回一个数组
+      let shapes = chart.getAllGeoms()[0].getShapes();   
+      chart.getAllGeoms()[0].setShapeSelected(shape);   
+      for (let i = 0, len = shapes.length; i < len; i++) {
+        var shape = shapes[i];
+        var origin = shape.get('origin')['_origin'];
+        if( _origin.维度 == origin.维度 && _origin.度量 == origin.度量){
+          chart.getAllGeoms()[0].setShapeSelected(shape);
+          }
+      }  
+      
+      this.props.onPlotClick(data, dimension, mChart.id);
     });
 
     // chart 变量赋值
