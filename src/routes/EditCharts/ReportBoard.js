@@ -567,13 +567,18 @@ class ReportBoard extends PureComponent {
     this.props.dispatch({
       type: 'reportBoard/searchData',
       payload: {
-        mdashboard: this.state.mDashboard,
+        mDashboard: this.state.mDashboard,
         boardId: this.boardId,
         value: value,
         callback: () => {
-          //  display  中间的图表
+          //  display  中间的图表,将后端查出的数据分别按字段赋给dataList
+          const dataList = this.state.dataList;
+          const list = this.props.model.dataList;
+          for (let key in list) {
+            dataList[key] = list[key];
+          }
           this.setState({
-            dataList: this.props.model.dataList,
+            dataList: dataList,
           });
         },
       },

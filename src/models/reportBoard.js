@@ -38,8 +38,8 @@ export default {
       yield put({ type: 'save', payload: { searchItems, idColumns, tableIdColumns } });
       callback();
     },
-    *searchData({ payload: { mdashboard, boardId, value, callback } }, { call, put }) {
-      const response = yield call(searchDate, { mdashboard, boardId, value });
+    *searchData({ payload: { mDashboard, boardId, value, callback } }, { call, put }) {
+      const response = yield call(searchDate, { mDashboard, boardId, value });
       const data = response.data;
       const { dataList } = data;
       yield put({ type: 'save', payload: { dataList } });
