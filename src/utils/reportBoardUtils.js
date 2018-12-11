@@ -368,7 +368,28 @@ class ReportBoardUtils {
         mDashboard.style_config = JSON.stringify(style_config_obj_m);
     }
 
-    /***************************通用方法***************************************/
+    /***************************plot***************************************/
+    // 将点击plot后要查询的图表id放入plotChartId
+    changePlotChartId = (plotChartId, chartId, mDashboard) => {
+        plotChartId = [];
+        const style_config = JSON.parse(mDashboard.style_config);
+        const children = style_config.children;
+        children.map((item, index) => {
+            if (item.chartId == chartId) {
+                const relation = item.relation;
+                for (let key in relation) { // relation中的字段
+                    const relationFields = relation[key].relationFields; // 字段关联的图表id
+                    for (let k in relationFields) {
+                        plotChartId.push(k);
+                    }
+                }
+            }
+        });
+        return plotChartId;
+    }
+
+
+    /************************************************************************/
 
     // 获取uuuid
     getUUUID = () => {

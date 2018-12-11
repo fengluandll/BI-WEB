@@ -44,6 +44,8 @@ class ReportBoard extends PureComponent {
     };
     // get boardId
     this.boardId = this.props.match.params.boardId;
+    // 被plot点击查询的图表id
+    this.plotChartId = [];
   }
   componentWillMount() {
     const boardId = this.boardId;
@@ -238,13 +240,17 @@ class ReportBoard extends PureComponent {
   /****************************************展示中间仪表盘*****************************************************************/
   //  展示中间的图表
   disPlayCharts() {
-    this.renderChilren();
-  }
-
-  // 展示每一个图表
-  renderChilren() {
     const children = JSON.parse(this.state.mDashboard.style_config).children;
-    this.renderContent(children);
+    if (children && children.length > 0) {
+      children.map((item, index) => {
+        const { type, name, chartId, styleConfig, relation } = item;
+        if (this.plotChartId.length == 0) {
+          this.renderContent(item);
+        } else if (this.plotChartId.indexOf(chartId) > -1) {
+          this.renderContent(item);
+        }
+      });
+    }
   }
 
   //  展示 tab
@@ -291,34 +297,28 @@ class ReportBoard extends PureComponent {
   }
 
   //  循环自己 然后展示出所有的 图表
-  renderContent(children) {
-    if (children && children.length > 0) {
-      children.map((item, index) => {
-        const { type, name, chartId, styleConfig, relation } = item;
-        // 从 datalist 中 根据 chartId 取出  数据
-        let dateSetList = this.state.dataList[name];
-
-        // 数据 如果前期进来数据为空那就遭些假数据用用  add by wangliu 20181128
-        if (null == dateSetList) {
-          dateSetList = reportBoardUtils.getFakeData(type);
-        }
-
-        const mCharts = this.props.model.mCharts;
-        // 根据 chartId 寻找 m_charts
-        const mChart = reportBoardUtils.getMChartByChartId(mCharts, chartId);
-        if (type == "line") {
-          this.renderLine(name, dateSetList, mChart, styleConfig);
-        } else if (type == "bar") {
-          this.renderBar(name, dateSetList, mChart, styleConfig);
-        } else if (type == "pie") {
-          this.renderPie(name, dateSetList, mChart, styleConfig);
-        } else if (type == "table") {
-          this.renderTable(name, dateSetList, mChart, styleConfig);
-        } else if (type == "search") {
-          //return this.renderSearch(relation, mChart, styleConfig);
-          this.renderSearch(item, mChart);
-        }
-      });
+  renderContent(item) {
+    const { type, name, chartId, styleConfig, relation } = item;
+    // 从 datalist 中 根据 chartId 取出  数据
+    let dateSetList = this.state.dataList[name];
+    // 数据 如果前期进来数据为空那就遭些假数据用用  add by wangliu 20181128
+    if (null == dateSetList) {
+      dateSetList = reportBoardUtils.getFakeData(type);
+    }
+    const mCharts = this.props.model.mCharts;
+    // 根据 chartId 寻找 m_charts
+    const mChart = reportBoardUtils.getMChartByChartId(mCharts, chartId);
+    if (type == "line") {
+      this.renderLine(name, dateSetList, mChart, styleConfig);
+    } else if (type == "bar") {
+      this.renderBar(name, dateSetList, mChart, styleConfig);
+    } else if (type == "pie") {
+      this.renderPie(name, dateSetList, mChart, styleConfig);
+    } else if (type == "table") {
+      this.renderTable(name, dateSetList, mChart, styleConfig);
+    } else if (type == "search") {
+      //return this.renderSearch(relation, mChart, styleConfig);
+      this.renderSearch(item, mChart);
     }
   }
   /****************************************图形展示*****************************************************************/
@@ -563,6 +563,10 @@ class ReportBoard extends PureComponent {
 
   //  点击搜索查询
   searchData = (value) => {
+    // 搜索框查询清除plot
+    if (null == value) {
+      this.plotChartId = [];
+    }
     // 请求数据
     this.props.dispatch({
       type: 'reportBoard/searchData',
@@ -571,14 +575,8 @@ class ReportBoard extends PureComponent {
         boardId: this.boardId,
         value: value,
         callback: () => {
-          //  display  中间的图表,将后端查出的数据分别按字段赋给dataList
-          const dataList = this.state.dataList;
-          const list = this.props.model.dataList;
-          for (let key in list) {
-            dataList[key] = list[key];
-          }
           this.setState({
-            dataList: dataList,
+            dataList: this.props.model.dataList,
           });
         },
       },
@@ -906,6 +904,9 @@ class ReportBoard extends PureComponent {
     value.push(dimension);  // 图表维度的字段 id
     value.push(dimensionValue);  // 值
     value.push(chartId);  // 图表的名称(mchart表id)
+    const plotChartId = this.plotChartId;
+    // 修改plot查询图表id
+    this.plotChartId = reportBoardUtils.changePlotChartId(plotChartId, chartId, this.state.mDashboard);
     this.searchData(value);
   }
 
