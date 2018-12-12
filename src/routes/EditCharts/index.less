@@ -12,18 +12,20 @@
     background-color: #fff;
     height: 100%;
     top: 0;
-      div{
-        display: inline-block;
-      }
-      div:nth-child(3){ 
-        width: 20px;
-      }
-      div span{
-        font-size: 12px;
-      }
-      div button{
-        height: 28px;
-      }
+}
+.boardRight div:nth-child(2) button{
+  position: absolute;
+  top: 0;
+  right: 78px;
+} 
+.boardRight div:nth-child(3) button{
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+.boardRight div button{
+  width: 78px;
+  height: 24px;
 }
 .boardcenter{
     position: absolute;
@@ -94,10 +96,9 @@
   :global{
     .bi-container{
       background-color: #fff;
-      margin-bottom: 5px;
       position:relative;
-      border: 1px solid #ccc;
-      margin: 10px;
+      border: 2px solid #ccc;
+      margin: 5px;
   
       .del-icon{
         position:absolute;
@@ -105,6 +106,12 @@
         right:3px;
         cursor:pointer;
       }
+      canvas{
+        cursor: pointer;
+      }
+    }
+    .DraggerLayout.plant-layout div {
+      margin-bottom: 4px;
     }
      /** 动态布局 使用的 add by wangliu 0829*/
     .bi-container-css{
