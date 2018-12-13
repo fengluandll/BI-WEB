@@ -89,12 +89,13 @@ export default class Index extends PureComponent {
                   name: searchEnum[i],
                 });
               }
+              const { chart_item } = this.props;// 取出搜索框控件的chartId
               child = (
                 <SearchCharacter
                   rela={rela} relaJson={relaJson}
                   onChange={this.onChange.bind(this, key)}
                   load={() => {
-                    onLoad(key);
+                    onLoad(key, chart_item.chartId);
                   }}
                   data={data}
                 />);

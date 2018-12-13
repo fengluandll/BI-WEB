@@ -1,7 +1,7 @@
 import { connect } from 'dva';
 import React, { PureComponent } from 'react';
 import ReactDom from 'react-dom';
-import { Switch, message, Tabs, Button } from 'antd';
+import { Switch, message, Tabs, Button, Spin } from 'antd';
 import ReportBoardUtils from '../../utils/reportBoardUtils';
 import TabUtils from '../../utils/tabUtils';
 import { ChartList } from '../../componentsPro/ChartList';
@@ -35,6 +35,7 @@ class ReportBoard extends PureComponent {
 
       refreshUI: 0,   //   state 用来刷新ui 
       rightProps: [],      //   右侧选择框的参数
+      spinning: false,   // 是否显示加载中
 
       editModel: "false",   // 是否编辑模式
       dragMoveChecked: false,  // 是否静止dragact移动，移动就点击无法显示右侧的编辑界面。
@@ -70,6 +71,7 @@ class ReportBoard extends PureComponent {
             tagName,
             tagNames,
             user_type,
+            spinning: true,// 初始化时候设置为加载中
           });
         }
       }
@@ -103,6 +105,7 @@ class ReportBoard extends PureComponent {
           const { dataList } = this.props.model;
           this.setState({
             dataList,
+            spinning: false, // 数据加载完成设置为false
           });
         }
       }
@@ -324,6 +327,7 @@ class ReportBoard extends PureComponent {
   /****************************************图形展示*****************************************************************/
   // 展示 折线图
   renderLine(name, dateSetList, mChart, styleConfig) {
+    const spinning = this.state.spinning;
     ReactDom.render(
       <div className={'bi-container'}
         onClick={(ev) => {
@@ -338,20 +342,22 @@ class ReportBoard extends PureComponent {
           });
         }}
       >
-        <Line
-          dragactStyle={this.state.dragactStyle}
-          editModel={this.state.editModel}
-          mChart={mChart}
-          dateSetList={dateSetList}
-          onPlotClick={this.onPlotClick}
-        />
+        <Spin spinning={spinning}>
+          <Line
+            dragactStyle={this.state.dragactStyle}
+            editModel={this.state.editModel}
+            mChart={mChart}
+            dateSetList={dateSetList}
+            onPlotClick={this.onPlotClick}
+          />
+        </Spin>
       </div>,
       document.getElementById(name));
-
   }
 
   // 展示 柱状图
   renderBar(name, dateSetList, mChart, styleConfig) {
+    const spinning = this.state.spinning;
     ReactDom.render(
       <div className={'bi-container'}
         onClick={(ev) => {
@@ -366,18 +372,21 @@ class ReportBoard extends PureComponent {
           });
         }}
       >
-        <Bar
-          dragactStyle={this.state.dragactStyle}
-          editModel={this.state.editModel}
-          mChart={mChart}
-          dateSetList={dateSetList}
-          onPlotClick={this.onPlotClick}
-        />
+        <Spin spinning={spinning}>
+          <Bar
+            dragactStyle={this.state.dragactStyle}
+            editModel={this.state.editModel}
+            mChart={mChart}
+            dateSetList={dateSetList}
+            onPlotClick={this.onPlotClick}
+          />
+        </Spin>
       </div>,
       document.getElementById(name));
   }
   // 展示 饼图
   renderPie(name, dateSetList, mChart, styleConfig) {
+    const spinning = this.state.spinning;
     ReactDom.render(
       <div className={'bi-container'}
         onClick={(ev) => {
@@ -392,26 +401,31 @@ class ReportBoard extends PureComponent {
           });
         }}
       >
-        <Pie
-          dragactStyle={this.state.dragactStyle}
-          editModel={this.state.editModel}
-          mChart={mChart}
-          dateSetList={dateSetList}
-          onPlotClick={this.onPlotClick}
-        />
+        <Spin spinning={spinning}>
+          <Pie
+            dragactStyle={this.state.dragactStyle}
+            editModel={this.state.editModel}
+            mChart={mChart}
+            dateSetList={dateSetList}
+            onPlotClick={this.onPlotClick}
+          />
+        </Spin>
       </div>,
       document.getElementById(name));
   }
   // 展示 交叉表
   renderTable(name, dateSetList, mChart, styleConfig) {
+    const spinning = this.state.spinning;
     ReactDom.render(
       <div className={'bi-container'}>
-        <Table
-          dragactStyle={this.state.dragactStyle}
-          editModel={this.state.editModel}
-          mChart={mChart}
-          dateSetList={dateSetList}
-        />
+        <Spin spinning={spinning}>
+          <Table
+            dragactStyle={this.state.dragactStyle}
+            editModel={this.state.editModel}
+            mChart={mChart}
+            dateSetList={dateSetList}
+          />
+        </Spin>
       </div>,
       document.getElementById(name));
   }
@@ -567,6 +581,10 @@ class ReportBoard extends PureComponent {
     if (null == value) {
       this.plotChartId = [];
     }
+    // 搜索开始设置加载中
+    this.setState({
+      spinning: true,
+    });
     // 请求数据
     this.props.dispatch({
       type: 'reportBoard/searchData',
@@ -577,6 +595,7 @@ class ReportBoard extends PureComponent {
         callback: () => {
           this.setState({
             dataList: this.props.model.dataList,
+            spinning: false, // 数据加载完成取消加载中
           });
         },
       },
@@ -602,9 +621,10 @@ class ReportBoard extends PureComponent {
   }
 
   //  点击搜索框,str的时候查询下拉框的数据
-  searchItemData = (id) => {
+  searchItemData = (id, chartId) => {
     // 思路 rs_column_conf 表中的  id  取得 rsc_name 便可查询  参数 配上 所有的搜索框参数
-
+    this.plotChartId = []; // 先清空
+    this.plotChartId.push(chartId); // 搜索框str下拉框查询数据,将chartId放入
     // 请求枚举数据
     this.props.dispatch({
       type: 'reportBoard/searchItemData',
@@ -910,7 +930,7 @@ class ReportBoard extends PureComponent {
     if (this.plotChartId.length > 0) {
       this.searchData(value);
     }
-    // 点击plot加一个用于加载的时候判断plotChartId长度为0
+    // 点击plot加一个用于加载的时候判断,plotChartId长度为0是点击搜索框
     this.plotChartId.push("007");
   }
 
