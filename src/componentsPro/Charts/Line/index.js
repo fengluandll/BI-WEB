@@ -18,13 +18,17 @@ class Line extends PureComponent {
   handleRef = (n) => {
     this.node = n;
   };
+  renderEmpty = () => {
+    return (<div className={styles.empty}><span>数据返回为空</span></div>);
+  };
 
   renderChart() {
     const mChart = this.props.mChart;
     const config = JSON.parse(mChart.config);
     const dateSetList = this.props.dateSetList;
 
-    if (null == mChart || dateSetList == null) {
+    if (null == mChart || dateSetList == null || dateSetList.length == 0) {
+      ReactDom.render(this.renderEmpty(), this.node);
       return;
     }
     // clean
@@ -88,7 +92,7 @@ class Line extends PureComponent {
         stroke: '#fff',
         lineWidth: 1,
       });
-    if (dateSetList[0].color) {
+    if (dateSetList[0] && dateSetList[0].color) {
       line.color(color);
       point.color(color);
     }

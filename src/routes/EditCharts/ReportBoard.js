@@ -244,7 +244,7 @@ class ReportBoard extends PureComponent {
     if (children && children.length > 0) {
       children.map((item, index) => {
         const { type, name, chartId, styleConfig, relation } = item;
-        if (this.plotChartId.length == 0) {
+        if (this.plotChartId.length == 0 || this.state.editModel == "true") {
           this.renderContent(item);
         } else if (this.plotChartId.indexOf(chartId) > -1) {
           this.renderContent(item);
@@ -907,7 +907,9 @@ class ReportBoard extends PureComponent {
     const plotChartId = this.plotChartId;
     // 修改plot查询图表id
     this.plotChartId = reportBoardUtils.changePlotChartId(plotChartId, chartId, this.state.mDashboard);
-    this.searchData(value);
+    if (this.plotChartId.length > 0) {
+      this.searchData(value);
+    }
   }
 
   /****************************************************dragact*****************************************************/

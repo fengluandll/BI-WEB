@@ -34,7 +34,7 @@ class Pie extends Component {
     const config = JSON.parse(mChart.config);
     const dateSetList = this.props.dateSetList;
 
-    if (null == mChart || dateSetList == null) {
+    if (null == mChart || dateSetList == null || dateSetList.length == 0) {
       ReactDom.render(this.renderEmpty(), this.node);
       return;
     }

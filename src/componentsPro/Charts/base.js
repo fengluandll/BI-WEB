@@ -69,7 +69,7 @@ class ChartHelper {
     return { dv, x, y, color };
   };
   fill = (dv, data, config) => {
-    if (!data[0].color) {
+    if (data[0] == null || data[0].color == null) {
       // 如果图例为空则无需补全
       return;
     }
@@ -153,8 +153,8 @@ class ChartHelper {
       },
       offsetY: -20,
       containerTpl: '<div class="g2-legend" style="max-height:60px;">' +
-      '<table class="g2-legend-list" style="list-style-type:none;margin:0;padding:0;"></table>' +
-      '</div>',
+        '<table class="g2-legend-list" style="list-style-type:none;margin:0;padding:0;"></table>' +
+        '</div>',
       itemTpl: (value, color, checked, index) => {
         checked = checked ? 'checked' : 'unChecked';
         return `<li class="g2-legend-list-item item-${index} ${checked}" data-value="${value}" data-color="${color}" style="cursor: pointer;font-size: 14px;">
@@ -181,15 +181,15 @@ class ChartHelper {
     return {
       enterable: true,
       containerTpl: '<div class="g2-tooltip" style="max-height:250px;">'
-      + '<div class="g2-tooltip-title" style="margin-bottom: 4px;"></div>'
-      + '<div style="max-height:210px;overflow:auto;">'
-      + '<ul class="g2-tooltip-list"></ul>'
-      + '</div>'
-      + '</div>',
+        + '<div class="g2-tooltip-title" style="margin-bottom: 4px;"></div>'
+        + '<div style="max-height:210px;overflow:auto;">'
+        + '<ul class="g2-tooltip-list"></ul>'
+        + '</div>'
+        + '</div>',
       itemTpl: '<li data-index={index}>'
-      + '<span style="background-color:{color};width:8px;height:8px;border-radius:50%;display:inline-block;margin-right:8px;"></span>'
-      + '{name}: {value}'
-      + '</li>',
+        + '<span style="background-color:{color};width:8px;height:8px;border-radius:50%;display:inline-block;margin-right:8px;"></span>'
+        + '{name}: {value}'
+        + '</li>',
     };
   };
 }
