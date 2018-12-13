@@ -910,6 +910,8 @@ class ReportBoard extends PureComponent {
     if (this.plotChartId.length > 0) {
       this.searchData(value);
     }
+    // 点击plot加一个用于加载的时候判断plotChartId长度为0
+    this.plotChartId.push("007");
   }
 
   /****************************************************dragact*****************************************************/
