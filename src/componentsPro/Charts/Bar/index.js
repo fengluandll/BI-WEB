@@ -148,6 +148,7 @@ class Bar extends PureComponent {
 
     chart.legend(false); // 隐藏全部图例
     chart.tooltip(true, {
+      crosshairs: ['true'],
       showTitle: false,
       containerTpl: '<div class="g2-tooltip">'
         + '<p class="g2-tooltip-title"></p>'
@@ -196,17 +197,26 @@ class Bar extends PureComponent {
         x: ev.x,
         y: ev.y
       }
+      const origin1 = chart.getSnapRecords(point);
+      let _origin = null;
+      let size = chart.getTooltipItems(point)[0].size / 2;
+      let index;
+      for(let i = 0; i < origin1.length; i++){
+          if((ev.x > 0 && ev.x < origin1[i].x - size) || (ev.x > origin1[i].x - size && ev.x < origin1[i].x + size) || (i == origin1.length -1 && ev.x > origin1[i].x - size)) {
+            index = i;
+            break;
+          } 
+      }
+      _origin = origin1[index]._origin;
       // getTooltipItems,根据传入的坐标点point，获取当前坐标点上的tooltip信息
       // 获取当前坐标点上tooltip信息,
-      var data = chart.getTooltipItems(point)[0].point;
-      const _origin = data._origin;
+      const data = origin1[index];
       // 获取图表中标记对象,返回一个数组
       let shapes = chart.getAllGeoms()[0].getShapes();
-      chart.getAllGeoms()[0].setShapeSelected(shape);
       for (let i = 0, len = shapes.length; i < len; i++) {
         var shape = shapes[i];
         var origin = shape.get('origin')['_origin'];
-        if (_origin.维度 == origin.维度 && _origin.度量 == origin.度量) {
+        if (_origin.维度 == origin.维度 && _origin.度量 == origin.度量 && _origin.图例 == origin.图例) {
           chart.getAllGeoms()[0].setShapeSelected(shape);
         }
       }

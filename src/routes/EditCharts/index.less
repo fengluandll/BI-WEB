@@ -1,7 +1,7 @@
 .boardLeft {
     position: absolute;
     width: 200px;
-    background-color:#fff;
+    background-color:#eee;
     height: 100%;
     top: 0;
 }
@@ -9,7 +9,7 @@
     right: 0px;
     position: absolute;
     width: 200px;
-    background-color: #fff;
+    background-color: #eee;
     height: 100%;
     top: 0;
 }
@@ -97,8 +97,11 @@
     .bi-container{
       background-color: #fff;
       position:relative;
-      border: 2px solid #ccc;
+      border: 1px solid #ccc;
       margin: 5px;
+      border-radius: 10px;
+      margin-right: 4px;
+      margin-left: 8px;
   
       .del-icon{
         position:absolute;
@@ -112,6 +115,28 @@
     }
     .DraggerLayout.plant-layout div {
       margin-bottom: 4px;
+    }
+    .ant-tabs-bar{
+      border-bottom: 1px solid #ccc;
+      margin: 0;
+    }
+    .ant-tabs.ant-tabs-card > .ant-tabs-bar .ant-tabs-tab-active{
+      background: #eee;
+      border-right: 1px solid #ccc;
+      border-top: 1px solid #ccc;  
+      border-top-right-radius:0;
+      border-top-left-radius: 0;
+    }
+    .ant-tabs:not(.ant-tabs-vertical) > .ant-tabs-content{
+      width: 100%;
+      height: 4px;
+      background: #eee;
+    }
+    .ant-tabs.ant-tabs-card > .ant-tabs-bar .ant-tabs-tab{
+      margin-right: 0px;
+    }
+    div#bi-content{
+      background: #eee;
     }
      /** 动态布局 使用的 add by wangliu 0829*/
     .bi-container-css{

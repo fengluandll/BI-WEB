@@ -1012,7 +1012,7 @@ class ReportBoard extends PureComponent {
       <div>
         <div style={{ width: 30, height: 300, border: '2px solid #ccc', borderRadius: 6, borderLeft: '0', opacity: 0, position: 'fixed', top: '50%', marginTop: -150, left: 0, zIndex: 1000, fontSize: 26, textAlign: 'center', lineHeight: 11, cursor: 'pointer' }} onClick={this.changeEditeMode} onMouseEnter={this.onMouseEnterShow.bind(this)} onMouseLeave={this.onMouseLeaveHide.bind(this)}>||</div>
         {this.state.editModel == "true" ? <div className={styles['boardLeft']} ref={(instance) => { this.left = instance; }} > </div> : <div></div>}
-        <div id="contents" className={`boardcenter_report`} ref={(instance) => { this.center = instance; }} style={{ paddingLeft: (this.state.editModel == "true") ? "200px" : "0", paddingRight: (this.state.editModel == "true") ? "200px" : "0", }}>
+        <div id="contents" className={`boardcenter_report`} ref={(instance) => { this.center = instance; }} style={{ paddingLeft: (this.state.editModel == "true") ? "200px" : "0", paddingRight: (this.state.editModel == "true") ? "200px" : "0",background:'#eee' }}>
           {this.renderTab()}
           <Dragact
             {...dragactInit}
@@ -1035,7 +1035,7 @@ class ReportBoard extends PureComponent {
                     //监听每一个组件的拖拽状态
                     ...getblockStyle(provided.isDragging),
                     zIndex: zIndex,
-                    backgroundColor: this.state.editModel == "true" ? '#fff' : '#fff'
+                    backgroundColor: this.state.editModel == "true" ? '#eee' : '#eee'
                   }}
                 >
                   {this.state.editModel == "true" ?
@@ -1044,7 +1044,7 @@ class ReportBoard extends PureComponent {
                       {...provided.resizeHandle}
                       style={{
                         position: 'absolute',
-                        width: 10, height: 10, right: 12, bottom: 10, cursor: 'se-resize',
+                        width: 10, height: 10, right: 6, bottom: 4, cursor: 'se-resize',
                         zIndex: 1,
                         borderRight: '2px solid rgba(15,15,15,0.2)',
                         borderBottom: '2px solid rgba(15,15,15,0.2)'
