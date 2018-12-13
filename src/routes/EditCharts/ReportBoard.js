@@ -4,6 +4,7 @@ import ReactDom from 'react-dom';
 import { Switch, message, Tabs, Button, Spin } from 'antd';
 import ReportBoardUtils from '../../utils/reportBoardUtils';
 import TabUtils from '../../utils/tabUtils';
+import CssUtils from '../../utils/cssUtils';
 import { ChartList } from '../../componentsPro/ChartList';
 import { Relation, RelationChartsAuto, TabName } from '../../componentsPro/RelationUtil';
 import { Bar, Pie, Line, Table } from '../../componentsPro/Charts';
@@ -14,6 +15,7 @@ import styles from './index.less';
 const TabPane = Tabs.TabPane;
 const reportBoardUtils = new ReportBoardUtils();
 const tabUtils = new TabUtils();
+const cssUtils = new CssUtils();
 
 class ReportBoard extends PureComponent {
   constructor(props) {
@@ -328,8 +330,9 @@ class ReportBoard extends PureComponent {
   // 展示 折线图
   renderLine(name, dateSetList, mChart, styleConfig) {
     const spinning = this.state.spinning;
+    let cssName = cssUtils.getBIContainer(mChart);
     ReactDom.render(
-      <div className={'bi-container'}
+      <div className={cssName}
         onClick={(ev) => {
           //  显示右侧的图表关联
           this.disPlayRightCharts(mChart.id, name);
@@ -358,8 +361,9 @@ class ReportBoard extends PureComponent {
   // 展示 柱状图
   renderBar(name, dateSetList, mChart, styleConfig) {
     const spinning = this.state.spinning;
+    let cssName = cssUtils.getBIContainer(mChart);
     ReactDom.render(
-      <div className={'bi-container'}
+      <div className={cssName}
         onClick={(ev) => {
           //  显示右侧的图表关联
           this.disPlayRightCharts(mChart.id, name);
@@ -387,8 +391,9 @@ class ReportBoard extends PureComponent {
   // 展示 饼图
   renderPie(name, dateSetList, mChart, styleConfig) {
     const spinning = this.state.spinning;
+    let cssName = cssUtils.getBIContainer(mChart);
     ReactDom.render(
-      <div className={'bi-container'}
+      <div className={cssName}
         onClick={(ev) => {
           //  显示右侧的图表关联
           this.disPlayRightCharts(mChart.id, name);
@@ -416,8 +421,9 @@ class ReportBoard extends PureComponent {
   // 展示 交叉表
   renderTable(name, dateSetList, mChart, styleConfig) {
     const spinning = this.state.spinning;
+    let cssName = cssUtils.getBIContainer(mChart);
     ReactDom.render(
-      <div className={'bi-container'}>
+      <div className={cssName}>
         <Spin spinning={spinning}>
           <Table
             dragactStyle={this.state.dragactStyle}
@@ -433,8 +439,9 @@ class ReportBoard extends PureComponent {
   renderSearch(item, mChart) {
     const { name, chartId, styleConfig, relation } = item;
     const searchEnum = this.props.model.searchEnum;
+    let cssName = cssUtils.getBIContainer(mChart);
     ReactDom.render(
-      <div className={'bi-container'}
+      <div className={cssName}
         style={{ cursor: 'pointer' }}
         onClick={(ev) => {
           if (ev.target.className.indexOf('query-container') >= 0 || ev.target.hasAttribute('data-reactroot')) {
@@ -1012,7 +1019,7 @@ class ReportBoard extends PureComponent {
       <div>
         <div style={{ width: 30, height: 300, border: '2px solid #ccc', borderRadius: 6, borderLeft: '0', opacity: 0, position: 'fixed', top: '50%', marginTop: -150, left: 0, zIndex: 1000, fontSize: 26, textAlign: 'center', lineHeight: 11, cursor: 'pointer' }} onClick={this.changeEditeMode} onMouseEnter={this.onMouseEnterShow.bind(this)} onMouseLeave={this.onMouseLeaveHide.bind(this)}>||</div>
         {this.state.editModel == "true" ? <div className={styles['boardLeft']} ref={(instance) => { this.left = instance; }} > </div> : <div></div>}
-        <div id="contents" className={`boardcenter_report`} ref={(instance) => { this.center = instance; }} style={{ paddingLeft: (this.state.editModel == "true") ? "200px" : "0", paddingRight: (this.state.editModel == "true") ? "200px" : "0",background:'#eee' }}>
+        <div id="contents" className={`boardcenter_report`} ref={(instance) => { this.center = instance; }} style={{ paddingLeft: (this.state.editModel == "true") ? "200px" : "0", paddingRight: (this.state.editModel == "true") ? "200px" : "0", background: '#eee' }}>
           {this.renderTab()}
           <Dragact
             {...dragactInit}
