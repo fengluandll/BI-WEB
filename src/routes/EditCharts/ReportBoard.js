@@ -625,7 +625,7 @@ class ReportBoard extends PureComponent {
   //  点击搜索框,str的时候查询下拉框的数据
   searchItemData = (id, chartId) => {
     // 思路 rs_column_conf 表中的  id  取得 rsc_name 便可查询  参数 配上 所有的搜索框参数
-    this.plotChartId = []; // 先清空
+    //this.plotChartId = []; // 先清空 注释by wangliu 加了 图表数据没刷出来的时候点搜索框item会让图表一直处于加载状态
     this.plotChartId.push(chartId); // 搜索框str下拉框查询数据,将chartId放入
     // 请求枚举数据
     this.props.dispatch({
