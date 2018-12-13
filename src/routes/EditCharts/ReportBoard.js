@@ -530,14 +530,16 @@ class ReportBoard extends PureComponent {
     //请求后端数据dataList
     const { mDashboard_old, mDashboard, tagName, tagNames } = this.state;
     reportBoardUtils.getMDashboardByKey(mDashboard_old, mDashboard, activeKey);//生成新的mDashboard
-    const boardId = this.boardId;
-    this.fetchData(boardId, mDashboard);//使用初始化查询方法
     //更新state中的tab
     tabUtils.changeActiveKey(activeKey, tagName, tagNames);
     this.setState({
       tagName: tagName,
       mDashboard: mDashboard,
+      spinning: true,
     });
+    this.refreshDashboard();//刷新
+    const boardId = this.boardId;
+    this.fetchData(boardId, mDashboard);//使用初始化查询方法
   }
 
   // tab编辑事件
