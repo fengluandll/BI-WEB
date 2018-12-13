@@ -958,6 +958,7 @@ class ReportBoard extends PureComponent {
       let chart = { GridX, GridY, w, h, key };
       if (item.type == "search") {
         chart.type = "search";
+        chart.h = cssUtils.changeSearchDragact(chart);// 搜索框控制要么一行要么两行
       }
       array.push(chart);
     });
