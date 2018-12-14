@@ -149,7 +149,9 @@ class ReportBoardUtils {
     // param id:搜索框图表id,key:搜索框字段id
     addSearchChartRelationAutoSearch = (relation, id, key, mDashboard, tableIdColumns, idColumns, mCharts) => {
         // 拼接relationItem存入
-        const relationItem = { label: "", relationFields: {}, props: [] }
+        const relationItem = { label: "", relationFields: {}, props: [], order: 0 }
+        let order = this.getMaxOrderSearch(relation);
+        relationItem.order = order + 1;// 新增的item的order要比之前大
         // 获取item的idColumn
         const itemIdColumn = idColumns[key];
         const children = JSON.parse(mDashboard.style_config).children;
@@ -374,6 +376,22 @@ class ReportBoardUtils {
         style_config_obj_m = value;
         // 合并到mDashboard
         mDashboard.style_config = JSON.stringify(style_config_obj_m);
+    }
+
+    // 获取搜索框item的排序的最大值order
+    getMaxOrderSearch = (relation) => {
+        let maxId = 0;
+        const keys = []; //放item的key
+        for (let key in relation) {
+            keys.push(key);
+            if (relation[key].order != null && relation[key].order > maxId) {
+                maxId = relation[key].order;
+            }
+        }
+        if (keys.length > maxId) {
+            maxId = keys.length;
+        }
+        return maxId;
     }
 
     /***************************plot***************************************/

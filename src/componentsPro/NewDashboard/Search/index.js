@@ -51,6 +51,16 @@ export default class Index extends PureComponent {
     // 取出 mchart 中的 搜索 searchJson
     const searchJson = mChart_config.searchJson;
     const keys = Object.keys(relation);
+    // js数组排序
+    for (let i = 0; i < keys.length - 1; i++) {
+      for (let j = 0; j < keys.length - i - 1; j++) {
+        if (relation[keys[j]].order > relation[keys[j + 1]].order) {
+          let tmp = keys[j + 1];
+          keys[j + 1] = keys[j];
+          keys[j] = tmp;
+        }
+      }
+    }
     const len = keys.length;
     const arr = [];
     for (let j = 0; j < len; j += 1) {
