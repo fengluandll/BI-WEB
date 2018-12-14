@@ -1070,7 +1070,7 @@ class ReportBoard extends PureComponent {
         {this.state.editModel == "true" ? <div className={styles['boardRight']} ref={(instance) => { this.right = instance; }} >
         <div class="logo" style={{width:'200px',height:'50px',position:'absolute',top:'0',lineHeight:'50px',textAlign:'center',borderLeft:'1px solid #ccc',borderBottom:'1px solid #ccc',background:'#eee',overflow:'hidden'}}><h1>关联</h1></div>
           <div style={{ border:'1px solid #ccc'}}>
-            <div><Switch checkedChildren="关联" unCheckedChildren="拖拽" checked={this.state.dragMoveChecked} onChange={this.changeDragMoveChecked} /></div>
+            <div><Switch checkedChildren="关联" unCheckedChildren="拖拽" style={{marginTop:'50px'}} checked={this.state.dragMoveChecked} onChange={this.changeDragMoveChecked} /></div>
             <div>{/*报表保存*/}<Button type="primary" onClick={this.saveCurrent}>保存当前</Button></div>
             <div>{/*报表保存*/}<Button type="primary" onClick={this.pullSynchronization}>拉取同步</Button></div>
             <div ref={(instance) => { this.rightRelation = instance; }}></div>
