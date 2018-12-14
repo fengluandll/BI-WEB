@@ -1021,7 +1021,7 @@ class ReportBoard extends PureComponent {
 
     return (
       <div>
-        <div style={{ width: 30, height: 300, border: '2px solid #ccc', borderRadius: 6, borderLeft: '0', opacity: 0, position: 'fixed', top: '50%', marginTop: -150, left: 0, zIndex: 1000, fontSize: 26, textAlign: 'center', lineHeight: 11, cursor: 'pointer' }} onClick={this.changeEditeMode} onMouseEnter={this.onMouseEnterShow.bind(this)} onMouseLeave={this.onMouseLeaveHide.bind(this)}>||</div>
+        <div style={{ width: 30, height: 60, border: '2px solid #ccc', borderRadius: 6, borderLeft: '1px solid #ccc', opacity: 0, position: 'fixed', top: '50%', marginTop: -30, left: 0, zIndex: 1000, fontSize: 26, textAlign: 'center', lineHeight: 2, cursor: 'pointer' }} onClick={this.changeEditeMode} onMouseEnter={this.onMouseEnterShow.bind(this)} onMouseLeave={this.onMouseLeaveHide.bind(this)}>||</div>
         {this.state.editModel == "true" ? <div className={styles['boardLeft']} ref={(instance) => { this.left = instance; }} > </div> : <div></div>}
         <div id="contents" className={`boardcenter_report`} ref={(instance) => { this.center = instance; }} style={{ paddingLeft: (this.state.editModel == "true") ? "200px" : "0", paddingRight: (this.state.editModel == "true") ? "200px" : "0", background: '#eee' }}>
           {this.renderTab()}
@@ -1068,11 +1068,15 @@ class ReportBoard extends PureComponent {
           </Dragact>
         </div>
         {this.state.editModel == "true" ? <div className={styles['boardRight']} ref={(instance) => { this.right = instance; }} >
-          <div><Switch checkedChildren="关联" unCheckedChildren="拖拽" checked={this.state.dragMoveChecked} onChange={this.changeDragMoveChecked} /></div>
-          <div>{/*报表保存*/}<Button type="primary" onClick={this.saveCurrent}>保存当前</Button></div>
-          <div>{/*报表保存*/}<Button type="primary" onClick={this.pullSynchronization}>拉取同步</Button></div>
-          <div ref={(instance) => { this.rightRelation = instance; }}></div>
-        </div> : <div></div>}
+        <div class="logo" style={{width:'200px',height:'50px',position:'absolute',top:'0',lineHeight:'50px',textAlign:'center',borderLeft:'1px solid #ccc',borderBottom:'1px solid #ccc',background:'#eee',overflow:'hidden'}}><h1>关联</h1></div>
+          <div style={{ border:'1px solid #ccc'}}>
+            <div><Switch checkedChildren="关联" unCheckedChildren="拖拽" checked={this.state.dragMoveChecked} onChange={this.changeDragMoveChecked} /></div>
+            <div>{/*报表保存*/}<Button type="primary" onClick={this.saveCurrent}>保存当前</Button></div>
+            <div>{/*报表保存*/}<Button type="primary" onClick={this.pullSynchronization}>拉取同步</Button></div>
+            <div ref={(instance) => { this.rightRelation = instance; }}></div>
+          </div>
+        </div> : <div></div>
+      }
       </div>
     );
   }

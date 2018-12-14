@@ -39,6 +39,9 @@ export default class Index extends PureComponent {
         });
         const content = (
             <div>
+                {/* logo标题start */}
+                <div class="logo" style={{height:'50px',position:'relative',lineHeight:'50px',textAlign:'center',borderRight:'1px solid #ccc',background:'#eee',overflow:'hidden'}}><h1>列表</h1></div>
+                {/* logo标题end */}
                 <Collapse defaultActiveKey={['1']}>
                     <Panel header={<div><span>组件列表</span></div>} key="1">
                         {/* <List
