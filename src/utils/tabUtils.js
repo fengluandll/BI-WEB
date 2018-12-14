@@ -18,6 +18,7 @@ class TabUtils {
         const style_config = {};//style_config
         style_config.name = "新建tab";
         style_config.type = "root";
+        style_config.order = this.getMaxBorder(mDashboard_old) + 1; // 取最大的order
         const children = [];//children
         const searchObj = {};//搜索框
         searchObj.name = mChart.id.toString();
@@ -104,6 +105,27 @@ class TabUtils {
             }
         }
         mDashboard_old.style_config = JSON.stringify(style_config_old);
+    }
+    /******************************utils**************************************/
+    // 取图表中的最大orderid
+    getMaxBorder = (mDashboard_old) => {
+        const style_config = JSON.parse(mDashboard_old.style_config);
+        const children = style_config.children;
+        let orders = [];
+        for (let key in children) {
+            const id = children[key].order;
+            orders.push(id);
+        }
+        // 取最大id
+        let maxId = orders[0] || 0;
+        for (let i = 0; i < orders.length; i++) {
+            if (orders[i] > maxId) {
+                maxId = orders[i];
+            } else if (orders.length > maxId) {
+                maxId = orders.length;
+            }
+        }
+        return maxId;
     }
 }
 

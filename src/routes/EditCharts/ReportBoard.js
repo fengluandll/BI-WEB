@@ -41,7 +41,6 @@ class ReportBoard extends PureComponent {
 
       editModel: "false",   // 是否编辑模式
       dragMoveChecked: false,  // 是否静止dragact移动，移动就点击无法显示右侧的编辑界面。
-      dragactStyle: [],  // dragactStyle 数据
 
       user_type: "", // 权限控制,用户类型
     };
@@ -62,14 +61,11 @@ class ReportBoard extends PureComponent {
           const { mDashboard_old, mCharts, user_type } = this.props.model;
           const { tagName, tagNames } = this.state;
           const mDashboard = reportBoardUtils.getStyle_configByOrder(mDashboard_old, tagName, tagNames);
-          const { id, name, style_config } = mDashboard;
-          const dragactStyle = JSON.parse(style_config).dragactStyle;
           this.fetchData(boardId, mDashboard);//查询数据
           this.setState({
             mDashboard_old,
             mDashboard,
             mCharts,
-            dragactStyle,
             tagName,
             tagNames,
             user_type,
@@ -119,6 +115,7 @@ class ReportBoard extends PureComponent {
   // 展示 左侧控件列表
   disPlayLeft() {
     const left = this.left;
+    ReactDom.render(<div></div>, left); // 先清空
     const { mDashboard, mCharts } = this.state;
     ReactDom.render(<ChartList
       mCharts={mCharts}
@@ -331,6 +328,7 @@ class ReportBoard extends PureComponent {
   renderLine(name, dateSetList, mChart, styleConfig) {
     const spinning = this.state.spinning;
     let cssName = cssUtils.getBIContainer(mChart);
+    const { dragactStyle } = JSON.parse(this.state.mDashboard.style_config);
     ReactDom.render(
       <div className={cssName}
         onClick={(ev) => {
@@ -347,7 +345,7 @@ class ReportBoard extends PureComponent {
       >
         <Spin spinning={spinning}>
           <Line
-            dragactStyle={this.state.dragactStyle}
+            dragactStyle={dragactStyle}
             editModel={this.state.editModel}
             mChart={mChart}
             dateSetList={dateSetList}
@@ -362,6 +360,7 @@ class ReportBoard extends PureComponent {
   renderBar(name, dateSetList, mChart, styleConfig) {
     const spinning = this.state.spinning;
     let cssName = cssUtils.getBIContainer(mChart);
+    const { dragactStyle } = JSON.parse(this.state.mDashboard.style_config);
     ReactDom.render(
       <div className={cssName}
         onClick={(ev) => {
@@ -378,7 +377,7 @@ class ReportBoard extends PureComponent {
       >
         <Spin spinning={spinning}>
           <Bar
-            dragactStyle={this.state.dragactStyle}
+            dragactStyle={dragactStyle}
             editModel={this.state.editModel}
             mChart={mChart}
             dateSetList={dateSetList}
@@ -392,6 +391,7 @@ class ReportBoard extends PureComponent {
   renderPie(name, dateSetList, mChart, styleConfig) {
     const spinning = this.state.spinning;
     let cssName = cssUtils.getBIContainer(mChart);
+    const { dragactStyle } = JSON.parse(this.state.mDashboard.style_config);
     ReactDom.render(
       <div className={cssName}
         onClick={(ev) => {
@@ -408,7 +408,7 @@ class ReportBoard extends PureComponent {
       >
         <Spin spinning={spinning}>
           <Pie
-            dragactStyle={this.state.dragactStyle}
+            dragactStyle={dragactStyle}
             editModel={this.state.editModel}
             mChart={mChart}
             dateSetList={dateSetList}
@@ -422,11 +422,12 @@ class ReportBoard extends PureComponent {
   renderTable(name, dateSetList, mChart, styleConfig) {
     const spinning = this.state.spinning;
     let cssName = cssUtils.getBIContainer(mChart);
+    const { dragactStyle } = JSON.parse(this.state.mDashboard.style_config);
     ReactDom.render(
       <div className={cssName}>
         <Spin spinning={spinning}>
           <Table
-            dragactStyle={this.state.dragactStyle}
+            dragactStyle={dragactStyle}
             editModel={this.state.editModel}
             mChart={mChart}
             dateSetList={dateSetList}
@@ -440,6 +441,7 @@ class ReportBoard extends PureComponent {
     const { name, chartId, styleConfig, relation } = item;
     const searchEnum = this.props.model.searchEnum;
     let cssName = cssUtils.getBIContainer(mChart);
+    const { dragactStyle } = JSON.parse(this.state.mDashboard.style_config);
     ReactDom.render(
       <div className={cssName}
         style={{ cursor: 'pointer' }}
@@ -458,7 +460,7 @@ class ReportBoard extends PureComponent {
         }}
       >
         <Search
-          dragactStyle={this.state.dragactStyle}
+          dragactStyle={dragactStyle}
           editModel={this.state.editModel}
           relation={relation}
           mChart={mChart}
@@ -676,6 +678,7 @@ class ReportBoard extends PureComponent {
     // 把单独的报表mDashboard拼成主题
     const { mDashboard_old, mDashboard, tagName } = this.state;
     reportBoardUtils.getMDashboard_oldByMDashboard(mDashboard_old, mDashboard, tagName);
+    message.success('保存成功');
   }
   // 用户拉取同步,从t_dashboard中刷到m_dashboard中
   pullSynchronization = () => {
@@ -969,7 +972,7 @@ class ReportBoard extends PureComponent {
     mDashboard.style_config = JSON.stringify(style_config_obj);
     // 给state赋值
     this.setState({
-      dragactStyle: array,
+      mDashboard: mDashboard,
     });
     // 刷新页面
     this.refreshDashboard();
@@ -1065,7 +1068,7 @@ class ReportBoard extends PureComponent {
           </Dragact>
         </div>
         {this.state.editModel == "true" ? <div className={styles['boardRight']} ref={(instance) => { this.right = instance; }} >
-          <div><Switch checkedChildren="拖拽" unCheckedChildren="关联" checked={this.state.dragMoveChecked} onChange={this.changeDragMoveChecked} /></div>
+          <div><Switch checkedChildren="关联" unCheckedChildren="拖拽" checked={this.state.dragMoveChecked} onChange={this.changeDragMoveChecked} /></div>
           <div>{/*报表保存*/}<Button type="primary" onClick={this.saveCurrent}>保存当前</Button></div>
           <div>{/*报表保存*/}<Button type="primary" onClick={this.pullSynchronization}>拉取同步</Button></div>
           <div ref={(instance) => { this.rightRelation = instance; }}></div>

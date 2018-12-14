@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import ReactDom from 'react-dom';
-import { Collapse, List, Avatar, Tag, Card, Icon, Button, message, Input, Dropdown, Menu, Checkbox } from 'antd';
+import { Collapse, Checkbox } from 'antd';
 
 
 const Panel = Collapse.Panel;
@@ -56,6 +56,20 @@ export default class Index extends PureComponent {
                         />
                     </Panel>
                 </Collapse>
+                {/* 页签权限start */}
+                <Collapse defaultActiveKey={['2']}>
+                    <Panel header={<div><span>页签权限</span></div>} key="1" style={{ pointerEvents: "none" }}>
+
+                    </Panel>
+                </Collapse>
+                {/* 页签权限end */}
+                {/* 标准页签start */}
+                <Collapse defaultActiveKey={['3']}>
+                    <Panel header={<div><span>标准页签</span></div>} key="1" style={{ pointerEvents: "none" }}>
+
+                    </Panel>
+                </Collapse>
+                {/* 标准页签end */}
             </div>
         );
         ReactDom.render(content, node);

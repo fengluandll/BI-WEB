@@ -316,23 +316,31 @@ class ReportBoardUtils {
     getStyle_configByOrder = (mDashboard_old, tagName, tagNames) => {
         let style_config = JSON.parse(mDashboard_old.style_config);
         let children = style_config.children;//m_dashboard中的children
-        const child = []; // children中的每个报表
         const keys = [];
-        for (let key in children) {
-            child.push(children[key]);
+        for (let key in children) {// 循环每个图表
             keys.push(key);
         }
+        // js数组排序
+        for (let i = 0; i < keys.length - 1; i++) {
+            for (let j = 0; j < keys.length - i - 1; j++) {
+                if (children[keys[j]].order > children[keys[j + 1]].order) {
+                    let tmp = keys[j + 1];
+                    keys[j + 1] = keys[j];
+                    keys[j] = tmp;
+                }
+            }
+        }
         // 设置当前 tagName
-        tagName[keys[0]] = child[0].name;
+        tagName[keys[0]] = children[keys[0]].name;
         // 设置所有 tagName
         for (let i = 0; i < keys.length; i++) {
-            tagNames[keys[i]] = child[i].name;
+            tagNames[keys[i]] = children[keys[i]].name;
         }
         // 拼接 mDashboard
         let mDashboard = {};
         mDashboard.id = mDashboard_old.id;
         mDashboard.name = mDashboard_old.name;
-        mDashboard.style_config = JSON.stringify(child[0]);
+        mDashboard.style_config = JSON.stringify(children[keys[0]]);
         mDashboard.template_id = mDashboard_old.template_id;
         mDashboard.group_id = mDashboard_old.group_id;
         mDashboard.privilege = mDashboard_old.privilege;
