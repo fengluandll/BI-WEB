@@ -135,7 +135,9 @@ class Bar extends PureComponent {
           style: { fill: '#0000CD' },
           cancelable: true,
         })
-        .label(`${y}`);
+        .label(`${y}`,{
+          offset: 10
+        });
     } else {
       chart.interval().position(`${x}*${y}`)
         .select(true, {
@@ -143,7 +145,9 @@ class Bar extends PureComponent {
           style: { fill: '#0000CD' },
           cancelable: true,
         })
-        .label(`${y}`);
+        .label(`${y}`,{
+          offset: 10
+        });
     }
 
     chart.legend(false); // 隐藏全部图例
