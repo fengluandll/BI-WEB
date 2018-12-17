@@ -38,6 +38,7 @@ class ReportBoard extends PureComponent {
       refreshUI: 0,   //   state 用来刷新ui 
       rightProps: [],      //   右侧选择框的参数
       spinning: false,   // 是否显示加载中
+      plotClickFlag: false, // flag是否plot点击
 
       editModel: "false",   // 是否编辑模式
       dragMoveChecked: false,  // 是否静止dragact移动，移动就点击无法显示右侧的编辑界面。
@@ -246,9 +247,10 @@ class ReportBoard extends PureComponent {
     if (children && children.length > 0) {
       children.map((item, index) => {
         const { type, name, chartId, styleConfig, relation } = item;
+        // 没有被plot点击关联的图表或者是编辑模式的时候
         if (this.plotChartId.length == 0 || this.state.editModel == "true") {
           this.renderContent(item);
-        } else if (this.plotChartId.indexOf(chartId) > -1) {
+        } else if (this.plotChartId.indexOf(chartId) > -1) {// 被点击的plot展示
           this.renderContent(item);
         }
       });
@@ -607,6 +609,7 @@ class ReportBoard extends PureComponent {
           this.setState({
             dataList: this.props.model.dataList,
             spinning: false, // 数据加载完成取消加载中
+            plotClickFlag: false,// plot点击置为false
           });
         },
       },
@@ -927,7 +930,8 @@ class ReportBoard extends PureComponent {
   // 图表的plot点击事件
   //  点击获取图表的 维度、度量、图例 参数进行图表关联查询
   onPlotClick = (data, dimension, chartId) => {
-    if (this.state.editModel == "true") {
+    // 如果是编辑或者是点击一次了不给点
+    if (this.state.editModel == "true" || this.state.plotClickFlag == true) {
       return;
     }
     const origin = data._origin;
@@ -944,6 +948,9 @@ class ReportBoard extends PureComponent {
     }
     // 点击plot加一个用于加载的时候判断,plotChartId长度为0是点击搜索框
     this.plotChartId.push("007");
+    this.setState({
+      plotClickFlag: true,// plot点击置为true
+    });
   }
 
   /****************************************************dragact*****************************************************/
@@ -1068,15 +1075,15 @@ class ReportBoard extends PureComponent {
           </Dragact>
         </div>
         {this.state.editModel == "true" ? <div className={styles['boardRight']} ref={(instance) => { this.right = instance; }} >
-        <div class="logo" style={{width:'200px',height:'50px',position:'absolute',top:'0',lineHeight:'50px',textAlign:'center',borderLeft:'1px solid #ccc',borderBottom:'1px solid #ccc',background:'#eee',overflow:'hidden'}}><h1>关联</h1></div>
-          <div style={{ border:'1px solid #ccc'}}>
-            <div><Switch checkedChildren="关联" unCheckedChildren="拖拽" style={{marginTop:'50px'}} checked={this.state.dragMoveChecked} onChange={this.changeDragMoveChecked} /></div>
+          <div style={{ width: '200px', height: '50px', position: 'absolute', top: '0', lineHeight: '50px', textAlign: 'center', borderLeft: '1px solid #ccc', borderBottom: '1px solid #ccc', background: '#eee', overflow: 'hidden' }}><h1>关联</h1></div>
+          <div style={{ border: '1px solid #ccc' }}>
+            <div><Switch checkedChildren="关联" unCheckedChildren="拖拽" style={{ marginTop: '50px' }} checked={this.state.dragMoveChecked} onChange={this.changeDragMoveChecked} /></div>
             <div>{/*报表保存*/}<Button type="primary" onClick={this.saveCurrent}>保存当前</Button></div>
             <div>{/*报表保存*/}<Button type="primary" onClick={this.pullSynchronization}>拉取同步</Button></div>
             <div ref={(instance) => { this.rightRelation = instance; }}></div>
           </div>
         </div> : <div></div>
-      }
+        }
       </div>
     );
   }

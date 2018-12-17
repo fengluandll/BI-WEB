@@ -201,11 +201,11 @@ class Bar extends PureComponent {
       let _origin = null;
       let size = chart.getTooltipItems(point)[0].size / 2;
       let index;
-      for(let i = 0; i < origin1.length; i++){
-          if((ev.x > 0 && ev.x < origin1[i].x - size) || (ev.x > origin1[i].x - size && ev.x < origin1[i].x + size) || (i == origin1.length -1 && ev.x > origin1[i].x - size)) {
-            index = i;
-            break;
-          } 
+      for (let i = 0; i < origin1.length; i++) {
+        if ((ev.x > 0 && ev.x < origin1[i].x - size) || (ev.x > origin1[i].x - size && ev.x < origin1[i].x + size) || (i == origin1.length - 1 && ev.x > origin1[i].x - size)) {
+          index = i;
+          break;
+        }
       }
       _origin = origin1[index]._origin;
       // getTooltipItems,根据传入的坐标点point，获取当前坐标点上的tooltip信息

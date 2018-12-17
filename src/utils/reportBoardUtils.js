@@ -292,6 +292,15 @@ class ReportBoardUtils {
         const dataSetName = JSON.parse(mChart.config).dataSetName;
         return tableIdColumns[dataSetName];
     }
+    // 根据chartId获取chart类型
+    getTypeByChartId = (mCharts, chartId) => {
+        mCharts.map((item, index) => {
+            if (item.id == chartId) {
+                const config = JSON.parse(item.config);
+                return config.type;
+            }
+        });
+    }
 
     // 判断两个字段在数据集字段关联中是否有关联  "dataSetRelation":[[],[]],
     getColumnYNrelationed = (column1, column2, dataSetRelation) => {
