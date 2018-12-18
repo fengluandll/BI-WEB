@@ -1,13 +1,14 @@
 .boardLeft {
-    position: absolute;
+    position: fixed;
     width: 200px;
     background-color:#eee;
     height: 100%;
     top: 0;
+    border-right: 1px solid #ccc;
 }
 .boardRight{
     right: 0px;
-    position: absolute;
+    position: fixed;
     width: 200px;
     background-color: #eee;
     height: 100%;
@@ -30,7 +31,7 @@
   right: 72px;
 }
 .boardcenter{
-    position: absolute;
+    position: fixed;
     width: 1200px;
    // background-color:red;
     height: 100%;
@@ -102,8 +103,8 @@
       border: 1px solid #ccc;
       margin: 5px;
       border-radius: 10px;
-      margin-right: 4px;
-      margin-left: 8px;
+      margin-right: 1px;
+      margin-left: 5px;
   
       .del-icon{
         position:absolute;
@@ -113,6 +114,9 @@
       }
       canvas{
         cursor: pointer;
+      }
+      .ant-spin-nested-loading{
+        margin-bottom: 12px;
       }
     }
     /** 去除图表外边的边框线 */
@@ -133,11 +137,6 @@
         cursor: pointer;
       }
     }
-    .DraggerLayout.plant-layout div {
-      margin-bottom: 4px;
-      margin-left: 2px;
-      margin-right: 1px;
-    }
     .query-container___2qJSj{
       margin-bottom: 10px !important;
     }
@@ -146,7 +145,7 @@
       margin: 0;
     }
     .ant-tabs.ant-tabs-card > .ant-tabs-bar .ant-tabs-tab-active{
-      background: #eee;
+      background: #eee !important;
       border-right: 1px solid #ccc;
       border-top: 1px solid #ccc;  
       border-top-right-radius:0;
@@ -159,6 +158,11 @@
     }
     .ant-tabs.ant-tabs-card > .ant-tabs-bar .ant-tabs-tab{
       margin-right: 0px;
+      border-radius: 0;
+      border-top-right-radius: 6px;
+      border: 1px solid #ccc;
+      border-left: 0;
+      background: #fff;
     }
     div#bi-content{
       background: #eee;
