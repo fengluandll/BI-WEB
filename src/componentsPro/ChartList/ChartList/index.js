@@ -10,13 +10,66 @@ const reportBoardUtils = new ReportBoardUtils();
 
 //  仪表板 左侧的  图表列表 组件
 export default class Index extends PureComponent {
+    constructor(props) {
+        super(props);
+        this.state = {
+            chartIdArrayLine: [],// 选中的列表
+            chartIdArrayBar: [],
+            chartIdArrayPie: [],
+            chartIdArrayTable: [],
+        };
+    }
+
     componentDidMount() {
         this.renderChart();
     }
 
     //  点击事件  增加或删除 chart
-    addOrRemoveChart = (checkValue) => {
-        this.props.addOrRemoveChart(checkValue);
+    addOrRemoveChart = (type, checkValue) => {
+        let operateType;// 增加或者减少类型
+        let chartId; // 图表Id
+        let arr = [];
+        const { chartIdArrayLine, chartIdArrayBar, chartIdArrayPie, chartIdArrayTable } = this.state;
+        if (type == "0") {
+            arr = chartIdArrayLine;
+        } else if (type == "1") {
+            arr = chartIdArrayBar;
+        } else if (type == "2") {
+            arr = chartIdArrayPie;
+        } else if (type == "3") {
+            arr = chartIdArrayTable;
+        }
+        //增加
+        if (checkValue.length > arr.length) {
+            operateType = "add";
+            // 找出增加的chartId
+            for (let i = 0; i < checkValue.length; i++) {
+                let flag = true;
+                for (let j = 0; j < arr.length; j++) {
+                    if (checkValue[i] == arr[j]) {
+                        flag = false;
+                    }
+                }
+                if (flag) {
+                    chartId = checkValue[i];
+                }
+            }
+        } else {// 减少
+            operateType = "minus";
+            for (let i = 0; i < arr.length; i++) {
+                let flag = true;
+                for (let j = 0; j < checkValue.length; j++) {
+                    if (arr[i] == checkValue[j]) {
+                        flag = false;
+                    }
+                }
+                if (flag) {
+                    chartId = arr[i];
+                }
+            }
+        }
+        // 调用父方法
+        this.props.addOrRemoveChart(operateType, chartId);
     };
 
     handleFieldContent = (key, n) => {
@@ -84,6 +137,13 @@ export default class Index extends PureComponent {
                 chartIdArrayTable.push(item.chartId);
             }
         });
+        // 放入state中让点击后可以有比较对象
+        this.setState({
+            chartIdArrayLine,
+            chartIdArrayBar,
+            chartIdArrayPie,
+            chartIdArrayTable,
+        });
         const content = (
             <div>
                 {/* logo标题start */}
@@ -100,7 +160,7 @@ export default class Index extends PureComponent {
                                     options={arrLine}
                                     defaultValue={chartIdArrayLine}
                                     style={{ display: 'block' }}
-                                    onChange={this.addOrRemoveChart}
+                                    onChange={this.addOrRemoveChart.bind(this, "0")}
                                 />
                             </div>
                             <div className={styles['field-name']} title="柱状图">
@@ -111,7 +171,7 @@ export default class Index extends PureComponent {
                                     options={arrBar}
                                     defaultValue={chartIdArrayBar}
                                     style={{ display: 'block' }}
-                                    onChange={this.addOrRemoveChart}
+                                    onChange={this.addOrRemoveChart.bind(this, "1")}
                                 />
                             </div>
                             <div className={styles['field-name']} title="饼图">
@@ -122,7 +182,7 @@ export default class Index extends PureComponent {
                                     options={arrPie}
                                     defaultValue={chartIdArrayPie}
                                     style={{ display: 'block' }}
-                                    onChange={this.addOrRemoveChart}
+                                    onChange={this.addOrRemoveChart.bind(this, "2")}
                                 />
                             </div>
                             <div className={styles['field-name']} title="交叉表">
@@ -133,7 +193,7 @@ export default class Index extends PureComponent {
                                     options={arrTable}
                                     defaultValue={chartIdArrayTable}
                                     style={{ display: 'block' }}
-                                    onChange={this.addOrRemoveChart}
+                                    onChange={this.addOrRemoveChart.bind(this, "3")}
                                 />
                             </div>
                         </div>

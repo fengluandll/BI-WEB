@@ -294,12 +294,14 @@ class ReportBoardUtils {
     }
     // 根据chartId获取chart类型
     getTypeByChartId = (mCharts, chartId) => {
+        let type;
         mCharts.map((item, index) => {
-            if (item.id == chartId) {
+            if (item.id.toString() == chartId) {
                 const config = JSON.parse(item.config);
-                return config.type;
+                type = config.type;
             }
         });
+        return type;
     }
 
     // 判断两个字段在数据集字段关联中是否有关联  "dataSetRelation":[[],[]],

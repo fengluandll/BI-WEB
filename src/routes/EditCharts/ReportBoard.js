@@ -851,27 +851,13 @@ class ReportBoard extends PureComponent {
   }
 
   //  左侧配置图表 点击删除或增加图表
-  addOrRemoveChart = (value) => {
+  addOrRemoveChart = (operateType, chartId) => {
     const { mDashboard } = this.state;
     const { style_config } = mDashboard;
     const style_config_obj = JSON.parse(style_config);
     const children = style_config_obj.children;
     const dragactStyle = style_config_obj.dragactStyle;
-    let len = value.length;
-    let chartId;  // 要增加的图表的chartID
-    if (len > children.length) {
-      //  复选框值比mDashboard中的多 要增加
-      for (let i = 0; i < len; i++) {
-        let flag = 0;
-        for (let j = 0; j < children.length; j++) {
-          if (value[i] == children[j].chartId) {
-            flag = 1;
-          }
-        }
-        if (flag == 0) {
-          chartId = value[i];
-        }
-      }
+    if (operateType == "add") {
       // 找到对应的mChart表，并调用增加方法
       const mCharts = this.state.mCharts;
       mCharts.map((item, index) => {
@@ -882,20 +868,13 @@ class ReportBoard extends PureComponent {
     } else {
       //  复选框值比mDashboard中的少 要删除
       for (let i = 0; i < children.length; i++) {
-        let flag = 0;
-        for (let j = 0; j < len; j++) {
-          if (children[i].chartId == value[j]) {
-            flag = 1;
-          }
-        }
-        if (flag == 0) {
-          chartId = children[i].chartId;
+        if (children[i].chartId == chartId) {
           children.splice(i, 1);//  删除children数组
-          // 删除dragact样式
-          for (let k = 0; k < dragactStyle.length; k++) {
-            if (dragactStyle[k].key.toString() == chartId) {
-              dragactStyle.splice(k, 1);
-            }
+        }
+        // 删除dragact样式
+        for (let k = 0; k < dragactStyle.length; k++) {
+          if (dragactStyle[k].key.toString() == chartId) {
+            dragactStyle.splice(k, 1);
           }
         }
       }
