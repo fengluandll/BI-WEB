@@ -591,6 +591,7 @@ class ReportBoard extends PureComponent {
     if (action == "remove") {
       // 删除
       tabUtils.removeTab(targetKey, mDashboard_old, mDashboard, tagName, tagNames);
+      this.refreshDashboard();//刷新
     } else if (action == "add") {
       // 新建
       tabUtils.addTab(mCharts, mDashboard_old, mDashboard, tagName, tagNames);
