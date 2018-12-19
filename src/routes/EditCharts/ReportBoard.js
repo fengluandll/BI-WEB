@@ -106,8 +106,14 @@ class ReportBoard extends PureComponent {
             dataList,
             spinning: false, // 数据加载完成设置为false
           });
-          // 延时刷新
-          this.refreshDashboardTimeout();
+          const keys = Object.keys(dataList);
+          if (keys != null ** keys.length > 8) {
+            // 延时刷新
+            this.refreshDashboardTimeout(1000);
+          } else {
+            // 延时刷新
+            this.refreshDashboardTimeout();
+          }
         }
       }
     });
@@ -580,7 +586,6 @@ class ReportBoard extends PureComponent {
       mDashboard: mDashboard,
       spinning: true,
     });
-    this.refreshDashboard();//刷新
     const boardId = this.boardId;
     this.fetchData(boardId, mDashboard);//使用初始化查询方法
   }
