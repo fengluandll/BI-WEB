@@ -106,6 +106,8 @@ class ReportBoard extends PureComponent {
             dataList,
             spinning: false, // 数据加载完成设置为false
           });
+          // 延时刷新
+          this.refreshDashboardTimeout();
         }
       }
     });
@@ -485,6 +487,17 @@ class ReportBoard extends PureComponent {
     });
   }
 
+  // 延时刷新
+  refreshDashboardTimeout = (time) => {
+    if (null == time) {
+      time = 100;
+    }
+    setTimeout(
+      () => { this.refreshDashboard() },
+      time
+    );
+  }
+
   // 添加新的图表chart
   addNewChart = (mChart) => {
     const { mDashboard } = this.state;
@@ -497,7 +510,7 @@ class ReportBoard extends PureComponent {
     });
   }
 
-  // 编辑按钮
+  // 编辑展示把手
   changeEditeMode = (e) => {
     let editModel = this.state.editModel;
     const boardId = this.boardId;
@@ -508,6 +521,8 @@ class ReportBoard extends PureComponent {
       this.setState({
         editModel: editModel,
       });
+      // 延时刷新
+      this.refreshDashboardTimeout(1000);
     } else {
       editModel = "true";
       this.props.dispatch({
@@ -522,28 +537,30 @@ class ReportBoard extends PureComponent {
               tableIdColumns,
               editModel: editModel,
             });
+            // 延时刷新
+            this.refreshDashboardTimeout(1000);
           }
         }
       });
     }
   }
   onMouseEnterShow = (e) => {
-    if(e.target.style.height === '100%'){
+    if (e.target.style.height === '100%') {
       e.target.style.opacity = 1;
       e.target.children[0].style.opacity = 1;
-    }else{
+    } else {
       e.target.parentNode.style.opacity = 1;
       e.target.style.opacity = 1;
     }
   }
   onMouseLeaveHide = (e) => {
-    if(this.state.editModel == "true"){
+    if (this.state.editModel == "true") {
       return;
-    } 
-    if(e.target.style.height === '100%'){
+    }
+    if (e.target.style.height === '100%') {
       e.target.style.opacity = 0;
       e.target.children[0].style.opacity = 0;
-    }else{
+    } else {
       e.target.parentNode.style.opacity = 0;
       e.target.style.opacity = 0;
     }
@@ -1023,8 +1040,8 @@ class ReportBoard extends PureComponent {
     return (
       <div>
         {/* 添加返回按钮的父级 */}
-        <div style={{marginLeft: (this.state.editModel == "true") ? "170px" : "0", width: 30, height: '100%', opacity: 0, position: 'fixed', top: 0, left: 0, zIndex: 1000, fontSize: 26, textAlign: 'center',cursor: 'pointer'}} onClick={this.changeEditeMode} onMouseEnter={this.onMouseEnterShow.bind(this)} onMouseLeave={this.onMouseLeaveHide.bind(this)}>
-          <div style={{marginLeft: (this.state.editModel == "true") ? "170px" : "0", width: 30, height: 60, opacity: '1 !important', border: '2px solid #ccc', borderRadius: 6, borderLeft: '1px solid #ccc', background:'#eee', color:'#000', position: 'fixed', top: '50%', marginTop: -30, left: 0, zIndex: 1000, fontSize: 26, textAlign: 'center', lineHeight: 2, cursor: 'pointer',}} >||</div>
+        <div style={{ marginLeft: (this.state.editModel == "true") ? "170px" : "0", width: 30, height: '100%', opacity: 0, position: 'fixed', top: 0, left: 0, zIndex: 1000, fontSize: 26, textAlign: 'center', cursor: 'pointer' }} onClick={this.changeEditeMode} onMouseEnter={this.onMouseEnterShow.bind(this)} onMouseLeave={this.onMouseLeaveHide.bind(this)}>
+          <div style={{ marginLeft: (this.state.editModel == "true") ? "170px" : "0", width: 30, height: 60, opacity: '1 !important', border: '2px solid #ccc', borderRadius: 6, borderLeft: '1px solid #ccc', background: '#eee', color: '#000', position: 'fixed', top: '50%', marginTop: -30, left: 0, zIndex: 1000, fontSize: 26, textAlign: 'center', lineHeight: 2, cursor: 'pointer', }} >||</div>
         </div>
         {this.state.editModel == "true" ? <div className={styles['boardLeft']} ref={(instance) => { this.left = instance; }} > </div> : <div></div>}
         <div id="contents" className={`boardcenter_report`} ref={(instance) => { this.center = instance; }} style={{ paddingLeft: (this.state.editModel == "true") ? "200px" : "0", paddingRight: (this.state.editModel == "true") ? "200px" : "0", background: '#eee' }}>
@@ -1072,7 +1089,7 @@ class ReportBoard extends PureComponent {
           </Dragact>
         </div>
         {this.state.editModel == "true" ? <div className={styles['boardRight']} ref={(instance) => { this.right = instance; }} >
-          <div style={{ width: '200px', height: '50px', position: 'absolute', top: '0', lineHeight: '50px', textAlign: 'center', borderLeft: '1px solid #ccc', borderBottom: '1px solid #ccc', background: '#eee', overflow: 'hidden' }}><h1 style={{color:'#1890ff'}}>编辑模式</h1></div>
+          <div style={{ width: '200px', height: '50px', position: 'absolute', top: '0', lineHeight: '50px', textAlign: 'center', borderLeft: '1px solid #ccc', borderBottom: '1px solid #ccc', background: '#eee', overflow: 'hidden' }}><h1 style={{ color: '#1890ff' }}>编辑模式</h1></div>
           <div style={{ border: '1px solid #ccc' }}>
             <div><Switch checkedChildren="关联" unCheckedChildren="拖拽" style={{ marginTop: '50px' }} checked={this.state.dragMoveChecked} onChange={this.changeDragMoveChecked} /></div>
             <div>{/*报表保存*/}<Button type="primary" onClick={this.saveCurrent}>保存当前</Button></div>
