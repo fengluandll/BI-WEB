@@ -96,7 +96,7 @@ class Bar extends PureComponent {
     let chartWidth = 0;
     let dataLength = dateSetList.length;
     let chartFit = forceFit;
-    if (dataLength > 30) {
+    if (dataLength > 5) {
       chartFit = false;
       chartWidth = dataLength * 55.6521;
       if (chartWidth > 32000) {
@@ -107,7 +107,7 @@ class Bar extends PureComponent {
     // init
     const chart = new G2.Chart({
       container: this.node, // 指定图表容器 ID
-      forceFit: forceFit, //  自适应宽度
+      forceFit: chartFit, //  自适应宽度
       width: chartWidth, // 指定图表宽度
       height: height, // 指定图表高度
       padding: padding,
@@ -239,7 +239,7 @@ class Bar extends PureComponent {
     return (
       <div>
         <div className={styles['chart-title']}>{mChart.name ? mChart.name : ""}</div>
-        <div ref={this.handleRef} />
+        <div className={styles['chart-content']} ref={this.handleRef} />
       </div>
     )
   }
