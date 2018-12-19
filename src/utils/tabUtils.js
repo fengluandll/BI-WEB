@@ -4,11 +4,15 @@ const reportBoardUtils = new ReportBoardUtils();
 class TabUtils {
 
     // tab点击切换当前tab
-    changeActiveKey = (activeKey, tagName, tagNames) => {
+    changeActiveKey = (activeKey, tagName, tagNames, mDashboard_old) => {
         for (let key in tagName) {
             delete tagName[key];
         }
-        tagName[activeKey] = tagNames[activeKey];
+        tagName[activeKey] = tagNames[activeKey];//设置当前的tagName
+        // 设置整体的默认tagName
+        const style_config = JSON.parse(mDashboard_old.style_config);
+        style_config.currentTag = activeKey;
+        mDashboard_old.style_config = JSON.stringify(style_config);
     }
 
     // 增加一个tab
@@ -44,7 +48,7 @@ class TabUtils {
         //修改tagNames
         tagNames[uuuid] = style_config.name;
         //修改tagName
-        this.changeActiveKey(uuuid, tagName, tagNames);
+        this.changeActiveKey(uuuid, tagName, tagNames, mDashboard_old);
     }
 
     // 删除一个tab
@@ -68,7 +72,7 @@ class TabUtils {
         for (let key in tagNames) {
             arr.push(key);
         }
-        this.changeActiveKey(arr[0], tagName, tagNames);// 取第一个
+        this.changeActiveKey(arr[0], tagName, tagNames, mDashboard_old);// 取第一个
         // 删除mDashboard_old
         const style_config_old = JSON.parse(mDashboard_old.style_config);
         const children = style_config_old.children;

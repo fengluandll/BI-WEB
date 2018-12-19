@@ -343,8 +343,16 @@ class ReportBoardUtils {
                 }
             }
         }
+        // 获取默认tag
+        const currentTag = style_config.currentTag;
+        let tag = ""; //当前应该显示的tag名称,给下面用的变量
+        if (null != currentTag && currentTag != "") {
+            tag = currentTag;
+        } else {
+            tag = keys[0];
+        }
         // 设置当前 tagName
-        tagName[keys[0]] = children[keys[0]].name;
+        tagName[tag] = children[tag].name;
         // 设置所有 tagName
         for (let i = 0; i < keys.length; i++) {
             tagNames[keys[i]] = children[keys[i]].name;
@@ -353,7 +361,7 @@ class ReportBoardUtils {
         let mDashboard = {};
         mDashboard.id = mDashboard_old.id;
         mDashboard.name = mDashboard_old.name;
-        mDashboard.style_config = JSON.stringify(children[keys[0]]);
+        mDashboard.style_config = JSON.stringify(children[tag]);
         mDashboard.template_id = mDashboard_old.template_id;
         mDashboard.group_id = mDashboard_old.group_id;
         mDashboard.privilege = mDashboard_old.privilege;

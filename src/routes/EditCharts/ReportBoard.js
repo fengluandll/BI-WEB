@@ -580,11 +580,12 @@ class ReportBoard extends PureComponent {
     const { mDashboard_old, mDashboard, tagName, tagNames } = this.state;
     reportBoardUtils.getMDashboardByKey(mDashboard_old, mDashboard, activeKey);//生成新的mDashboard
     //更新state中的tab
-    tabUtils.changeActiveKey(activeKey, tagName, tagNames);
+    tabUtils.changeActiveKey(activeKey, tagName, tagNames, mDashboard_old);
     this.setState({
       tagName: tagName,
       mDashboard: mDashboard,
       spinning: true,
+      mDashboard_old,
     });
     const boardId = this.boardId;
     this.fetchData(boardId, mDashboard);//使用初始化查询方法
@@ -1046,7 +1047,7 @@ class ReportBoard extends PureComponent {
     return (
       <div>
         {/* 添加返回按钮的父级 */}
-        <div style={{ marginLeft: (this.state.editModel == "true") ? "170px" : "0", width: 30, height: 180, opacity: 0, position: 'fixed', top: '50%', marginTop:-90, left: 0, zIndex: 1000, fontSize: 26, textAlign: 'center', cursor: 'pointer' }} onClick={this.changeEditeMode} onMouseEnter={this.onMouseEnterShow.bind(this)} onMouseLeave={this.onMouseLeaveHide.bind(this)}>
+        <div style={{ marginLeft: (this.state.editModel == "true") ? "170px" : "0", width: 30, height: 180, opacity: 0, position: 'fixed', top: '50%', marginTop: -90, left: 0, zIndex: 1000, fontSize: 26, textAlign: 'center', cursor: 'pointer' }} onClick={this.changeEditeMode} onMouseEnter={this.onMouseEnterShow.bind(this)} onMouseLeave={this.onMouseLeaveHide.bind(this)}>
           <div style={{ marginLeft: (this.state.editModel == "true") ? "170px" : "0", width: 30, height: 60, opacity: '1 !important', border: '2px solid #ccc', borderRadius: 6, borderLeft: '1px solid #ccc', background: '#eee', color: '#000', position: 'fixed', top: '50%', marginTop: -30, left: 0, zIndex: 1000, fontSize: 26, textAlign: 'center', lineHeight: 2, cursor: 'pointer', }} >||</div>
         </div>
         {this.state.editModel == "true" ? <div className={styles['boardLeft']} ref={(instance) => { this.left = instance; }} > </div> : <div></div>}
