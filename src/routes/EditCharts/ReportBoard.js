@@ -551,7 +551,7 @@ class ReportBoard extends PureComponent {
     }
   }
   onMouseEnterShow = (e) => {
-    if (e.target.style.height === '100%') {
+    if (e.target.style.height === '180px') {
       e.target.style.opacity = 1;
       e.target.children[0].style.opacity = 1;
     } else {
@@ -563,7 +563,7 @@ class ReportBoard extends PureComponent {
     if (this.state.editModel == "true") {
       return;
     }
-    if (e.target.style.height === '100%') {
+    if (e.target.style.height === '180px') {
       e.target.style.opacity = 0;
       e.target.children[0].style.opacity = 0;
     } else {
@@ -1046,7 +1046,7 @@ class ReportBoard extends PureComponent {
     return (
       <div>
         {/* 添加返回按钮的父级 */}
-        <div style={{ marginLeft: (this.state.editModel == "true") ? "170px" : "0", width: 30, height: '100%', opacity: 0, position: 'fixed', top: 0, left: 0, zIndex: 1000, fontSize: 26, textAlign: 'center', cursor: 'pointer' }} onClick={this.changeEditeMode} onMouseEnter={this.onMouseEnterShow.bind(this)} onMouseLeave={this.onMouseLeaveHide.bind(this)}>
+        <div style={{ marginLeft: (this.state.editModel == "true") ? "170px" : "0", width: 30, height: 180, opacity: 0, position: 'fixed', top: '50%', marginTop:-90, left: 0, zIndex: 1000, fontSize: 26, textAlign: 'center', cursor: 'pointer' }} onClick={this.changeEditeMode} onMouseEnter={this.onMouseEnterShow.bind(this)} onMouseLeave={this.onMouseLeaveHide.bind(this)}>
           <div style={{ marginLeft: (this.state.editModel == "true") ? "170px" : "0", width: 30, height: 60, opacity: '1 !important', border: '2px solid #ccc', borderRadius: 6, borderLeft: '1px solid #ccc', background: '#eee', color: '#000', position: 'fixed', top: '50%', marginTop: -30, left: 0, zIndex: 1000, fontSize: 26, textAlign: 'center', lineHeight: 2, cursor: 'pointer', }} >||</div>
         </div>
         {this.state.editModel == "true" ? <div className={styles['boardLeft']} ref={(instance) => { this.left = instance; }} > </div> : <div></div>}
