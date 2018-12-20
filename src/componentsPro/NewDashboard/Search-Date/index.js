@@ -16,33 +16,60 @@ export default class Index extends PureComponent {
     super(props);
     const { rela, relaJson } = this.props;
     const arr = this.calcDate(rela.props, relaJson);
+    // 判断是否是季度
+    const startTimeDemo = relaJson.date_type == 4 ? this.startTiemAndEndTime(moment(arr[0]).format()) : arr[0];
+    const endTimeDemo = relaJson.date_type == 4 ? this.startTiemAndEndTime(moment(arr[1]).format()) : arr[1];
     // 参数先放到state里
     this.state = {
-      startTime: arr[0],
-      endTime: arr[1],
-      value :'2018-1',
+      startTime: startTimeDemo,
+      endTime: endTimeDemo,
     };
   }
-  // 时间季度
-  onChange = (date, dateString) => {
-    if(moment(dateString).month() == '3'){
-        this.setState({ value: moment(dateString).year() + '-2' });
-    }else if(moment(dateString).month() == '6'){
-        this.setState({ value: moment(dateString).year() + '-3' });
-    }else if(moment(dateString).month() == '9'){
-        this.setState({ value: moment(dateString).year() + '-4' });
-    }else{
-        this.setState({ value: moment(dateString).year() + '-1' });
+  // 返回季度方法
+  startTiemAndEndTime(date){
+    let time = null;
+    if(date){
+      if([3, 4, 5].includes(moment(date).month())){
+        time = moment(date).year() + '-2';
+      }else if([6 , 7, 8].includes(moment(date).month())){
+        time = moment(date).year() + '-3';
+      }else if([9, 10, 11].includes(moment(date).month())){
+        time = moment(date).year() + '-4';
+      }else if([0, 1, 2].includes(moment(date).month())){
+        time = moment(date).year() + '-1';
+      }
     }
+    // 组件中只能使用日期对象，因time返回为字符串形式例: '2018-1', 使用moment转为日期对象格式
+    return moment(time);
+  }
+  // 时间季度 startend
+  onChange = (index,date,dateString) => {
+    const { rela, relaJson } = this.props;
+    const val = this.calcDate(rela.props, relaJson);
+    //  时间的参数为 数组
+    val[index] = date ? date.toDate() : null;
+    if (index === 0) {
+      this.setState({
+        startTime: relaJson.date_type == 4 ? this.startTiemAndEndTime(dateString): date,
+      });
+    } else {
+      this.setState({
+        endTime: relaJson.date_type == 4 ? this.startTiemAndEndTime(dateString) : date,
+      });
     }
+    this.props.onChange(val);
+  }
+  // 运行时调用这个方式 所以设置下开始与结束时间
   componentWillReceiveProps(nextProps) {
     const { rela } = nextProps;
     const { relaJson } = this.props;
     const arr = this.calcDate(rela.props, relaJson);
+    const startTimeDemo = relaJson.date_type == 4 ? this.startTiemAndEndTime(moment(arr[0]).format()) : arr[0];
+    const endTimeDemo = relaJson.date_type == 4 ? this.startTiemAndEndTime(moment(arr[1]).format()) : arr[1];
     // 参数先放到state里
     this.state = {
-      startTime: arr[0],
-      endTime: arr[1],
+      startTime: startTimeDemo,
+      endTime: endTimeDemo,
     };
   }
   calcDate = (val, relaJson) => {
@@ -79,7 +106,7 @@ export default class Index extends PureComponent {
     }
     return [startTime, endTime];
   };
-
+  // 其他时间组件change
   changeDate = (index, date) => {
     const { rela, relaJson } = this.props;
     //  时间的参数为 数组
@@ -140,13 +167,10 @@ export default class Index extends PureComponent {
           <MonthPicker
             {...opts}
             value={this.state.startTime}
-            value={moment(this.state.value, monthFormat)}
-            onChange={this.changeDate.bind(this, 0)}
-            defaultValue={moment('2018-01', monthFormat)}
             format={monthFormat}
             dropdownClassName="jidu"
             // onChange时间季度
-            onChange={this.onChange}
+            onChange={this.onChange.bind(this, 0)}
             // 季度
             monthCellContentRender={(current) => {
               const data = current._d.toString();
@@ -194,12 +218,9 @@ export default class Index extends PureComponent {
           {relaJson.from_type === '0' && <span className={styles['time-join']}>-</span>}
           {relaJson.from_type === '0' &&
             <MonthPicker {...opts} value={this.state.endTime}
-              onChange={this.changeDate.bind(this, 1)}
-              value={moment(this.state.value, monthFormat)}
-              defaultValue={moment('2018-1', monthFormat)}
               format={monthFormat}
               dropdownClassName="jidu"
-              onChange={this.onChange}
+              onChange={this.onChange.bind(this, 1)}
               monthCellContentRender={(current) => {
                 const data = current._d.toString();
                 let content = "一季度";
