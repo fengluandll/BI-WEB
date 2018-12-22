@@ -17,6 +17,7 @@ export default class Index extends PureComponent {
             chartIdArrayBar: [],
             chartIdArrayPie: [],
             chartIdArrayTable: [],
+            chartIdArrayPivottable: [],
         };
     }
 
@@ -29,7 +30,7 @@ export default class Index extends PureComponent {
         let operateType;// 增加或者减少类型
         let chartId; // 图表Id
         let arr = [];
-        const { chartIdArrayLine, chartIdArrayBar, chartIdArrayPie, chartIdArrayTable } = this.state;
+        const { chartIdArrayLine, chartIdArrayBar, chartIdArrayPie, chartIdArrayTable, chartIdArrayPivottable } = this.state;
         if (type == "0") {
             arr = chartIdArrayLine;
         } else if (type == "1") {
@@ -38,6 +39,10 @@ export default class Index extends PureComponent {
             arr = chartIdArrayPie;
         } else if (type == "3") {
             arr = chartIdArrayTable;
+        } else if (type == "4") {
+            arr = chartIdArrayPivottable;
+        } else if (type == "5") {
+
         }
         //增加
         if (checkValue.length > arr.length) {
@@ -94,6 +99,7 @@ export default class Index extends PureComponent {
         const arrBar = [];
         const arrPie = [];
         const arrTable = [];
+        const arrPivottable = [];
         //  列表全部数据  mCharts 表中的
         mCharts.map((item, index) => {
             const type = reportBoardUtils.getTypeByChartId(mCharts, item.id.toString());// 获取图表类型
@@ -117,6 +123,13 @@ export default class Index extends PureComponent {
                     "label": item.name,
                     "value": item.id.toString(),
                 });
+            } else if (type == "4") {
+                arrPivottable.push({
+                    "label": item.name,
+                    "value": item.id.toString(),
+                });
+            } else if (type == "5") {
+
             }
         });
         //  列表选中数据  mDashboard 表中的
@@ -124,6 +137,7 @@ export default class Index extends PureComponent {
         const chartIdArrayBar = [];
         const chartIdArrayPie = [];
         const chartIdArrayTable = [];
+        const chartIdArrayPivottable = [];
         const children = JSON.parse(mDashboard.style_config).children;
         children.map((item, index) => {
             const type = reportBoardUtils.getTypeByChartId(mCharts, item.chartId);// 获取图表类型
@@ -135,6 +149,10 @@ export default class Index extends PureComponent {
                 chartIdArrayPie.push(item.chartId);
             } else if (type == "3") {
                 chartIdArrayTable.push(item.chartId);
+            } else if (type == "4") {
+                chartIdArrayPivottable.push(item.chartId);
+            } else if (type == "5") {
+
             }
         });
         // 放入state中让点击后可以有比较对象
@@ -143,11 +161,12 @@ export default class Index extends PureComponent {
             chartIdArrayBar,
             chartIdArrayPie,
             chartIdArrayTable,
+            chartIdArrayPivottable,
         });
         const content = (
             <div>
                 {/* logo标题start */}
-                <div style={{ height: '50px', position: 'relative', lineHeight: '50px', textAlign: 'center', borderRight: '1px solid #ccc', background: '#eee', overflow: 'hidden' }}><h1 style={{color:'#1890ff'}}>编辑模式</h1></div>
+                <div style={{ height: '50px', position: 'relative', lineHeight: '50px', textAlign: 'center', borderRight: '1px solid #ccc', background: '#eee', overflow: 'hidden' }}><h1 style={{ color: '#1890ff' }}>编辑模式</h1></div>
                 {/* logo标题end */}
                 <Collapse defaultActiveKey={['1']}>
                     <Panel header={<div><span>组件列表</span></div>} key="1">
@@ -194,6 +213,17 @@ export default class Index extends PureComponent {
                                     defaultValue={chartIdArrayTable}
                                     style={{ display: 'block' }}
                                     onChange={this.addOrRemoveChart.bind(this, "3")}
+                                />
+                            </div>
+                            <div className={styles['field-name']} title="pivot表">
+                                <i className="anticon anticon-up" onClick={this.toogle.bind(this, 'pivot')} style={{ cursor: 'pointer' }} />pivot表
+                            </div>
+                            <div className={styles['field-content']} ref={this.handleFieldContent.bind(this, 'pivot')}>
+                                <CheckboxGroup
+                                    options={arrPivottable}
+                                    defaultValue={chartIdArrayPivottable}
+                                    style={{ display: 'block' }}
+                                    onChange={this.addOrRemoveChart.bind(this, "4")}
                                 />
                             </div>
                         </div>

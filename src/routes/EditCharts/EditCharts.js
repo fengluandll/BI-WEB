@@ -1,9 +1,11 @@
 import { connect } from 'dva';
 import React, { PureComponent } from 'react';
 import ReactDom from 'react-dom';
-import { Spin, Icon } from 'antd';
+import { Icon } from 'antd';
 import DashBoardUtils from '../../utils/dashboardUtils';
 import { Bar, Pie, Line, Table } from '../../componentsPro/Charts';
+import PivotTableUI from 'react-pivottable/PivotTableUI';
+import 'react-pivottable/pivottable.css';
 
 
 
@@ -99,6 +101,26 @@ class EditCharts extends PureComponent {
       </div>
     );
   }
+  // pivottable
+  displayPivottable = () => {
+    const mCharts = this.state.mCharts;
+    const dateSetList = this.state.dateSetList;
+    const data = []; // 根据table的数据拼接处pivottable所需要的参数
+    const { header, body } = dateSetList;
+    data.push(header);
+    for (let i = 0; i < body.length; i++) {
+      data.push(body[i]);
+    }
+    return (
+      <div>
+        <PivotTableUI
+          data={data}
+          onChange={s => this.setState(s)}
+          {...this.state}
+        />
+      </div>
+    );
+  }
   // 搜索栏
   disPlaySearch = () => {
     const mCharts = this.state.mCharts;
@@ -134,6 +156,11 @@ class EditCharts extends PureComponent {
     } else if (type == "3") {
       // 交叉表
       return this.disPlayTable();
+    } else if (type == "4") {
+      // privottable
+      return this.displayPivottable();
+    } else if (type == "5") {
+
     } else if (type == "11") {
       // 搜索栏
       return this.disPlaySearch();

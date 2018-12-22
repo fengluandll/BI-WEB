@@ -57,6 +57,15 @@ class ReportBoardUtils {
             relation.column = column;
             dragactW = 20;
             dragactH = 10;
+        } else if (type == "4") {
+            // pivot
+            tmpType = "pivottable";
+            const column = config.column;
+            relation.column = column;
+            dragactW = 20;
+            dragactH = 10;
+        } else if (type == "5") {
+            // perspective
         } else if (type == "11") {
             //  搜索框
             tmpType = "search";
@@ -251,6 +260,18 @@ class ReportBoardUtils {
                     [10, 11, 12, 13, 15, 16],
                     [10, 11, 12, 13, 15, 16],
                     [10, 11, 12, 13, 15, 16],
+                ],
+            };
+        } else if (type = "pivottable") {
+            //fakeData = [['attribute', 'attribute2'], ['value1', 'value2']]; // 原始假数据
+            fakeData = {
+                header: ['attribute1', 'attribute2', 'attribute3', 'attribute4'],
+                body: [
+                    [10, 11, 12, 13],
+                    [10, 11, 12, 13],
+                    [10, 11, 12, 13],
+                    [10, 11, 12, 13],
+                    [10, 11, 12, 13],
                 ],
             };
         }

@@ -7,7 +7,7 @@ import TabUtils from '../../utils/tabUtils';
 import CssUtils from '../../utils/cssUtils';
 import { ChartList } from '../../componentsPro/ChartList';
 import { Relation, RelationChartsAuto, TabName } from '../../componentsPro/RelationUtil';
-import { Bar, Pie, Line, Table } from '../../componentsPro/Charts';
+import { Bar, Pie, Line, Table, Pivottable } from '../../componentsPro/Charts';
 import { Search } from '../../componentsPro/NewDashboard';
 import { Dragact } from 'dragact';
 import styles from './index.less';
@@ -329,8 +329,9 @@ class ReportBoard extends PureComponent {
     } else if (type == "table") {
       this.renderTable(name, dateSetList, mChart, styleConfig);
     } else if (type == "search") {
-      //return this.renderSearch(relation, mChart, styleConfig);
       this.renderSearch(item, mChart);
+    } else if (type == "pivottable") {
+      this.renderPivottable(name, dateSetList, mChart, styleConfig);
     }
   }
   /****************************************图形展示*****************************************************************/
@@ -437,6 +438,24 @@ class ReportBoard extends PureComponent {
       <div className={cssName}>
         <Spin spinning={spinning}>
           <Table
+            dragactStyle={dragactStyle}
+            editModel={this.state.editModel}
+            mChart={mChart}
+            dateSetList={dateSetList}
+          />
+        </Spin>
+      </div>,
+      document.getElementById(name));
+  }
+  // pivottable
+  renderPivottable(name, dateSetList, mChart, styleConfig) {
+    const spinning = this.state.spinning;
+    let cssName = cssUtils.getBIContainer(mChart);
+    const { dragactStyle } = JSON.parse(this.state.mDashboard.style_config);
+    ReactDom.render(
+      <div className={cssName}>
+        <Spin spinning={spinning}>
+          <Pivottable
             dragactStyle={dragactStyle}
             editModel={this.state.editModel}
             mChart={mChart}
