@@ -6,11 +6,11 @@ class CssUtils {
         const border = config.border;
         // 0就是不 1就是是
         if (border == null) {
-            return 'bi-container-pro';
+            return 'bi-container';
         } else if (border == "0") {
             return 'bi-container-noBorder';
         } else if (border == "1") {
-            return 'bi-container-pro';
+            return 'bi-container';
         }
     }
 

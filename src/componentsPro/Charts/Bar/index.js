@@ -236,10 +236,15 @@ class Bar extends PureComponent {
   render() {
     const mChart = this.props.mChart;
     const config = JSON.parse(mChart.config);
+    const scrollX = config.scrollX; // 根据后端配置是否出现滚动条 切换css x有滚动条高度减滚动条高度
+    let constCss = "chart-content";
+    if(scrollX == "1"){
+      constCss = "barScroll-content";
+    }
     return (
       <div>
         <div className={styles['chart-title']}>{mChart.name ? mChart.name : ""}</div>
-        <div className={styles['chart-content']} ref={this.handleRef} />
+        <div className={styles[constCss]} ref={this.handleRef} />
       </div>
     )
   }
