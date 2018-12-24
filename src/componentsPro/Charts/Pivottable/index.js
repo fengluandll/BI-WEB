@@ -12,9 +12,6 @@ class Pivottable extends PureComponent {
   componentDidUpdate() {
   }
 
-  handleRef = (n) => {
-    this.node = n;
-  };
   renderEmpty = () => {
     return (<div className={styles.empty}><span>数据返回为空</span></div>);
   };

@@ -18,6 +18,7 @@ export default class Index extends PureComponent {
             chartIdArrayPie: [],
             chartIdArrayTable: [],
             chartIdArrayPivottable: [],
+            chartIdArrayPerspective: [],
         };
     }
 
@@ -30,7 +31,7 @@ export default class Index extends PureComponent {
         let operateType;// 增加或者减少类型
         let chartId; // 图表Id
         let arr = [];
-        const { chartIdArrayLine, chartIdArrayBar, chartIdArrayPie, chartIdArrayTable, chartIdArrayPivottable } = this.state;
+        const { chartIdArrayLine, chartIdArrayBar, chartIdArrayPie, chartIdArrayTable, chartIdArrayPivottable, chartIdArrayPerspective } = this.state;
         if (type == "0") {
             arr = chartIdArrayLine;
         } else if (type == "1") {
@@ -42,7 +43,7 @@ export default class Index extends PureComponent {
         } else if (type == "4") {
             arr = chartIdArrayPivottable;
         } else if (type == "5") {
-
+            arr = chartIdArrayPerspective;
         }
         //增加
         if (checkValue.length > arr.length) {
@@ -100,6 +101,7 @@ export default class Index extends PureComponent {
         const arrPie = [];
         const arrTable = [];
         const arrPivottable = [];
+        const arrPerspective = [];
         //  列表全部数据  mCharts 表中的
         mCharts.map((item, index) => {
             const type = reportBoardUtils.getTypeByChartId(mCharts, item.id.toString());// 获取图表类型
@@ -129,7 +131,10 @@ export default class Index extends PureComponent {
                     "value": item.id.toString(),
                 });
             } else if (type == "5") {
-
+                arrPerspective.push({
+                    "label": item.name,
+                    "value": item.id.toString(),
+                });
             }
         });
         //  列表选中数据  mDashboard 表中的
@@ -138,6 +143,7 @@ export default class Index extends PureComponent {
         const chartIdArrayPie = [];
         const chartIdArrayTable = [];
         const chartIdArrayPivottable = [];
+        const chartIdArrayPerspective = [];
         const children = JSON.parse(mDashboard.style_config).children;
         children.map((item, index) => {
             const type = reportBoardUtils.getTypeByChartId(mCharts, item.chartId);// 获取图表类型
@@ -152,7 +158,7 @@ export default class Index extends PureComponent {
             } else if (type == "4") {
                 chartIdArrayPivottable.push(item.chartId);
             } else if (type == "5") {
-
+                chartIdArrayPerspective.push(item.chartId);
             }
         });
         // 放入state中让点击后可以有比较对象
@@ -162,6 +168,7 @@ export default class Index extends PureComponent {
             chartIdArrayPie,
             chartIdArrayTable,
             chartIdArrayPivottable,
+            chartIdArrayPerspective,
         });
         const content = (
             <div>
@@ -215,8 +222,8 @@ export default class Index extends PureComponent {
                                     onChange={this.addOrRemoveChart.bind(this, "3")}
                                 />
                             </div>
-                            <div className={styles['field-name']} title="pivot表">
-                                <i className="anticon anticon-up" onClick={this.toogle.bind(this, 'pivot')} style={{ cursor: 'pointer' }} />pivot表
+                            <div className={styles['field-name']} title="透视表A">
+                                <i className="anticon anticon-up" onClick={this.toogle.bind(this, 'pivot')} style={{ cursor: 'pointer' }} />透视表A
                             </div>
                             <div className={styles['field-content']} ref={this.handleFieldContent.bind(this, 'pivot')}>
                                 <CheckboxGroup
@@ -224,6 +231,17 @@ export default class Index extends PureComponent {
                                     defaultValue={chartIdArrayPivottable}
                                     style={{ display: 'block' }}
                                     onChange={this.addOrRemoveChart.bind(this, "4")}
+                                />
+                            </div>
+                            <div className={styles['field-name']} title="透视表B">
+                                <i className="anticon anticon-up" onClick={this.toogle.bind(this, 'perspective')} style={{ cursor: 'pointer' }} />透视表B
+                            </div>
+                            <div className={styles['field-content']} ref={this.handleFieldContent.bind(this, 'perspective')}>
+                                <CheckboxGroup
+                                    options={arrPerspective}
+                                    defaultValue={chartIdArrayPerspective}
+                                    style={{ display: 'block' }}
+                                    onChange={this.addOrRemoveChart.bind(this, "5")}
                                 />
                             </div>
                         </div>

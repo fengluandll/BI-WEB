@@ -3,6 +3,7 @@ import Pie from './Pie';
 import Line from './Line';
 import Table from './Table';
 import Pivottable from './Pivottable';
+import Perspective from './Perspective';
 
 export {
   Bar,
@@ -10,4 +11,5 @@ export {
   Line,
   Table,
   Pivottable,
+  Perspective,
 };
