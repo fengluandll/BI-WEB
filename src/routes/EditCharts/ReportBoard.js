@@ -44,6 +44,7 @@ class ReportBoard extends PureComponent {
       dragMoveChecked: false,  // 是否静止dragact移动，移动就点击无法显示右侧的编辑界面。
 
       user_type: "", // 权限控制,用户类型
+      user_auth: "0", // 权限控制,是否有编辑权限,"1"有权限
     };
     // get boardId
     this.boardId = this.props.match.params.boardId;
@@ -59,7 +60,7 @@ class ReportBoard extends PureComponent {
       payload: {
         boardId,
         callback: () => {
-          const { mDashboard_old, mCharts, user_type } = this.props.model;
+          const { mDashboard_old, mCharts, user_type, user_auth } = this.props.model;
           const { tagName, tagNames } = this.state;
           const mDashboard = reportBoardUtils.getStyle_configByOrder(mDashboard_old, tagName, tagNames);
           this.fetchData(boardId, mDashboard);//查询数据
@@ -70,6 +71,7 @@ class ReportBoard extends PureComponent {
             tagName,
             tagNames,
             user_type,
+            user_auth,
             spinning: true,// 初始化时候设置为加载中
           });
         }
@@ -1085,10 +1087,13 @@ class ReportBoard extends PureComponent {
 
     return (
       <div>
-        {/* 添加返回按钮的父级 */}
-        <div style={{ marginLeft: (this.state.editModel == "true") ? "170px" : "0", width: 30, height: 180, opacity: 0, position: 'fixed', top: '50%', marginTop: -90, left: 0, zIndex: 1000, fontSize: 26, textAlign: 'center', cursor: 'pointer' }} onClick={this.changeEditeMode} onMouseEnter={this.onMouseEnterShow.bind(this)} onMouseLeave={this.onMouseLeaveHide.bind(this)}>
-          <div style={{ marginLeft: (this.state.editModel == "true") ? "170px" : "0", width: 30, height: 60, opacity: '1 !important', border: '2px solid #ccc', borderRadius: 6, borderLeft: '1px solid #ccc', background: '#eee', color: '#000', position: 'fixed', top: '50%', marginTop: -30, left: 0, zIndex: 1000, fontSize: 26, textAlign: 'center', lineHeight: 2, cursor: 'pointer', }} >||</div>
-        </div>
+        {/* 添加返回按钮的父级,根据权限参数控制是否显示 */}
+        {this.state.user_auth == "1" ?
+          <div style={{ marginLeft: (this.state.editModel == "true") ? "170px" : "0", width: 30, height: 180, opacity: 0, position: 'fixed', top: '50%', marginTop: -90, left: 0, zIndex: 1000, fontSize: 26, textAlign: 'center', cursor: 'pointer' }} onClick={this.changeEditeMode} onMouseEnter={this.onMouseEnterShow.bind(this)} onMouseLeave={this.onMouseLeaveHide.bind(this)}>
+            <div style={{ marginLeft: (this.state.editModel == "true") ? "170px" : "0", width: 30, height: 60, opacity: '1 !important', border: '2px solid #ccc', borderRadius: 6, borderLeft: '1px solid #ccc', background: '#eee', color: '#000', position: 'fixed', top: '50%', marginTop: -30, left: 0, zIndex: 1000, fontSize: 26, textAlign: 'center', lineHeight: 2, cursor: 'pointer', }} >||</div>
+          </div>
+          :
+          ""}
         {this.state.editModel == "true" ? <div className={styles['boardLeft']} ref={(instance) => { this.left = instance; }} > </div> : <div></div>}
         <div id="contents" className={`boardcenter_report`} ref={(instance) => { this.center = instance; }} style={{ paddingLeft: (this.state.editModel == "true") ? "200px" : "0", paddingRight: (this.state.editModel == "true") ? "200px" : "0", background: '#eee' }}>
           {this.renderTab()}
@@ -1138,7 +1143,7 @@ class ReportBoard extends PureComponent {
           <div style={{ width: '200px', height: '50px', position: 'absolute', top: '0', lineHeight: '50px', textAlign: 'center', borderLeft: '1px solid #ccc', borderBottom: '1px solid #ccc', background: '#eee', overflow: 'hidden' }}><h1 style={{ color: '#1890ff' }}>编辑模式</h1></div>
           <div style={{ border: '1px solid #ccc' }}>
             <div><Switch checkedChildren="关联" unCheckedChildren="拖拽" style={{ marginTop: '50px' }} checked={this.state.dragMoveChecked} onChange={this.changeDragMoveChecked} /></div>
-            <div>{/*报表保存*/}<Button type="primary" onClick={this.saveCurrent}>保存当前</Button></div>
+            <div>{/*报表保存*/}{this.state.user_type == "customer" ? <Button type="primary" onClick={this.saveCurrent}>保存当前</Button> : ""}</div>
             <div>{/*报表保存*/}<Button type="primary" onClick={this.pullSynchronization}>拉取同步</Button></div>
             <div ref={(instance) => { this.rightRelation = instance; }}></div>
           </div>

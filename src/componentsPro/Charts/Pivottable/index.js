@@ -102,7 +102,7 @@ class Pivottable extends PureComponent {
       height = height - 25;
     }
     return (
-      <div>
+      <div style={{ overflowX: "auto", overflowY: "scroll" }}>
         <PivotTableUI
           data={data}
           onChange={s => this.setState(s)}
