@@ -13,11 +13,11 @@ export default {
     *fetch({ payload: { chartId, callback } }, { call, put }) {
       let response = yield call(findType, { chartId });
       const { type } = response.data;
-      if (type == "3") {
+      if (type == "3" || type == "4" || type == "5") {
         response = yield call(findTableDate, { chartId });
       } else if (type == "11") {
 
-      } else {
+      } else if (type == "0" || type == "1" || type == "2") {
         response = yield call(findChartDate, { chartId });
       }
       const { list, mCharts } = response.data;
