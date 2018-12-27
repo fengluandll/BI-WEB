@@ -56,6 +56,7 @@ class Pivottable extends PureComponent {
           data={data}
           rows={arrRowsName}
           cols={arrColsName}
+          aggregatorName={aggregatorName}
           onChange={s => this.setState(s)}
           {...this.state}
         />

@@ -3,7 +3,7 @@ import React, { PureComponent } from 'react';
 import ReactDom from 'react-dom';
 import { Icon } from 'antd';
 import DashBoardUtils from '../../utils/dashboardUtils';
-import { Bar, Pie, Line, Table } from '../../componentsPro/Charts';
+import { Bar, Pie, Line, Table, Pivottable } from '../../componentsPro/Charts';
 import PivotTableUI from 'react-pivottable/PivotTableUI';
 import 'react-pivottable/pivottable.css';
 
@@ -113,10 +113,9 @@ class EditCharts extends PureComponent {
     }
     return (
       <div>
-        <PivotTableUI
-          data={data}
-          onChange={s => this.setState(s)}
-          {...this.state}
+        <Pivottable
+          mChart={mCharts}
+          dateSetList={dateSetList}
         />
       </div>
     );
