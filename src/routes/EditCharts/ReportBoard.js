@@ -1,11 +1,11 @@
 import { connect } from 'dva';
 import React, { PureComponent } from 'react';
 import ReactDom from 'react-dom';
-import { Switch, message, Tabs, Button, Spin } from 'antd';
+import { Switch, message, Tabs, Button, Spin, Modal } from 'antd';
 import ReportBoardUtils from '../../utils/reportBoardUtils';
 import TabUtils from '../../utils/tabUtils';
 import CssUtils from '../../utils/cssUtils';
-import { ChartList } from '../../componentsPro/ChartList';
+import { ChartList, TabList } from '../../componentsPro/ChartList';
 import { Relation, RelationChartsAuto, TabName } from '../../componentsPro/RelationUtil';
 import { Bar, Pie, Line, Table, Pivottable, Perspective } from '../../componentsPro/Charts';
 import { Search } from '../../componentsPro/NewDashboard';
@@ -13,6 +13,7 @@ import { Dragact } from 'dragact';
 import styles from './index.less';
 
 const TabPane = Tabs.TabPane;
+const confirm = Modal.confirm;
 const reportBoardUtils = new ReportBoardUtils();
 const tabUtils = new TabUtils();
 const cssUtils = new CssUtils();
@@ -50,6 +51,8 @@ class ReportBoard extends PureComponent {
     this.boardId = this.props.match.params.boardId;
     // 被plot点击查询的图表id
     this.plotChartId = [];
+    // 点击图表div的次数
+    this.clickChartDivTimes = 0;
   }
   componentWillMount() {
     const boardId = this.boardId;
@@ -83,10 +86,6 @@ class ReportBoard extends PureComponent {
     // 如果后端请求没过来 就不执行 省的报错
     if (null == this.state.mDashboard.style_config) {
       return;
-    }
-    if (this.state.editModel == "true") {
-      //  display  左侧的控件列表
-      this.disPlayLeft();
     }
     //  display  中间的图表
     this.disPlayCharts();
@@ -125,14 +124,28 @@ class ReportBoard extends PureComponent {
 
   // 展示 左侧控件列表
   disPlayLeft() {
-    const left = this.left;
-    ReactDom.render(<div></div>, left); // 先清空
     const { mDashboard, mCharts } = this.state;
-    ReactDom.render(<ChartList
-      mCharts={mCharts}
-      mDashboard={mDashboard}
-      addOrRemoveChart={this.addOrRemoveChart}
-    />, left);
+    return (
+      <div>
+        {/* logo标题start */}
+        <div style={{ height: '50px', position: 'relative', lineHeight: '50px', textAlign: 'center', borderRight: '1px solid #ccc', background: '#eee', overflow: 'hidden' }}><h1 style={{ color: '#1890ff' }}>编辑模式</h1></div>
+        {/* logo标题end */}
+        <div>
+          <ChartList
+            mCharts={mCharts}
+            mDashboard={mDashboard}
+            addOrRemoveChart={this.addOrRemoveChart}
+          />
+        </div>
+        <div>
+          <TabList
+            mCharts={mCharts}
+            mDashboard={mDashboard}
+            addOrRemoveChart={this.addOrRemoveChart}
+          />
+        </div>
+      </div>
+    );
   }
 
 
@@ -617,8 +630,30 @@ class ReportBoard extends PureComponent {
 
   // 点击tab进行初始化数据查询
   tabOnChange = (activeKey) => {
-    //请求后端数据dataList
     const { mDashboard_old, mDashboard, tagName, tagNames } = this.state;
+    const mDashboardTmp = JSON.parse(JSON.stringify(mDashboard));
+    const tagNameTmp = JSON.parse(JSON.stringify(tagName));
+    let name = "";// 当前标签的name
+    for (let key in tagName) {
+      name = tagName[key];
+    }
+    // 如果是编辑模式先判断并且弹出保存确认框
+    if (this.state.editModel == "true") {
+      confirm({
+        title: '',
+        content: `是否保存对 ${name} 进行的修改？`,
+        okText: 'Yes',
+        okType: 'primary',
+        cancelText: 'No',
+        onOk() {
+          reportBoardUtils.getMDashboard_oldByMDashboard(mDashboard_old, mDashboardTmp, tagNameTmp);
+          message.success('保存成功');
+        },
+        onCancel() {
+        },
+      });
+    }
+    //请求后端数据dataList
     reportBoardUtils.getMDashboardByKey(mDashboard_old, mDashboard, activeKey);//生成新的mDashboard
     //更新state中的tab
     tabUtils.changeActiveKey(activeKey, tagName, tagNames, mDashboard_old);
@@ -737,8 +772,8 @@ class ReportBoard extends PureComponent {
   saveDashBoard = () => {
     // 把单独的报表mDashboard拼成主题提交
     const { mDashboard_old, mDashboard, tagName, user_type } = this.state;
-    // closedby wangliu 20181206 reason:页面已经有了保存按钮了,
-    //reportBoardUtils.getMDashboard_oldByMDashboard(mDashboard_old, mDashboard, tagName);
+    // 保存当前tag
+    reportBoardUtils.getMDashboard_oldByMDashboard(mDashboard_old, mDashboard, tagName);
     this.props.dispatch({
       type: 'reportBoard/saveDashBoard',
       payload: {
@@ -756,13 +791,6 @@ class ReportBoard extends PureComponent {
     });
   }
 
-  // 保存当前mDashboard到mDashboard_old中
-  saveCurrent = () => {
-    // 把单独的报表mDashboard拼成主题
-    const { mDashboard_old, mDashboard, tagName } = this.state;
-    reportBoardUtils.getMDashboard_oldByMDashboard(mDashboard_old, mDashboard, tagName);
-    message.success('保存成功');
-  }
   // 用户拉取同步,从t_dashboard中刷到m_dashboard中
   pullSynchronization = () => {
     const { mDashboard_old, tagName } = this.state;
@@ -1086,7 +1114,7 @@ class ReportBoard extends PureComponent {
     }
 
     return (
-      <div>
+      <div style={this.state.spinning == true ? { pointerEvents: 'none' } : {}}>{/*如果有图表在加载中那么就设置样式为不可点击状态*/}
         {/* 添加返回按钮的父级,根据权限参数控制是否显示 */}
         {this.state.user_auth == "1" ?
           <div style={{ marginLeft: (this.state.editModel == "true") ? "170px" : "0", width: 30, height: 180, opacity: 0, position: 'fixed', top: '50%', marginTop: -90, left: 0, zIndex: 1000, fontSize: 26, textAlign: 'center', cursor: 'pointer' }} onClick={this.changeEditeMode} onMouseEnter={this.onMouseEnterShow.bind(this)} onMouseLeave={this.onMouseLeaveHide.bind(this)}>
@@ -1094,7 +1122,7 @@ class ReportBoard extends PureComponent {
           </div>
           :
           ""}
-        {this.state.editModel == "true" ? <div className={styles['boardLeft']} ref={(instance) => { this.left = instance; }} > </div> : <div></div>}
+        {this.state.editModel == "true" ? <div className={styles['boardLeft']}>{this.disPlayLeft()} </div> : <div></div>}
         <div id="contents" className={`boardcenter_report`} ref={(instance) => { this.center = instance; }} style={{ paddingLeft: (this.state.editModel == "true") ? "200px" : "0", paddingRight: (this.state.editModel == "true") ? "200px" : "0", background: '#eee' }}>
           {this.renderTab()}
           <Dragact
@@ -1143,7 +1171,6 @@ class ReportBoard extends PureComponent {
           <div style={{ width: '200px', height: '50px', position: 'absolute', top: '0', lineHeight: '50px', textAlign: 'center', borderLeft: '1px solid #ccc', borderBottom: '1px solid #ccc', background: '#eee', overflow: 'hidden' }}><h1 style={{ color: '#1890ff' }}>编辑模式</h1></div>
           <div style={{ border: '1px solid #ccc' }}>
             <div><Switch checkedChildren="关联" unCheckedChildren="拖拽" style={{ marginTop: '50px' }} checked={this.state.dragMoveChecked} onChange={this.changeDragMoveChecked} /></div>
-            <div>{/*报表保存*/}<Button type="primary" onClick={this.saveCurrent}>保存当前</Button></div>
             <div>{/*报表保存*/}{this.state.user_type == "customer" ? <Button type="primary" onClick={this.pullSynchronization}>拉取同步</Button> : ""}</div>
             <div ref={(instance) => { this.rightRelation = instance; }}></div>
           </div>

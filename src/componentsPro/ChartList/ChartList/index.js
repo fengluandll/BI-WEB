@@ -172,9 +172,6 @@ export default class Index extends PureComponent {
         });
         const content = (
             <div>
-                {/* logo标题start */}
-                <div style={{ height: '50px', position: 'relative', lineHeight: '50px', textAlign: 'center', borderRight: '1px solid #ccc', background: '#eee', overflow: 'hidden' }}><h1 style={{ color: '#1890ff' }}>编辑模式</h1></div>
-                {/* logo标题end */}
                 <Collapse defaultActiveKey={['1']}>
                     <Panel header={<div><span>组件列表</span></div>} key="1">
                         <div className="search-config-selection">
@@ -254,13 +251,6 @@ export default class Index extends PureComponent {
                     </Panel>
                 </Collapse>
                 {/* 页签权限end */}
-                {/* 标准页签start */}
-                <Collapse defaultActiveKey={['3']}>
-                    <Panel header={<div><span>标准页签</span></div>} key="1" style={{ pointerEvents: "none" }}>
-
-                    </Panel>
-                </Collapse>
-                {/* 标准页签end */}
             </div>
         );
         ReactDom.render(content, node);
