@@ -49,9 +49,26 @@ class Pivottable extends PureComponent {
         arrColsName.push(head[arrColumn.indexOf(arrCols[i])]);
       }
     }
+    // 高度
+    let height = 300;
+    if (config.height) {
+      height = config.height;
+    }
+    if (null != this.props.dragactStyle && this.props.dragactStyle.length > 0) {
+      const array = this.props.dragactStyle;
+      array.map((item, index) => {
+        if (item.key == mChart.id.toString()) {
+          if (this.props.editModel == "true") {
+            height = item.h * 40 - 20;
+          } else {
+            height = item.h * 40 - 20;
+          }
+        }
+      });
+    }
 
     return (
-      <div style={{ overflowX: "auto", overflowY: "scroll" }}>
+      <div style={{ overflow: 'auto', height: height }}>
         <PivotTableUI
           data={data}
           rows={arrRowsName}
