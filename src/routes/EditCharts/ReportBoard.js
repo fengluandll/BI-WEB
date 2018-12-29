@@ -87,6 +87,10 @@ class ReportBoard extends PureComponent {
     if (null == this.state.mDashboard.style_config) {
       return;
     }
+    if (this.state.editModel == "true") {
+      //  display  左侧的控件列表
+      this.disPlayChartList();
+    }
     //  display  中间的图表
     this.disPlayCharts();
   }
@@ -129,15 +133,9 @@ class ReportBoard extends PureComponent {
     return (
       <div>
         {/* logo标题start */}
-        <div style={{ height: '39px', position: 'relative', lineHeight: '39px', textAlign: 'center', borderRight: '1px solid #ccc', background: '#eee', overflow: 'hidden' }}><h1 style={{ color: '#1890ff',fontSize:'16' }}>编辑模式</h1></div>
+        <div style={{ height: '39px', position: 'relative', lineHeight: '39px', textAlign: 'center', borderRight: '1px solid #ccc', background: '#eee', overflow: 'hidden' }}><h1 style={{ color: '#1890ff', fontSize: '16' }}>编辑模式</h1></div>
         {/* logo标题end */}
-        <div>
-          <ChartList
-            mCharts={mCharts}
-            mDashboard={mDashboard}
-            addOrRemoveChart={this.addOrRemoveChart}
-          />
-        </div>
+        <div ref={(instance) => { this.chartList = instance }}></div>{/* 控件列表 */}
         <div>{/*只有customer才有权限看到*/}
           {this.state.user_type == 'customer' ?
             <TabList
@@ -149,6 +147,18 @@ class ReportBoard extends PureComponent {
         </div>
       </div>
     );
+  }
+  // 展示 左侧控件列表
+  disPlayChartList() {
+    const chartList = this.chartList;
+    ReactDom.render(<div></div>, chartList); // 清空
+    const { mDashboard, mCharts, mDashboard_old } = this.state;
+    ReactDom.render(
+      <ChartList
+        mCharts={mCharts}
+        mDashboard={mDashboard}
+        addOrRemoveChart={this.addOrRemoveChart}
+      />, chartList);
   }
 
 
@@ -1189,7 +1199,6 @@ class ReportBoard extends PureComponent {
           </div>
           {/* 切换按钮end */}
           <div style={{ border: '1px solid #ccc' }}>
-            <div>{/*报表保存*/}{this.state.user_type == "customer" ? <Button type="primary" onClick={this.pullSynchronization}>拉取同步</Button> : ""}</div>
             <div ref={(instance) => { this.rightRelation = instance; }}></div>
           </div>
         </div> : <div></div>
