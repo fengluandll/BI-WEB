@@ -1,7 +1,7 @@
 import { connect } from 'dva';
 import React, { PureComponent } from 'react';
 import ReactDom from 'react-dom';
-import { Switch, message, Tabs, Button, Spin, Modal } from 'antd';
+import { Switch, message, Tabs, Button, Spin, Modal, Radio } from 'antd';
 import ReportBoardUtils from '../../utils/reportBoardUtils';
 import TabUtils from '../../utils/tabUtils';
 import CssUtils from '../../utils/cssUtils';
@@ -129,7 +129,7 @@ class ReportBoard extends PureComponent {
     return (
       <div>
         {/* logo标题start */}
-        <div style={{ height: '50px', position: 'relative', lineHeight: '50px', textAlign: 'center', borderRight: '1px solid #ccc', background: '#eee', overflow: 'hidden' }}><h1 style={{ color: '#1890ff' }}>编辑模式</h1></div>
+        <div style={{ height: '39px', position: 'relative', lineHeight: '39px', textAlign: 'center', borderRight: '1px solid #ccc', background: '#eee', overflow: 'hidden' }}><h1 style={{ color: '#1890ff',fontSize:'16' }}>编辑模式</h1></div>
         {/* logo标题end */}
         <div>
           <ChartList
@@ -1178,9 +1178,17 @@ class ReportBoard extends PureComponent {
           </Dragact>
         </div>
         {this.state.editModel == "true" ? <div className={styles['boardRight']} ref={(instance) => { this.right = instance; }} >
-          <div style={{ width: '200px', height: '50px', position: 'absolute', top: '0', lineHeight: '50px', textAlign: 'center', borderLeft: '1px solid #ccc', borderBottom: '1px solid #ccc', background: '#eee', overflow: 'hidden' }}><h1 style={{ color: '#1890ff' }}>编辑模式</h1></div>
+          {/* 切换按钮start */}
+          <div>
+            <div>
+              <Radio.Group defaultValue="drag" buttonStyle="solid" checked={this.state.dragMoveChecked} onChange={this.changeDragMoveChecked}>
+                <Radio.Button value="drag" >拖拽</Radio.Button>
+                <Radio.Button value="relation">关联</Radio.Button>
+              </Radio.Group>
+            </div>
+          </div>
+          {/* 切换按钮end */}
           <div style={{ border: '1px solid #ccc' }}>
-            <div><Switch checkedChildren="关联" unCheckedChildren="拖拽" style={{ marginTop: '50px' }} checked={this.state.dragMoveChecked} onChange={this.changeDragMoveChecked} /></div>
             <div>{/*报表保存*/}{this.state.user_type == "customer" ? <Button type="primary" onClick={this.pullSynchronization}>拉取同步</Button> : ""}</div>
             <div ref={(instance) => { this.rightRelation = instance; }}></div>
           </div>

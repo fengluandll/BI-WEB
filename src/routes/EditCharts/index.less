@@ -29,7 +29,7 @@
 .boardRight div:nth-child(2)>button{
   position: absolute;
   top: 50px;
-  right: 72px;
+  right: 40px;
 }
 .boardcenter{
     position: fixed;
@@ -170,11 +170,16 @@
     }
     .ant-tabs-extra-content .ant-tabs-new-tab{
       border: 0;
+      font-weight: bold;
+      font-size: 18px;
+      vertical-align: middle;
     }
     .ant-tabs-extra-content{
       width: 40px;
+      height: 39px;
       text-align: center;
       border-left: 1px solid #ccc;
+      background: #eee;
     }
      /** 动态布局 使用的 add by wangliu 0829*/
     .bi-container-css{
@@ -223,6 +228,40 @@
     }
     .anticon-cross-circle:before{
       content: '';
+    }
+    // 切换按钮
+    .ant-radio-group{
+      height: 32px;
+      margin-bottom: 10px;
+    }
+    .ant-radio-button-wrapper{
+      height: 39px;
+      line-height: 39px;
+      text-align: center;
+      font-size: 16px;
+      z-index: 1001;
+    }
+    .ant-radio-button-wrapper-checked{
+      background: #40a9ff;
+      color: #fff;
+    }
+    .ant-radio-button-wrapper:first-child{
+      width: 99px;
+      position: fixed;
+      top: 0;
+      right: 100px;
+    }
+    .ant-radio-button-wrapper:last-child{
+      width: 99px;
+      position: fixed;
+      top: 0;
+      right: 0;
+    }
+    .ant-radio-button-wrapper-checked:hover{
+      color: #fff;
+    }
+    .ant-radio-group-solid .ant-radio-button-wrapper-checked:not(.ant-radio-button-wrapper-disabled){
+      color: #fff;
     }
   
   }
