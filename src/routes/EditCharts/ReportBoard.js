@@ -133,7 +133,7 @@ class ReportBoard extends PureComponent {
     return (
       <div>
         {/* logo标题start */}
-        <div style={{ height: '39px', position: 'relative', lineHeight: '39px', textAlign: 'center', borderRight: '1px solid #ccc', background: '#eee', overflow: 'hidden' }}><h1 style={{ color: '#1890ff', fontSize: '16' }}>编辑模式</h1></div>
+        <div style={{ height: '39px', position: 'relative', lineHeight: '39px', textAlign: 'center', borderRight: '1px solid #ccc', background: '#eee', overflow: 'hidden' }}><h1 style={{ color: '#1890ff', fontSize: '16px' }}>编辑模式</h1></div>
         {/* logo标题end */}
         <div ref={(instance) => { this.chartList = instance }}></div>{/* 控件列表 */}
         <div>{/*只有customer才有权限看到*/}
