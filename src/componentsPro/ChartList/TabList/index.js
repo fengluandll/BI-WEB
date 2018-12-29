@@ -84,12 +84,12 @@ export default class Index extends PureComponent {
                             const name = children[item].name;
                             const order = children[item].order;
                             return (
-                                <div style={{borderBottom:'1px solid #d9d9d9',height:'22',lineHeight:'16px'}} className={styles['itemStyle']} key={index} onClick={this.pullTdashboardTab.bind(this, name, item)}>
+                                <div style={{borderBottom:'1px solid #d9d9d9',height:'22'}} className={styles['itemStyle']} key={index} onClick={this.pullTdashboardTab.bind(this, name, item)}>
                                     {`${name}${order}`}
                                 </div>
                             );
                         })}
-                        <div style={{borderBottom:'1px solid #d9d9d9',height:'22',lineHeight:'18px'}} className={styles['itemStyle']} onClick={this.pullTdashboardAll.bind(this)}>全部拉取</div>
+                        <div style={{borderBottom:'1px solid #d9d9d9',height:'22'}} className={styles['itemStyle']} onClick={this.pullTdashboardAll.bind(this)}>全部拉取</div>
                         </div>
                     </Panel>
                 </Collapse>
