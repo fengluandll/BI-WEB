@@ -6,6 +6,7 @@ export default {
   // 初始值，优先级低于传给 dva() 的 opts.initialState。
   state: {
     mDashboard: {}, // m_dashboard 表
+    tDashboard: {}, // t_dashboard 表
     mCharts: {},  // m_charts 表
     searchItems: {}, // 搜索框拥有的所有 查询 子组件
     idColumns: {},  //  每个 图表 的维度 度量 图例 和 搜索框子组件 的 字段 对应的 相应的 表数据
@@ -20,8 +21,8 @@ export default {
     *fetch({ payload: { boardId, callback } }, { call, put }) {
       const response = yield call(fetch, { boardId });
       const data = response.data;
-      const { mDashboard, mCharts, user_type, user_auth } = data;
-      yield put({ type: 'save', payload: { mDashboard_old: mDashboard, mCharts, user_type, user_auth } });
+      const { mDashboard, tDashboard, mCharts, user_type, user_auth } = data;
+      yield put({ type: 'save', payload: { mDashboard_old: mDashboard, tDashboard, mCharts, user_type, user_auth } });
       callback();
     },
     *fetchData({ payload: { boardId, mDashboard, callback } }, { call, put }) {

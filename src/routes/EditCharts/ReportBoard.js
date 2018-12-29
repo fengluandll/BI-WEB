@@ -124,7 +124,8 @@ class ReportBoard extends PureComponent {
 
   // 展示 左侧控件列表
   disPlayLeft() {
-    const { mDashboard, mCharts } = this.state;
+    const { mDashboard, mCharts, mDashboard_old } = this.state;
+    const { tDashboard } = this.props.model;
     return (
       <div>
         {/* logo标题start */}
@@ -137,12 +138,14 @@ class ReportBoard extends PureComponent {
             addOrRemoveChart={this.addOrRemoveChart}
           />
         </div>
-        <div>
-          <TabList
-            mCharts={mCharts}
-            mDashboard={mDashboard}
-            addOrRemoveChart={this.addOrRemoveChart}
-          />
+        <div>{/*只有customer才有权限看到*/}
+          {this.state.user_type == 'customer' ?
+            <TabList
+              mCharts={mCharts}
+              mDashboard_old={mDashboard_old}
+              tDashboard={tDashboard}
+              updateState={this.updateState}
+            /> : <div></div>}
         </div>
       </div>
     );
@@ -1037,6 +1040,13 @@ class ReportBoard extends PureComponent {
     this.plotChartId.push("007");
     this.setState({
       plotClickFlag: true,// plot点击置为true
+    });
+  }
+
+  // 更新状态通用方法
+  updateState = (...props) => {
+    this.setState({
+      ...props,
     });
   }
 
