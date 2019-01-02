@@ -1099,6 +1099,15 @@ class ReportBoard extends PureComponent {
     const style_config = this.state.mDashboard.style_config;
     if (style_config) {
       const data = JSON.parse(style_config).dragactStyle;
+      const len = data.length; // add by wangliu 20190102 for:当组件少的时候手动增加假数据,不让dragact控件报错
+      if(len<this.maxDragactCount){
+        const maxLen = this.maxDragactCount;
+        for(let i=0;i<maxLen-len;i++){
+          data.push({ GridX: 8, GridY: 0, w: 1, h: 1, key: `-${i}` });
+        }
+      }else{
+        this.maxDragactCount = len;
+      }
       return data;
     } else {
       return fakeData;

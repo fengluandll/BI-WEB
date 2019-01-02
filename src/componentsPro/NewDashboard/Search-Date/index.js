@@ -59,19 +59,19 @@ export default class Index extends PureComponent {
     }
     this.props.onChange(val);
   }
-  // 运行时调用这个方式 所以设置下开始与结束时间
-  componentWillReceiveProps(nextProps) {
-    const { rela } = nextProps;
-    const { relaJson } = this.props;
-    const arr = this.calcDate(rela.props, relaJson);
-    const startTimeDemo = relaJson.date_type == 4 ? this.startTiemAndEndTime(moment(arr[0]).format()) : arr[0];
-    const endTimeDemo = relaJson.date_type == 4 ? this.startTiemAndEndTime(moment(arr[1]).format()) : arr[1];
-    // 参数先放到state里
-    this.state = {
-      startTime: startTimeDemo,
-      endTime: endTimeDemo,
-    };
-  }
+  // 运行时调用这个方式 所以设置下开始与结束时间 接受参数钩子函数去掉 20190102 addby wangliu 修改bug：相对时间时修改时间后还是原来的当年相对时间,用state中的时间就够了
+  // componentWillReceiveProps(nextProps) {
+  //   const { rela } = nextProps;
+  //   const { relaJson } = this.props;
+  //   const arr = this.calcDate(rela.props, relaJson);
+  //   const startTimeDemo = relaJson.date_type == 4 ? this.startTiemAndEndTime(moment(arr[0]).format()) : arr[0];
+  //   const endTimeDemo = relaJson.date_type == 4 ? this.startTiemAndEndTime(moment(arr[1]).format()) : arr[1];
+  //   // 参数先放到state里
+  //   this.state = {
+  //     startTime: startTimeDemo,
+  //     endTime: endTimeDemo,
+  //   };
+  // }
   calcDate = (val, relaJson) => {
     const { from_type, time_from, time_to, date_type, time_type } = relaJson;
     let startTime = null;
