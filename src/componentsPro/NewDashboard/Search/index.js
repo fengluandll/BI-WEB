@@ -93,11 +93,13 @@ export default class Index extends PureComponent {
               // str
               // 拼接数据 data
               const data = [];
-              for (let i = 0; i < searchEnum.length; i++) {
-                data.push({
-                  id: `${i}`,
-                  name: searchEnum[i],
-                });
+              if (null != searchEnum[key]) {
+                for (let i = 0; i < searchEnum[key].length; i++) {
+                  data.push({
+                    id: `${i}`,
+                    name: searchEnum[key][i],
+                  });
+                }
               }
               const { chart_item } = this.props;// 取出搜索框控件的chartId
               child = (

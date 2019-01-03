@@ -52,11 +52,14 @@ export default {
       const { success } = data;
       callback(success);
     },
-    *searchItemData({ payload: { id, boardId, callback } }, { call, put }) {
-      const response = yield call(searchItemData, { id, boardId });
-      const data = response.data;
-      const { list } = data;
-      yield put({ type: 'save', payload: { searchEnum: list } });
+    *searchItemData({ payload: { id, boardId, callback } }, { select, call, put }) {
+      const { searchEnum } = yield select(state => state.reportBoard);
+      if (null == searchEnum[id.toString()]) { // 如果没有数据就去后端请求
+        const response = yield call(searchItemData, { id, boardId });
+        const data = response.data;
+        searchEnum[id.toString()] = data[id];
+        yield put({ type: 'save', payload: { searchEnum: searchEnum } });
+      }
       callback();
     },
     *pullSynchronizationTab({ payload: { id, callback } }, { call, put }) {

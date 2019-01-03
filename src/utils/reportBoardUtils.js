@@ -258,7 +258,7 @@ class ReportBoardUtils {
                 { x: '事例五', y: 9 },];
         } else if (type == "table") {
             fakeData = {
-                header: ['Tesla', 'Nissan', 'Toyota', 'Honda', 'Mazda', 'Ford'],
+                header: ['列一', '列二', '列三', '列四', '列五', '列六'],
                 body: [
                     [10, 11, 12, 13, 15, 16],
                     [10, 11, 12, 13, 15, 16],
