@@ -427,11 +427,8 @@ class ReportBoardUtils {
         const style_config_obj = JSON.parse(style_config);
         const children = style_config_obj.children;
         const value = children[activeKey];// 取好的值
-        const style_config_m = mDashboard.style_config;
-        let style_config_obj_m = JSON.parse(style_config_m);
-        style_config_obj_m = value;
         // 合并到mDashboard
-        mDashboard.style_config = JSON.stringify(style_config_obj_m);
+        mDashboard.style_config = JSON.stringify(value);
     }
 
     // 获取搜索框item的排序的最大值order

@@ -766,7 +766,7 @@ class ReportBoard extends PureComponent {
   searchItemData = (id, chartId) => {
     // 思路 rs_column_conf 表中的  id  取得 rsc_name 便可查询  参数 配上 所有的搜索框参数
     //this.plotChartId = []; // 先清空 注释by wangliu 加了 图表数据没刷出来的时候点搜索框item会让图表一直处于加载状态
-    this.plotChartId.push(chartId); // 搜索框str下拉框查询数据,将chartId放入
+    //this.plotChartId.push(chartId); // 搜索框str下拉框查询数据,将chartId放入 20190103注释 会引起切换tab不刷新的Bug
     // 请求枚举数据
     this.props.dispatch({
       type: 'reportBoard/searchItemData',
@@ -1077,7 +1077,9 @@ class ReportBoard extends PureComponent {
         chart.type = "search";
         chart.h = cssUtils.changeSearchDragact(chart);// 搜索框控制要么一行要么两行
       }
-      array.push(chart);
+      if (item.type != "fack") {// 如果是造的数据就不存储
+        array.push(chart);
+      }
     });
     const mDashboard = this.state.mDashboard;
     const { id, style_config } = mDashboard;
@@ -1103,7 +1105,7 @@ class ReportBoard extends PureComponent {
       if (len < this.maxDragactCount) {
         const maxLen = this.maxDragactCount;
         for (let i = 0; i < maxLen - len; i++) {
-          data.push({ GridX: 0, GridY: 0, w: 0, h: 0, key: `-${i}` });
+          data.push({ GridX: 0, GridY: 0, w: 0, h: 0, key: `-${i}`, type: 'fack' });
         }
       } else {
         this.maxDragactCount = len;
