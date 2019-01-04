@@ -40,6 +40,7 @@ class ReportBoard extends PureComponent {
       rightProps: [],      //   右侧选择框的参数
       spinning: false,   // 是否显示加载中
       plotClickFlag: false, // flag是否plot点击
+      refreshType: 0,  // 界面刷新类型 0:浏览器刷新 1:搜索框刷新  2:点击plot刷新 注意：默认0的时候是所有都刷新
 
       editModel: "false",   // 是否编辑模式
       dragMoveChecked: false,  // 是否静止dragact移动，移动就点击无法显示右侧的编辑界面。
@@ -1054,7 +1055,7 @@ class ReportBoard extends PureComponent {
   }
 
   // 更新状态通用方法
-  updateState = (...props) => {
+  updateState = (props) => {
     this.setState({
       ...props,
     });

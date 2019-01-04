@@ -26,16 +26,16 @@ export default class Index extends PureComponent {
     };
   }
   // 返回季度方法
-  startTiemAndEndTime(date){
+  startTiemAndEndTime(date) {
     let time = null;
-    if(date){
-      if([3, 4, 5].includes(moment(date).month())){
+    if (date) {
+      if ([3, 4, 5].includes(moment(date).month())) {
         time = moment(date).year() + '-2';
-      }else if([6 , 7, 8].includes(moment(date).month())){
+      } else if ([6, 7, 8].includes(moment(date).month())) {
         time = moment(date).year() + '-3';
-      }else if([9, 10, 11].includes(moment(date).month())){
+      } else if ([9, 10, 11].includes(moment(date).month())) {
         time = moment(date).year() + '-4';
-      }else if([0, 1, 2].includes(moment(date).month())){
+      } else if ([0, 1, 2].includes(moment(date).month())) {
         time = moment(date).year() + '-1';
       }
     }
@@ -43,14 +43,14 @@ export default class Index extends PureComponent {
     return moment(time);
   }
   // 时间季度 startend
-  onChange = (index,date,dateString) => {
+  onChange = (index, date, dateString) => {
     const { rela, relaJson } = this.props;
     const val = this.calcDate(rela.props, relaJson);
     //  时间的参数为 数组
     val[index] = date ? date.toDate() : null;
     if (index === 0) {
       this.setState({
-        startTime: relaJson.date_type == 4 ? this.startTiemAndEndTime(dateString): date,
+        startTime: relaJson.date_type == 4 ? this.startTiemAndEndTime(dateString) : date,
       });
     } else {
       this.setState({
@@ -95,10 +95,10 @@ export default class Index extends PureComponent {
           type = 'years';
       }
       startTime = objectUtils.isNumber(time_from)
-        ? moment().subtract(time_from, type)
+        ? moment(val[0]).subtract(time_from, type)
         : (val[0] ? moment(val[0]) : null);
       endTime = objectUtils.isNumber(time_to)
-        ? moment().subtract(time_to, type)
+        ? moment(val[1]).subtract(time_to, type)
         : (val[1] ? moment(val[1]) : null);
     } else {
       startTime = val[0] ? moment(val[0]) : null;
@@ -156,7 +156,7 @@ export default class Index extends PureComponent {
         return (<div className={styles['query-field']}>
           <MonthPicker
             {...opts}
-            value={this.state.startTime}           
+            value={this.state.startTime}
             onChange={this.changeDate.bind(this, 0)}
           />
           {relaJson.from_type === '0' && <span className={styles['time-join']}>-</span>}

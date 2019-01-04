@@ -15,15 +15,29 @@ import styles from './index.less';
 export default class Index extends PureComponent {
   constructor(props) {
     super(props);
-
+    const { relation, mChart, styleConfig, searchEnum } = this.props;
+    this.state = {
+      relation,
+      mChart,
+      styleConfig,
+      searchEnum,
+    };
   }
   componentDidMount = () => {
-    this.renderItem(this.props);
+    this.renderItem();
 
   };
   componentWillReceiveProps(nextProps) {
-    this.renderItem(nextProps);
-
+    const { relation, mChart, styleConfig, searchEnum } = nextProps;
+    this.state = {
+      relation,
+      mChart,
+      styleConfig,
+      searchEnum,
+    };
+  }
+  componentDidUpdate() {
+    this.renderItem();
   }
 
   // 输入值 改变变量内容
@@ -44,9 +58,10 @@ export default class Index extends PureComponent {
   };
 
   //  render searchitem
-  renderItem = (props) => {
+  renderItem = () => {
     // mdashBoard 中的 relation、styleConfig  mChart表
-    const { relation, mChart, styleConfig, onLoad, searchEnum } = props;
+    const { relation, mChart, styleConfig, searchEnum } = this.state;
+    const { onLoad } = this.props;
     const mChart_config = JSON.parse(mChart.config);
     // 取出 mchart 中的 搜索 searchJson
     const searchJson = mChart_config.searchJson;

@@ -10,15 +10,15 @@ import styles from '../Search/index.less';
 export default class Index extends PureComponent {
   constructor(props) {
     super(props);
+    const { rela, relaJson, data } = this.props;
     this.state = {
-      value: this.props.val,
+      rela,
+      relaJson,
+      data,
     };
   }
   onChange = (e) => {
     const val = e.target.value;
-    this.setState({
-      value: val,
-    });
     const rest = val && val !== '' ? [val] : null;
     this.props.onChange(rest);
   };
@@ -32,36 +32,46 @@ export default class Index extends PureComponent {
     }
     this.props.onChange(arr);
   };
-  render() {
-    const { rela, relaJson, data, load } = this.props;
+  componentWillReceiveProps(nextProps) {
+    const { rela, relaJson, data } = nextProps;
+    this.state = {
+      rela,
+      relaJson,
+      data,
+    };
+  }
+  renderContent = () => {
+    const { load } = this.props;
+    const { rela, relaJson, data } = this.state;
     const { str_type } = relaJson;
-
-    let control = null;
-    switch (str_type) {
-      case '0':
-        control = (<Input addonBefore="匹配" onChange={this.onChange} value={rela.props} />);
-        break;
-      case '1':
-        control = (<MultiSelect
+    if (str_type == "0") {
+      return (<Input addonBefore="匹配" onChange={this.onChange} value={rela.props} />);
+    } else if (str_type == "1") {
+      return (
+        <MultiSelect
           type="single"
           onChange={this.singleChange}
           data={data}
           load={load}
           value={rela.props}
-        />);
-        break;
-      default:
-        control = (<MultiSelect
+        />
+      );
+    } else {
+      return (
+        <MultiSelect
           type="multi"
           onChange={this.multiChange}
           data={data}
           load={load}
           value={rela.props}
-        />);
+        />
+      );
     }
+  }
+  render() {
     return (
       <div className={styles['query-field']}>
-        {control}
+        {this.renderContent()}
       </div>
     );
   }
