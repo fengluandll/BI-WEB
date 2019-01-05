@@ -10,9 +10,12 @@ import styles from './index.less';
 export default class Index extends PureComponent {
   constructor(props) {
     super(props);
+    const { type, value, data } = this.props;
     this.state = {
       multiSelectItems: [],
-      searchData: props.data,
+      searchData: data,
+      value,
+      type,
     };
   }
   componentWillReceiveProps(nextProps) {
@@ -30,10 +33,14 @@ export default class Index extends PureComponent {
       this.setState({
         multiSelectItems,
         searchData: data,
+        value,
+        type,
       });
     } else {
       this.setState({
         searchData: data,
+        value,
+        type,
       });
     }
   }
@@ -52,7 +59,10 @@ export default class Index extends PureComponent {
     const selectedItem = data.find((item) => {
       return item.id === id;
     });
-    this.multiSelectDropdownValue.innerHTML = selectedItem.name;
+    //this.multiSelectDropdownValue.innerHTML = selectedItem.name;
+    this.setState({
+      value: selectedItem.name.split(','),
+    });
     onChange(selectedItem);
     this.multiSelect.style.display = 'none';
   };
@@ -65,7 +75,10 @@ export default class Index extends PureComponent {
         return `${accumulator},${current.name}`;
       }
     }, '');
-    this.multiSelectDropdownValue.innerHTML = content;
+    //this.multiSelectDropdownValue.innerHTML = content;
+    this.setState({
+      value: content.split(','),
+    });
     onChange(selectedItems);
   };
   multiAdd = (ev) => {
@@ -167,7 +180,7 @@ export default class Index extends PureComponent {
     });
   };
   render() {
-    const { type, value } = this.props;
+    const { type, value } = this.state;
     const data = this.state.searchData;
     if (type === 'single') {
       return (
