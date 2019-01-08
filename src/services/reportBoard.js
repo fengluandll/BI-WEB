@@ -39,6 +39,16 @@ export async function searchDate(params) {
   });
 }
 
+// 保存查询通用查询方法 add by wangliu 20190107
+export async function search(params) {
+  const formData = new FormData();
+  formData.append('params', JSON.stringify(params));
+  return request('http://localhost:8088/api/reportBoard/search', {
+    method: 'POST',
+    mode: 'cors',
+    body: formData,
+  });
+}
 
 // 保存dashboard
 export async function saveDashBoard(params) {

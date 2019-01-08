@@ -1,3 +1,5 @@
+import moment from 'moment';
+
 class ReportBoardUtils {
 
     // 添加新的图表chart
@@ -484,6 +486,118 @@ class ReportBoardUtils {
         var uuid = s.join("");
         return uuid;
     }
+
+    /*****************************search_start*****************************************/
+    /***
+     * 拼接查询所需要的json
+     * param: search_type{ "search":初始化和搜索框查询,"plot":"点击plot查询"}
+     * value_plot{ 被点击的chart的参数[字段id,值,mchartid],没点击就是空}
+     * report_id { 请求的reportId }
+     * search_id { 搜索框图表的id }
+     * mDashboard { 你懂的 }
+     * **/
+    getSearchJson = (search_type, value_plot, report_id, mDashboard, mCharts) => {
+        const style_config = JSON.parse(mDashboard.style_config);
+        const json = { report_id: report_id, name: style_config.name, children: [] }; // 总的json
+        const { children } = style_config;
+        // 先循环每个chart找到搜索框的chart中的relation
+        let relation_search;
+        let search_time_param; // 搜索框时间item的column_id
+        let search_time_value; // 搜索框时间item的值
+        for (let i = 0; i < children.length; i++) {
+            const { chartId, name, relation, type } = children[i];
+            if (type == "search") {
+                relation_search = relation;
+                json.search_id = chartId; // 搜索框图表的id
+                // 找到搜索框的mchart,用来去里面找到时间item的id
+                const mChart = this.getMChartByChartId(mCharts, chartId);
+                const config = JSON.parse(mChart.config);
+                if (config.type == "11") { // 是搜索框
+                    const { searchJson } = config; // item对象
+                    for (let searchJson_key in searchJson) {
+                        if (searchJson[searchJson_key].type == "3") { // 找到时间Item
+                            search_time_param = searchJson_key; // item的column id
+                            const { name, date_type, time_type, from_type, time_from, time_to } = searchJson[searchJson_key];
+                            // date_type日期类型 time_type:0相对时间 from_type:0日期区间 time_from:偏移量
+                            // 目前时间的值写固定的就是用偏移量
+                            if (time_type === '0') {//相对时间，有偏移量
+                                let type = '';
+                                switch (date_type) {
+                                    case '0':
+                                        type = 'days';
+                                        break;
+                                    case '1':
+                                        type = 'weeks';
+                                        break;
+                                    case '2':
+                                        type = 'months';
+                                        break;
+                                    case '4':
+                                        type = 'months';
+                                        break;
+                                    default:
+                                        type = 'years';
+                                }
+                                search_time_value = [moment().subtract(time_from, type), moment().subtract(time_to, type)];
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        // 再循环每个chart找到点击plot的relation
+        let relation_plot;
+        if (search_type == "plot" && null != value_plot) {
+            const column_id = value_plot[0];
+            const value = value_plot[1];
+            const chart_id_plot = value_plot[2];
+            for (let i = 0; i < children.length; i++) {
+                const { chartId, name, relation, type } = children[i];
+                if (chartId == chart_id_plot) {
+                    relation_plot = relation;
+                }
+            }
+        }
+        // 开始循环每个chart图表
+        for (let i = 0; i < children.length; i++) {
+            const { chartId, name, relation, type } = children[i];
+            // 排除搜索框
+            if (type == "search") {
+                continue;
+            }
+            const json_chart = { chart_id: chartId, name: name, params_search: {}, params_plot: {} }; // 每个chart图表的json
+            // 先放入搜索框中的参数
+            for (let key in relation_search) { // 每个key是每个搜索框子项
+                const { label, order, relationFields, props } = relation_search[key];
+                for (let key_child in relationFields) { // 每个key_child是搜索框子项关联的chart的id
+                    if (key_child == chartId && null != props && null != props[0] && search_type == "plot") { // 如果搜索框的子项有关联这个chart
+                        json_chart.params_search[relationFields[key_child]] = props;  // 放入搜索框参数{key:value}:{"字段id":"参数值"}
+                    } else if (key_child == chartId && null != search_time_param && search_time_param == relationFields[key_child] && search_type == "init") { // 如果搜索框里有时间item,那就把他参数放进去 ps:时间参数是[],但是空的也传
+                        json_chart.params_search[relationFields[key_child]] = search_time_value;
+                    }
+                }
+            }
+            // 再放plot点击的参数
+            if (search_type == "plot" && null != value_plot) {
+                const column_id = value_plot[0];// 关联字段id
+                const value = value_plot[1]; // 参数值
+                const chart_id_plot = value_plot[2]; // 被点击图表chart id
+                for (let key in relation_plot) { // 每个key是每个搜索框子项
+                    const { label, order, relationFields } = relation_plot[key];
+                    for (let key_child in relationFields) { // 每个key_child是搜索框子项关联的chart的id
+                        if (key_child == chartId && null != value) { // 如果搜索框的子项有关联这个chart
+                            json_chart.params_plot[column_id] = value;  // 放入搜索框参数{key:value}:{"字段id":"参数值"}
+                        }
+                    }
+                }
+            }
+            // 最后把chart放入总json
+            json.children.push(json_chart);
+        }
+        return json;
+    }
+
+    /*****************************search_end*****************************************/
 
 }
 

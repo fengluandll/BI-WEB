@@ -67,7 +67,7 @@ class ReportBoard extends PureComponent {
           const { mDashboard_old, mCharts, user_type, user_auth } = this.props.model;
           const { tagName, tagNames } = this.state;
           const mDashboard = reportBoardUtils.getStyle_configByOrder(mDashboard_old, tagName, tagNames);
-          this.fetchData(boardId, mDashboard);//查询数据
+          this.fetchData(boardId, mDashboard, mCharts);//查询数据
           this.setState({
             mDashboard_old,
             mDashboard,
@@ -99,19 +99,23 @@ class ReportBoard extends PureComponent {
   componentWillUnmount() {
 
   }
-  fetchData = (boardId, mDashboard) => {
+  fetchData = (boardId, mDashboard, mCharts) => {
     // 请求回结构数据后再请求图表数据 数据先请求可以快0.5秒
+    // 拼接查询参数
+    const params = reportBoardUtils.getSearchJson("init", "", boardId, mDashboard, mCharts);
+    // 请求数据
     this.props.dispatch({
-      type: 'reportBoard/fetchData',
+      type: 'reportBoard/search',
       payload: {
-        boardId,
-        mDashboard,
+        params,
         callback: () => {
           const { dataList } = this.props.model;
           this.setState({
             dataList,
-            spinning: false, // 数据加载完成设置为false
+            spinning: false, // 数据加载完成取消加载中
+            plotClickFlag: false,// plot点击置为false
           });
+          // 页面延时Ui刷新
           const keys = Object.keys(dataList);
           if (keys != null && keys.length > 8) {
             // 延时刷新
@@ -120,8 +124,8 @@ class ReportBoard extends PureComponent {
             // 延时刷新
             this.refreshDashboardTimeout();
           }
-        }
-      }
+        },
+      },
     });
   }
 
@@ -678,7 +682,7 @@ class ReportBoard extends PureComponent {
       mDashboard_old,
     });
     const boardId = this.boardId;
-    this.fetchData(boardId, mDashboard);//使用初始化查询方法
+    this.fetchData(boardId, mDashboard, this.state.mCharts);//使用初始化查询方法
   }
 
   // tab编辑事件
@@ -699,7 +703,7 @@ class ReportBoard extends PureComponent {
       tagNames: tagNames,
     });
     const boardId = this.boardId;
-    this.fetchData(boardId, mDashboard);//使用初始化查询方法
+    this.fetchData(boardId, mDashboard, this.state.mCharts);//使用初始化查询方法
   }
 
   //修改tab的名称
@@ -727,13 +731,13 @@ class ReportBoard extends PureComponent {
     this.setState({
       spinning: true,
     });
+    // 拼接查询参数
+    const params = reportBoardUtils.getSearchJson("plot", value, this.boardId, this.state.mDashboard, this.state.mCharts);
     // 请求数据
     this.props.dispatch({
-      type: 'reportBoard/searchData',
+      type: 'reportBoard/search',
       payload: {
-        mDashboard: this.state.mDashboard,
-        boardId: this.boardId,
-        value: value,
+        params,
         callback: () => {
           this.setState({
             dataList: this.props.model.dataList,
@@ -744,6 +748,7 @@ class ReportBoard extends PureComponent {
       },
     });
   }
+
   //  改变搜索框的参数  
   changeProps = (chart_item) => {
     const { mDashboard } = this.state;
