@@ -496,9 +496,10 @@ class ReportBoardUtils {
      * search_id { 搜索框图表的id }
      * mDashboard { 你懂的 }
      * **/
-    getSearchJson = (search_type, value_plot, report_id, mDashboard, mCharts) => {
+    getSearchJson = (search_type, value_plot, report_id, mDashboard, mDashboard_old, mCharts) => {
         const style_config = JSON.parse(mDashboard.style_config);
-        const json = { report_id: report_id, name: style_config.name, children: [] }; // 总的json
+        const style_config_old = JSON.parse(mDashboard_old.style_config);
+        const json = { report_id: report_id, name: style_config.name, children: [], dataSet: style_config_old.dataSet, dataSetRelation: style_config_old.dataSetRelation }; // 总的json
         const { children } = style_config;
         // 先循环每个chart找到搜索框的chart中的relation
         let relation_search;

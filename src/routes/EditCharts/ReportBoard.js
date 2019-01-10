@@ -67,7 +67,7 @@ class ReportBoard extends PureComponent {
           const { mDashboard_old, mCharts, user_type, user_auth } = this.props.model;
           const { tagName, tagNames } = this.state;
           const mDashboard = reportBoardUtils.getStyle_configByOrder(mDashboard_old, tagName, tagNames);
-          this.fetchData(boardId, mDashboard, mCharts);//查询数据
+          this.fetchData(boardId, mDashboard, mDashboard_old, mCharts);//查询数据
           this.setState({
             mDashboard_old,
             mDashboard,
@@ -99,10 +99,12 @@ class ReportBoard extends PureComponent {
   componentWillUnmount() {
 
   }
-  fetchData = (boardId, mDashboard, mCharts) => {
+  fetchData = (boardId, mDashboard, mDashboard_old, mCharts) => {
     // 请求回结构数据后再请求图表数据 数据先请求可以快0.5秒
+    // 初始化查询清除plot
+    this.plotChartId = [];
     // 拼接查询参数
-    const params = reportBoardUtils.getSearchJson("init", "", boardId, mDashboard, mCharts);
+    const params = reportBoardUtils.getSearchJson("init", "", boardId, mDashboard, mDashboard_old, mCharts);
     // 请求数据
     this.props.dispatch({
       type: 'reportBoard/search',
@@ -682,7 +684,7 @@ class ReportBoard extends PureComponent {
       mDashboard_old,
     });
     const boardId = this.boardId;
-    this.fetchData(boardId, mDashboard, this.state.mCharts);//使用初始化查询方法
+    this.fetchData(boardId, mDashboard, mDashboard_old, this.state.mCharts);//使用初始化查询方法
   }
 
   // tab编辑事件
@@ -703,7 +705,7 @@ class ReportBoard extends PureComponent {
       tagNames: tagNames,
     });
     const boardId = this.boardId;
-    this.fetchData(boardId, mDashboard, this.state.mCharts);//使用初始化查询方法
+    this.fetchData(boardId, mDashboard, mDashboard_old, this.state.mCharts);//使用初始化查询方法
   }
 
   //修改tab的名称
@@ -732,7 +734,7 @@ class ReportBoard extends PureComponent {
       spinning: true,
     });
     // 拼接查询参数
-    const params = reportBoardUtils.getSearchJson("plot", value, this.boardId, this.state.mDashboard, this.state.mCharts);
+    const params = reportBoardUtils.getSearchJson("plot", value, this.boardId, this.state.mDashboard, this.state.mDashboard_old, this.state.mCharts);
     // 请求数据
     this.props.dispatch({
       type: 'reportBoard/search',
