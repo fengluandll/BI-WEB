@@ -11,7 +11,6 @@ import styles from './index.less';
 /**
  * 仪表板-查询控件
  */
-
 export default class Index extends PureComponent {
   constructor(props) {
     super(props);
@@ -22,6 +21,8 @@ export default class Index extends PureComponent {
       styleConfig,
       searchEnum,
     };
+    this.clickTime = 1; // 点击次数
+    this.pages = 0;  // 搜索框页数  1为一页
   }
   componentDidMount = () => {
     this.renderItem();
@@ -56,6 +57,11 @@ export default class Index extends PureComponent {
     const fatherName = chart_item.fatherName;
     this.props.clickSearch();
   };
+  // 变换搜索框里查询的 子项
+  changeSearch = () => {
+    this.clickTime++;
+    this.renderItem();
+  }
 
   //  render searchitem
   renderItem = () => {
@@ -87,12 +93,42 @@ export default class Index extends PureComponent {
       });
     }
 
+    // add by wangliu 0911  搜索内容翻页 这个是让搜索栏翻页的逻辑  从老系统中copy过来的 add by wangliu 20190111
+    let cnt = 5;  // 一行显示个数
+    // 通过深入 Document 内部对 body 进行检测，获取窗口大小
+    if (document.documentElement && document.documentElement.clientHeight && document.documentElement.clientWidth) {
+      let winWidth = document.documentElement.clientWidth - 100; // 照顾编辑界面 去掉左右的 宽度
+      cnt = parseInt(winWidth / 160);
+    }
+    let c = this.clickTime;  //点击次数
+    let n = arr.length;   //  数组长度
+    let times = Math.ceil(n / cnt); // 翻页的页码数
+    let t = c % times;  // 点击次数取余
+    let arrTmp = [];
+    if (n <= cnt) {    // 只有一页的情况
+      for (let i = 0; i < n; i++) {
+        arrTmp.push(arr[i]);
+      }
+      this.pages = 1;  // 搜索框只有一页
+    } else {
+      if (t != 0) {    // 点击在半中间的页数
+        for (let i = cnt * t - cnt; i < cnt * t; i++) {
+          arrTmp.push(arr[i]);
+        }
+      } else if (t == 0) {    //  点击在最后一页
+        let last = n - cnt * (times - 1);
+        for (let i = n - last; i < n; i++) {
+          arrTmp.push(arr[i]);
+        }
+      }
+    }
+
     //  mdashboard中放的是 搜索的关联关系和值    mchart中放的是搜索的样式  所以调用搜索子项的时候 两个参数都要传 
     //  参数  
 
     ReactDom.render(<div>
       {
-        arr.map((arrItem, index) => {
+        arrTmp.map((arrItem, index) => {
           const { key } = arrItem;
           const rela = relation[key];
           const relaJson = searchJson[key];
@@ -148,6 +184,28 @@ export default class Index extends PureComponent {
     </div>, this.queryArea);
 
   }
+  /***
+   * 展示下一页的按钮
+   * ***/
+  renderNextPage = () => {
+    if (this.pages == "0") {
+      return (
+        <div style={{ marginRight: 50 }}>
+          <Icon type="caret-right"
+            onClick={
+              () => {
+                this.changeSearch();
+              }
+            }
+          />
+        </div>
+      );
+    } else if (this.pages == "1") {
+      return (
+        <div></div>
+      );
+    }
+  }
 
 
   render() {
@@ -168,7 +226,7 @@ export default class Index extends PureComponent {
     return (
       <div className={styles['query-container']} name="search" style={{ height: height }}>
         <div className={styles['query-area-container']} ref={(instance) => { this.queryArea = instance; }} />
-
+        {this.renderNextPage()}
         <div className={styles['query-btn']}>
           <Icon type="search" style={{ fontSize: 16, color: '#08c' }}
             onClick={() => {
