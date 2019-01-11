@@ -12,8 +12,8 @@ const reportBoardUtils = new ReportBoardUtils();
 export default class Index extends PureComponent {
     constructor(props) {
         super(props);
-        // relation 关联关系中的 search  searchItems 所有搜索子项的  rs_column_config表   chart_children 和搜索框一起的其他图表
-        const { relation, mCharts, searchItems, chart_children, search_item } = this.props;
+        // relation 关联关系中的 search  idColumns 所有搜索子项的  rs_column_config表   chart_children 和搜索框一起的其他图表
+        const { relation, mCharts, idColumns, chart_children, search_item } = this.props;
         const keys = Object.keys(relation);
         const chartId = search_item.chartId;
         let mChart;
@@ -28,7 +28,7 @@ export default class Index extends PureComponent {
         const len = searchItemIds.length;
         const arr = [];
         for (let j = 0; j < len; j += 1) {
-            const searchItem = searchItems[searchItemIds[j]];
+            const searchItem = idColumns[searchItemIds[j]];
             arr.push({
                 "label": searchItem.rsc_display,
                 "value": searchItem.id.toString(),
@@ -147,8 +147,8 @@ export default class Index extends PureComponent {
 
                             {this.state.searchItemIds ? this.state.searchItemIds.map((searchItem, searchIndex) => {
                                 // 搜索框子项 的 rs_column_config 表数据
-                                const searchColumn = this.props.searchItems[searchItem];
-                                const { relation, mCharts, searchItems, chart_children, search_item } = this.props;
+                                const searchColumn = this.props.idColumns[searchItem];
+                                const { relation, mCharts, idColumns, chart_children, search_item } = this.props;
                                 // 配置下拉图表的数据
                                 const arr = [];
                                 chart_children.map((item, index) => {

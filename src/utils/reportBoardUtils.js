@@ -343,7 +343,7 @@ class ReportBoardUtils {
         return type;
     }
 
-    // 判断两个字段在数据集字段关联中是否有关联  "dataSetRelation":[[],[]],
+    // 判断两个字段在数据集字段关联中是否有关联 根据关联关系判断  "dataSetRelation":[[],[]],
     getColumnYNrelationed = (column1, column2, dataSetRelation) => {
         for (let i = 0; i < dataSetRelation.length; i++) {
             const arr = dataSetRelation[i];
@@ -360,6 +360,19 @@ class ReportBoardUtils {
             if (flag1 && flag2) {
                 return true;
             }
+        }
+        return false;
+    }
+    /***
+     * 判断搜索框字段和图表字段是否存在关联关系
+     * column1:搜索框column_id
+     * column2:图表column_id
+     * ***/
+    getSearchChartsColumnYNrelationed = (column1, column2, idColumns) => {
+        let tableSearch = idColumns[column1];
+        let tableChart = idColumns[column2];
+        if (null != tableSearch && null != tableChart && tableSearch.rsc_name == tableChart.rsc_name) {
+            return true;
         }
         return false;
     }
@@ -496,7 +509,7 @@ class ReportBoardUtils {
      * search_id { 搜索框图表的id }
      * mDashboard { 你懂的 }
      * **/
-    getSearchJson = (search_type, value_plot, report_id, mDashboard, mDashboard_old, mCharts) => {
+    getSearchJson = (search_type, value_plot, report_id, mDashboard, mDashboard_old, mCharts, idColumns) => {
         const style_config = JSON.parse(mDashboard.style_config);
         const style_config_old = JSON.parse(mDashboard_old.style_config);
         const json = { report_id: report_id, name: style_config.name, children: [], dataSet: style_config_old.dataSet, dataSetRelation: style_config_old.dataSetRelation }; // 总的json
@@ -568,12 +581,24 @@ class ReportBoardUtils {
             }
             const json_chart = { chart_id: chartId, name: name, params_search: {}, params_plot: {} }; // 每个chart图表的json
             // 先放入搜索框中的参数
+            /***
+             * 逻辑解释: isDateSetsRelationed是判断多个数据集的时候两个字段是否是字段名称相同
+             * key_child == chartId:被关联的图表id是被循环的图表的id
+             * relationFields[key_child]:是被关联的字段id
+             * json_chart.params_search: 第一种情况,自己是被关联的图表的时候，并且参数的值不是空，搜索类型是plot（点击搜索框和点击plot关联）
+             * 第二种情况:自己是被关联的时候，并且是 init 初始化进来的时候，要在之前上面先找到搜索框中item是时间的item的Id即search_time_param,并且判断是否关联,
+             * (search_time_param == relationFields[key_child] || isDateSetsRelationed)：判断字段的的id是否相等||判断字段的rsc_name是否相等
+             * 好，扯太多了，总的来说分两种情况
+             * 第一种:点击搜索框和点击plot关联查询:判断自己的图表的id是否是搜索框item中关联的图表的chartid，判断参数不是空就直接放入,这个没什么问题
+             * 第二种:初始化的时候，由于时间搜索框是空的，所以只要手动拼时间参数其他参数不放入,search_time_param时间Item的id是在之前查好的。然后判断时间item的rsc_name和图表被关联的字段rsc_name是否相等
+             * ***/
             for (let key in relation_search) { // 每个key是每个搜索框子项
                 const { label, order, relationFields, props } = relation_search[key];
                 for (let key_child in relationFields) { // 每个key_child是搜索框子项关联的chart的id
+                    const isDateSetsRelationed = this.getSearchChartsColumnYNrelationed(search_time_param, relationFields[key_child], idColumns);
                     if (key_child == chartId && null != props && null != props[0] && search_type == "plot") { // 如果搜索框的子项有关联这个chart
                         json_chart.params_search[relationFields[key_child]] = props;  // 放入搜索框参数{key:value}:{"字段id":"参数值"}
-                    } else if (key_child == chartId && null != search_time_param && search_time_param == relationFields[key_child] && search_type == "init") { // 如果搜索框里有时间item,那就把他参数放进去 ps:时间参数是[],但是空的也传
+                    } else if (key_child == chartId && null != search_time_param && (search_time_param == relationFields[key_child] || isDateSetsRelationed) && search_type == "init") { // 如果搜索框里有时间item,那就把他参数放进去 ps:时间参数是[],但是空的也传
                         json_chart.params_search[relationFields[key_child]] = search_time_value;
                     }
                 }

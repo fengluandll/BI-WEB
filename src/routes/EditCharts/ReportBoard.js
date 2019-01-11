@@ -26,7 +26,6 @@ class ReportBoard extends PureComponent {
       mDashboard: {}, //m_dashboard表
       mCharts: {},    // m_charts表   控件表  主要放控件的配置
       dataList: {},    // 查询结束后所有的 图表的 数据  key：chartID  value:data  (数据是根据 mDashboard 中的 search 中的  props  参数  进行的有参数查询)
-      searchItems: {},  // 搜索框所拥有的子组件 的 数据
       idColumns: {},   // 每个图表所拥有的 维度 度量图例 和 搜索框的 子组件 所在 字段 的对应的表数据
       tableIdColumns: {},  // 每个图表 所拥有的 数据集 的 所有字段 的表数据
 
@@ -64,14 +63,15 @@ class ReportBoard extends PureComponent {
       payload: {
         boardId,
         callback: () => {
-          const { mDashboard_old, mCharts, user_type, user_auth } = this.props.model;
+          const { mDashboard_old, mCharts, idColumns, user_type, user_auth } = this.props.model;
           const { tagName, tagNames } = this.state;
           const mDashboard = reportBoardUtils.getStyle_configByOrder(mDashboard_old, tagName, tagNames);
-          this.fetchData(boardId, mDashboard, mDashboard_old, mCharts);//查询数据
+          this.fetchData(boardId, mDashboard, mDashboard_old, mCharts, idColumns);//查询数据
           this.setState({
             mDashboard_old,
             mDashboard,
             mCharts,
+            idColumns,
             tagName,
             tagNames,
             user_type,
@@ -99,12 +99,12 @@ class ReportBoard extends PureComponent {
   componentWillUnmount() {
 
   }
-  fetchData = (boardId, mDashboard, mDashboard_old, mCharts) => {
+  fetchData = (boardId, mDashboard, mDashboard_old, mCharts, idColumns) => {
     // 请求回结构数据后再请求图表数据 数据先请求可以快0.5秒
     // 初始化查询清除plot
     this.plotChartId = [];
     // 拼接查询参数
-    const params = reportBoardUtils.getSearchJson("init", "", boardId, mDashboard, mDashboard_old, mCharts);
+    const params = reportBoardUtils.getSearchJson("init", "", boardId, mDashboard, mDashboard_old, mCharts, idColumns);
     // 请求数据
     this.props.dispatch({
       type: 'reportBoard/search',
@@ -206,7 +206,7 @@ class ReportBoard extends PureComponent {
           <Relation mChart={item}
             relation={board_item}
             search_item={search_item}
-            searchItems={this.props.model.searchItems}
+            idColumns={this.props.model.idColumns}
             chart_children={chart_children}
             mCharts={this.props.model.mCharts}
             tableIdColumns={this.props.model.tableIdColumns}
@@ -610,10 +610,8 @@ class ReportBoard extends PureComponent {
         payload: {
           boardId,
           callback: () => {
-            const { searchItems, idColumns, tableIdColumns } = this.props.model;
+            const { tableIdColumns } = this.props.model;
             this.setState({
-              searchItems,
-              idColumns,
               tableIdColumns,
               editModel: editModel,
             });
@@ -684,7 +682,7 @@ class ReportBoard extends PureComponent {
       mDashboard_old,
     });
     const boardId = this.boardId;
-    this.fetchData(boardId, mDashboard, mDashboard_old, this.state.mCharts);//使用初始化查询方法
+    this.fetchData(boardId, mDashboard, mDashboard_old, this.state.mCharts, this.state.idColumns);//使用初始化查询方法
   }
 
   // tab编辑事件
@@ -705,7 +703,7 @@ class ReportBoard extends PureComponent {
       tagNames: tagNames,
     });
     const boardId = this.boardId;
-    this.fetchData(boardId, mDashboard, mDashboard_old, this.state.mCharts);//使用初始化查询方法
+    this.fetchData(boardId, mDashboard, mDashboard_old, this.state.mCharts, this.state.idColumns);//使用初始化查询方法
   }
 
   //修改tab的名称
@@ -734,7 +732,7 @@ class ReportBoard extends PureComponent {
       spinning: true,
     });
     // 拼接查询参数
-    const params = reportBoardUtils.getSearchJson("plot", value, this.boardId, this.state.mDashboard, this.state.mDashboard_old, this.state.mCharts);
+    const params = reportBoardUtils.getSearchJson("plot", value, this.boardId, this.state.mDashboard, this.state.mDashboard_old, this.state.mCharts, this.state.idColumns);
     // 请求数据
     this.props.dispatch({
       type: 'reportBoard/search',
