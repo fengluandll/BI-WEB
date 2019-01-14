@@ -116,16 +116,10 @@ class ReportBoard extends PureComponent {
             dataList,
             spinning: false, // 数据加载完成取消加载中
             plotClickFlag: false,// plot点击置为false
+          }, () => {
+            // 刷新
+            this.refreshDashboard();
           });
-          // 页面延时Ui刷新
-          const keys = Object.keys(dataList);
-          if (keys != null && keys.length > 8) {
-            // 延时刷新
-            this.refreshDashboardTimeout(1000);
-          } else {
-            // 延时刷新
-            this.refreshDashboardTimeout();
-          }
         },
       },
     });
@@ -600,9 +594,9 @@ class ReportBoard extends PureComponent {
       editModel = "false";
       this.setState({
         editModel: editModel,
+      }, () => {
+        this.refreshDashboard();
       });
-      // 延时刷新
-      this.refreshDashboardTimeout(1000);
     } else {
       editModel = "true";
       this.props.dispatch({
@@ -614,9 +608,9 @@ class ReportBoard extends PureComponent {
             this.setState({
               tableIdColumns,
               editModel: editModel,
+            }, () => {
+              this.refreshDashboard();
             });
-            // 延时刷新
-            this.refreshDashboardTimeout(1000);
           }
         }
       });
@@ -716,9 +710,10 @@ class ReportBoard extends PureComponent {
       mDashboard: mDashboard,
       tagName: tagName,
       tagNames: tagNames,
+    }, () => {
+      // 刷新页面
+      this.refreshDashboard();
     });
-    // 刷新页面
-    this.refreshDashboard();
   }
 
   //  点击搜索查询
@@ -992,6 +987,8 @@ class ReportBoard extends PureComponent {
           this.addNewChart(item);
         }
       });
+      //  刷新ui
+      this.refreshDashboard();
     } else {
       //  复选框值比mDashboard中的少 要删除
       for (let i = 0; i < children.length; i++) {
@@ -1011,10 +1008,11 @@ class ReportBoard extends PureComponent {
       mDashboard.style_config = JSON.stringify(style_config_obj);
       this.setState({
         mDashboard: mDashboard,
+      }, () => {
+        // 刷新页面
+        this.refreshDashboard();
       });
     }
-    //  刷新ui
-    this.refreshDashboard();
   }
 
   //  设置右侧开关 控制dragact是否可移动
@@ -1095,9 +1093,10 @@ class ReportBoard extends PureComponent {
     // 给state赋值
     this.setState({
       mDashboard: mDashboard,
+    }, () => {
+      // 刷新页面
+      this.refreshDashboard();
     });
-    // 刷新页面
-    this.refreshDashboard();
   }
   // 初始化的时候获取数据库里的 dragact数据
   getDragactData = () => {
