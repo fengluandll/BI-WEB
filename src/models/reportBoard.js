@@ -45,10 +45,15 @@ export default {
       yield put({ type: 'save', payload: { dataList } });
       callback();
     },
-    *search({ payload: { params, callback } }, { call, put }) {
+    *search({ payload: { params, callback } }, { select, call, put }) {
       const response = yield call(search, { params });
-      const data = response.data;
-      const { dataList } = data;
+      const data = response.data || {};
+      const { dataList } = yield select(state => state.reportBoard);
+      for (let key in data) {
+        if (null != key && null != data[key]) {
+          dataList[key] = data[key];
+        }
+      }
       yield put({ type: 'save', payload: { dataList } });
       callback();
     },

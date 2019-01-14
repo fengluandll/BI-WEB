@@ -66,7 +66,6 @@ class ReportBoard extends PureComponent {
           const { mDashboard_old, mCharts, idColumns, user_type, user_auth } = this.props.model;
           const { tagName, tagNames } = this.state;
           const mDashboard = reportBoardUtils.getStyle_configByOrder(mDashboard_old, tagName, tagNames);
-          this.fetchData(boardId, mDashboard, mDashboard_old, mCharts, idColumns);//查询数据
           this.setState({
             mDashboard_old,
             mDashboard,
@@ -78,6 +77,7 @@ class ReportBoard extends PureComponent {
             user_auth,
             spinning: true,// 初始化时候设置为加载中
           });
+          this.fetchData(boardId, mDashboard, mDashboard_old, mCharts, idColumns);//查询数据
         }
       }
     });
@@ -100,7 +100,7 @@ class ReportBoard extends PureComponent {
 
   }
   fetchData = (boardId, mDashboard, mDashboard_old, mCharts, idColumns) => {
-    // 请求回结构数据后再请求图表数据 数据先请求可以快0.5秒
+    // 请求回结构数据后再请求图表数据 数据先请求可以快0.5秒 add by wangliu 20190111 然而出现了bug 加载后数据要是快的话spinning消除不了
     // 初始化查询清除plot
     this.plotChartId = [];
     // 拼接查询参数
