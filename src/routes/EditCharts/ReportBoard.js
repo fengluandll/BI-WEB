@@ -26,6 +26,7 @@ class ReportBoard extends PureComponent {
       mDashboard: {}, //m_dashboard表
       mCharts: {},    // m_charts表   控件表  主要放控件的配置
       dataList: {},    // 查询结束后所有的 图表的 数据  key：chartID  value:data  (数据是根据 mDashboard 中的 search 中的  props  参数  进行的有参数查询)
+      dataList_one: {}, // 单个dataList
       idColumns: {},   // 每个图表所拥有的 维度 度量图例 和 搜索框的 子组件 所在 字段 的对应的表数据
       tableIdColumns: {},  // 每个图表 所拥有的 数据集 的 所有字段 的表数据
 
@@ -38,8 +39,7 @@ class ReportBoard extends PureComponent {
       refreshUI: 0,   //   state 用来刷新ui 
       rightProps: [],      //   右侧选择框的参数
       spinning: false,   // 是否显示加载中
-      plotClickFlag: false, // flag是否plot点击
-      refreshType: 0,  // 界面刷新类型 0:浏览器刷新 1:搜索框刷新  2:点击plot刷新 注意：默认0的时候是所有都刷新
+      refreshType: "init",  // "init":初始化刷新图表显示fack数据,"search":搜索框查询开始填充真实数据,"plot"：plot点击查询开始填充真实数据,
 
       editModel: "false",   // 是否编辑模式
       dragMoveChecked: false,  // 是否静止dragact移动，移动就点击无法显示右侧的编辑界面。
@@ -51,8 +51,8 @@ class ReportBoard extends PureComponent {
     this.boardId = this.props.match.params.boardId;
     // 被plot点击查询的图表id
     this.plotChartId = [];
-    // 点击图表div的次数
-    this.clickChartDivTimes = 0;
+    // 本地刷新的数据个数
+    this.dataListCount = 0;
   }
   componentWillMount() {
     const boardId = this.boardId;
@@ -104,25 +104,35 @@ class ReportBoard extends PureComponent {
     // 初始化查询清除plot
     this.plotChartId = [];
     // 拼接查询参数
-    const params = reportBoardUtils.getSearchJson("init", "", boardId, mDashboard, mDashboard_old, mCharts, idColumns);
-    // 请求数据
-    this.props.dispatch({
-      type: 'reportBoard/search',
-      payload: {
-        params,
-        callback: () => {
-          const { dataList } = this.props.model;
-          this.setState({
-            dataList,
-            spinning: false, // 数据加载完成取消加载中
-            plotClickFlag: false,// plot点击置为false
-          }, () => {
-            // 刷新
-            this.refreshDashboard();
-          });
+    const params = reportBoardUtils.getSearchJson("init", "", this.plotChartId, boardId, mDashboard, mDashboard_old, mCharts, idColumns);
+    const { children } = params;
+    this.dataListCount = children.length; // 把要查询的图表的个数赋值
+    for (let key in children) {
+      const params_one = {};
+      params_one.report_id = params.report_id;
+      params_one.name = params.name;
+      params_one.dataSet = params.dataSet;
+      params_one.dataSetRelation = params.dataSetRelation;
+      params_one.search_id = params.search_id;
+      const child = [];
+      child.push(children[key]);
+      params_one.children = child;
+      // 请求数据
+      this.props.dispatch({
+        type: 'reportBoard/search',
+        payload: {
+          params: params_one,
+          callback: (data) => {
+            const dataList = reportBoardUtils.addDataList(this.state.dataList, data);
+            this.setState({
+              dataList_one: data,
+              refreshType: "search", // 修改刷新类型
+              dataList, // 所有图表的数据
+            });
+          },
         },
-      },
-    });
+      });
+    }
   }
 
   /****************************************展示左侧仪表盘*****************************************************************/
@@ -282,13 +292,37 @@ class ReportBoard extends PureComponent {
   disPlayCharts() {
     const children = JSON.parse(this.state.mDashboard.style_config).children;
     if (children && children.length > 0) {
-      children.map((item, index) => {
+      let count = 0; // 图表加载的个数
+      children.map((item, index) => { // 循环所有图表
+        let spinning = true; // 加载中设为true
         const { type, name, chartId, styleConfig, relation } = item;
-        // 没有被plot点击关联的图表或者是编辑模式的时候
-        if (this.plotChartId.length == 0 || this.state.editModel == "true") {
-          this.renderContent(item);
-        } else if (this.plotChartId.indexOf(chartId) > -1) {// 被点击的plot展示
-          this.renderContent(item);
+        if (type == "search" || this.state.editModel == "true") { // 搜索框和编辑模式时候可以显示
+          spinning = false;
+          this.renderContent(item, spinning);
+        } else if (this.state.refreshType == "init") { // 用来全部显示加载中的
+          spinning = true;
+          this.renderContent(item, spinning);
+        } else if (this.state.refreshType == "search") { //只有查询返回数据的图表才会走这个
+          const { dataList_one } = this.state;
+          let flag = false;
+          for (let key in dataList_one) {
+            if (key == chartId) {
+              flag = true;
+            }
+          }
+          if (flag) {
+            spinning = false;
+            this.renderContent(item, spinning);
+          }
+          count++; // 加载后计数加1
+          if (count >= this.dataListCount - 1) {
+            this.setState({
+              spinning: false,
+            });
+          }
+        } else if (this.state.refreshType == "plot" && this.plotChartId.indexOf(chartId) > -1) { // 用来plot关联的显示加载中的
+          spinning = true;
+          this.renderContent(item, spinning);
         }
       });
     }
@@ -338,11 +372,14 @@ class ReportBoard extends PureComponent {
   }
 
   //  循环自己 然后展示出所有的 图表
-  renderContent(item) {
+  renderContent(item, spinning) {
     const { type, name, chartId, styleConfig, relation } = item;
     // 从 datalist 中 根据 chartId 取出  数据
-    let dateSetList = this.state.dataList[name];
-    // 数据 如果前期进来数据为空那就遭些假数据用用  add by wangliu 20181128
+    let dateSetList = this.state.dataList_one[name];
+    // 数据 如果单个数据是空的那就到所有数据中去取,实在没有再取假数据  add by wangliu 20181128  modify by wangliu 20190115
+    if (null == dateSetList && null != this.state.dataList) {
+      dateSetList = this.state.dataList[name];
+    }
     if (null == dateSetList) {
       dateSetList = reportBoardUtils.getFakeData(type);
     }
@@ -350,25 +387,24 @@ class ReportBoard extends PureComponent {
     // 根据 chartId 寻找 m_charts
     const mChart = reportBoardUtils.getMChartByChartId(mCharts, chartId);
     if (type == "line") {
-      this.renderLine(name, dateSetList, mChart, styleConfig);
+      this.renderLine(name, dateSetList, mChart, spinning);
     } else if (type == "bar") {
-      this.renderBar(name, dateSetList, mChart, styleConfig);
+      this.renderBar(name, dateSetList, mChart, spinning);
     } else if (type == "pie") {
-      this.renderPie(name, dateSetList, mChart, styleConfig);
+      this.renderPie(name, dateSetList, mChart, spinning);
     } else if (type == "table") {
-      this.renderTable(name, dateSetList, mChart, styleConfig);
+      this.renderTable(name, dateSetList, mChart, spinning);
     } else if (type == "search") {
       this.renderSearch(item, mChart);
     } else if (type == "pivottable") {
-      this.renderPivottable(name, dateSetList, mChart, styleConfig);
+      this.renderPivottable(name, dateSetList, mChart, spinning);
     } else if (type == "perspective") {
-      this.renderPerspective(name, dateSetList, mChart, styleConfig);
+      this.renderPerspective(name, dateSetList, mChart, spinning);
     }
   }
   /****************************************图形展示*****************************************************************/
   // 展示 折线图
-  renderLine(name, dateSetList, mChart, styleConfig) {
-    const spinning = this.state.spinning;
+  renderLine(name, dateSetList, mChart, spinning) {
     let cssName = cssUtils.getBIContainer(mChart);
     const { dragactStyle } = JSON.parse(this.state.mDashboard.style_config);
     ReactDom.render(
@@ -399,8 +435,7 @@ class ReportBoard extends PureComponent {
   }
 
   // 展示 柱状图
-  renderBar(name, dateSetList, mChart, styleConfig) {
-    const spinning = this.state.spinning;
+  renderBar(name, dateSetList, mChart, spinning) {
     let cssName = cssUtils.getBIContainer(mChart);
     const { dragactStyle } = JSON.parse(this.state.mDashboard.style_config);
     ReactDom.render(
@@ -430,8 +465,7 @@ class ReportBoard extends PureComponent {
       document.getElementById(name));
   }
   // 展示 饼图
-  renderPie(name, dateSetList, mChart, styleConfig) {
-    const spinning = this.state.spinning;
+  renderPie(name, dateSetList, mChart, spinning) {
     let cssName = cssUtils.getBIContainer(mChart);
     const { dragactStyle } = JSON.parse(this.state.mDashboard.style_config);
     ReactDom.render(
@@ -461,8 +495,7 @@ class ReportBoard extends PureComponent {
       document.getElementById(name));
   }
   // 展示 交叉表
-  renderTable(name, dateSetList, mChart, styleConfig) {
-    const spinning = this.state.spinning;
+  renderTable(name, dateSetList, mChart, spinning) {
     let cssName = cssUtils.getBIContainer(mChart);
     const { dragactStyle } = JSON.parse(this.state.mDashboard.style_config);
     ReactDom.render(
@@ -479,8 +512,7 @@ class ReportBoard extends PureComponent {
       document.getElementById(name));
   }
   // pivottable
-  renderPivottable(name, dateSetList, mChart, styleConfig) {
-    const spinning = this.state.spinning;
+  renderPivottable(name, dateSetList, mChart, spinning) {
     let cssName = cssUtils.getBIContainer(mChart);
     const { dragactStyle } = JSON.parse(this.state.mDashboard.style_config);
     ReactDom.render(
@@ -497,8 +529,7 @@ class ReportBoard extends PureComponent {
       document.getElementById(name));
   }
   // perspective
-  renderPerspective(name, dateSetList, mChart, styleConfig) {
-    const spinning = this.state.spinning;
+  renderPerspective(name, dateSetList, mChart, spinning) {
     let cssName = cssUtils.getBIContainer(mChart);
     const { dragactStyle } = JSON.parse(this.state.mDashboard.style_config);
     ReactDom.render(
@@ -672,11 +703,12 @@ class ReportBoard extends PureComponent {
     this.setState({
       tagName: tagName,
       mDashboard: mDashboard,
-      spinning: true,
       mDashboard_old,
+      refreshType: "init",
+    }, () => {
+      const boardId = this.boardId;
+      this.fetchData(boardId, mDashboard, mDashboard_old, this.state.mCharts, this.state.idColumns);//使用初始化查询方法
     });
-    const boardId = this.boardId;
-    this.fetchData(boardId, mDashboard, mDashboard_old, this.state.mCharts, this.state.idColumns);//使用初始化查询方法
   }
 
   // tab编辑事件
@@ -695,9 +727,11 @@ class ReportBoard extends PureComponent {
       mDashboard: mDashboard,
       tagName: tagName,
       tagNames: tagNames,
+      refreshType: "init",
+    }, () => {
+      const boardId = this.boardId;
+      this.fetchData(boardId, mDashboard, mDashboard_old, this.state.mCharts, this.state.idColumns);//使用初始化查询方法
     });
-    const boardId = this.boardId;
-    this.fetchData(boardId, mDashboard, mDashboard_old, this.state.mCharts, this.state.idColumns);//使用初始化查询方法
   }
 
   //修改tab的名称
@@ -718,30 +752,48 @@ class ReportBoard extends PureComponent {
 
   //  点击搜索查询
   searchData = (value) => {
-    // 搜索框查询清除plot
-    if (null == value) {
-      this.plotChartId = [];
+    let refreshType = "init"; // 刷新类型
+    if (null == value) { // value为null说明是搜索框搜索
+      this.plotChartId = []; // 搜索框查询清除plot
+      refreshType = "init"; // 搜索开始设置为加载中
+    } else {
+      refreshType = "plot";
     }
-    // 搜索开始设置加载中
+    // 跟新refreshType状态
     this.setState({
-      spinning: true,
+      refreshType, // 修改刷新类型
+      spinning: true, // 设置不能点击
     });
     // 拼接查询参数
-    const params = reportBoardUtils.getSearchJson("plot", value, this.boardId, this.state.mDashboard, this.state.mDashboard_old, this.state.mCharts, this.state.idColumns);
-    // 请求数据
-    this.props.dispatch({
-      type: 'reportBoard/search',
-      payload: {
-        params,
-        callback: () => {
-          this.setState({
-            dataList: this.props.model.dataList,
-            spinning: false, // 数据加载完成取消加载中
-            plotClickFlag: false,// plot点击置为false
-          });
+    const params = reportBoardUtils.getSearchJson("plot", value, this.plotChartId, this.boardId, this.state.mDashboard, this.state.mDashboard_old, this.state.mCharts, this.state.idColumns);
+    const { children } = params;
+    this.dataListCount = children.length; // 把要查询的图表的个数赋值
+    for (let key in children) {
+      const params_one = {};
+      params_one.report_id = params.report_id;
+      params_one.name = params.name;
+      params_one.dataSet = params.dataSet;
+      params_one.dataSetRelation = params.dataSetRelation;
+      params_one.search_id = params.search_id;
+      const child = [];
+      child.push(children[key]);
+      params_one.children = child;
+      // 请求数据
+      this.props.dispatch({
+        type: 'reportBoard/search',
+        payload: {
+          params: params_one,
+          callback: (data) => {
+            const dataList = reportBoardUtils.addDataList(this.state.dataList, data);
+            this.setState({
+              dataList_one: data,
+              refreshType: "search", // 修改刷新类型
+              dataList, // 所有图表的数据
+            });
+          },
         },
-      },
-    });
+      });
+    }
   }
 
   //  改变搜索框的参数  
@@ -1035,7 +1087,7 @@ class ReportBoard extends PureComponent {
   //  点击获取图表的 维度、度量、图例 参数进行图表关联查询
   onPlotClick = (data, dimension, chartId) => {
     // 如果是编辑或者是点击一次了不给点
-    if (this.state.editModel == "true" || this.state.plotClickFlag == true) {
+    if (this.state.editModel == "true") {
       return;
     }
     const origin = data._origin;
@@ -1050,11 +1102,6 @@ class ReportBoard extends PureComponent {
     if (this.plotChartId.length > 0) {
       this.searchData(value);
     }
-    // 点击plot加一个用于加载的时候判断,plotChartId长度为0是点击搜索框
-    this.plotChartId.push("007");
-    this.setState({
-      plotClickFlag: true,// plot点击置为true
-    });
   }
 
   // 更新状态通用方法

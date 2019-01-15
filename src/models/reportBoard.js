@@ -50,7 +50,7 @@ export default {
       const data = response.data;
       const { dataList } = data;
       yield put({ type: 'save', payload: { dataList } });
-      callback();
+      callback(dataList);
     },
     *saveDashBoard({ payload: { mDashboard_porp, dashboard_type, callback } }, { call, put }) {
       const response = yield call(saveDashBoard, { mDashboard_porp, dashboard_type });

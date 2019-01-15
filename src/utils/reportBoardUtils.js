@@ -462,6 +462,14 @@ class ReportBoardUtils {
         return maxId;
     }
 
+    // 添加dataList_one到所有里面
+    addDataList = (dataList, dataList_one) => {
+        for (let key in dataList_one) {
+            dataList[key] = dataList_one[key];
+        }
+        return dataList;
+    }
+
     /***************************plot***************************************/
     // 将点击plot后要查询的图表id放入plotChartId
     changePlotChartId = (plotChartId, chartId, mDashboard) => {
@@ -509,7 +517,7 @@ class ReportBoardUtils {
      * search_id { 搜索框图表的id }
      * mDashboard { 你懂的 }
      * **/
-    getSearchJson = (search_type, value_plot, report_id, mDashboard, mDashboard_old, mCharts, idColumns) => {
+    getSearchJson = (search_type, value_plot, plotChartId, report_id, mDashboard, mDashboard_old, mCharts, idColumns) => {
         const style_config = JSON.parse(mDashboard.style_config);
         const style_config_old = JSON.parse(mDashboard_old.style_config);
         const json = { report_id: report_id, name: style_config.name, children: [], dataSet: style_config_old.dataSet, dataSetRelation: style_config_old.dataSetRelation }; // 总的json
@@ -575,8 +583,8 @@ class ReportBoardUtils {
         // 开始循环每个chart图表
         for (let i = 0; i < children.length; i++) {
             const { chartId, name, relation, type } = children[i];
-            // 排除搜索框
-            if (type == "search") {
+            // 排除搜索框和 点击plot的时候没有被关联的图表
+            if (type == "search" || (search_type == "plot" && null != value_plot && plotChartId.indexOf(chartId) < 0)) {
                 continue;
             }
             const json_chart = { chart_id: chartId, name: name, params_search: {}, params_plot: {} }; // 每个chart图表的json
