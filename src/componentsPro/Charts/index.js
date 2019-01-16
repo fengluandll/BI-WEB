@@ -4,6 +4,7 @@ import Line from './Line';
 import Table from './Table';
 import Pivottable from './Pivottable';
 import Perspective from './Perspective';
+import Text from './Text';
 
 export {
   Bar,
@@ -12,4 +13,5 @@ export {
   Table,
   Pivottable,
   Perspective,
+  Text,
 };

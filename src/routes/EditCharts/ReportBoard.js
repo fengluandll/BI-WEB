@@ -400,6 +400,8 @@ class ReportBoard extends PureComponent {
       this.renderPivottable(name, dateSetList, mChart, spinning);
     } else if (type == "perspective") {
       this.renderPerspective(name, dateSetList, mChart, spinning);
+    } else if (type == "text") {
+      this.renderText();
     }
   }
   /****************************************图形展示*****************************************************************/
@@ -544,6 +546,10 @@ class ReportBoard extends PureComponent {
         </Spin>
       </div>,
       document.getElementById(name));
+  }
+  // text文本控件
+  renderText() {
+
   }
   // 展示 搜索框
   renderSearch(item, mChart) {
