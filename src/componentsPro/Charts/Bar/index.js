@@ -99,6 +99,7 @@ class Bar extends PureComponent {
     if (dataLength > 5) {
       chartFit = false;
       chartWidth = dataLength * 55.6521;
+      height = height - 4;
       if (chartWidth > 32000) {
         chartWidth = 32000;
       }
@@ -238,12 +239,14 @@ class Bar extends PureComponent {
     const config = JSON.parse(mChart.config);
     const scrollX = config.scrollX; // 根据后端配置是否出现滚动条 切换css x有滚动条高度减滚动条高度
     let constCss = "chart-content";
-    if(scrollX == "1"){
-      constCss = "barScroll-content";
-    }
+    // if(scrollX == "1"){
+    //   constCss = "barScroll-content";
+    // }
     return (
       <div>
-        <div className={styles['chart-title']}>{mChart.name ? mChart.name : ""}</div>
+        <div className={styles['chart-titleBorder']}>
+          <div className={styles['chart-title']}>{mChart.name ? mChart.name : ""}</div>
+        </div>
         <div className={styles[constCss]} ref={this.handleRef} />
       </div>
     )

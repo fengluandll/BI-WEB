@@ -112,7 +112,9 @@ class Line extends PureComponent {
     const config = JSON.parse(mChart.config);
     return (
       <div>
-        <div className={styles['chart-title']}>{mChart.name ? mChart.name : ""}</div>
+        <div className={styles['chart-titleBorder']}>
+          <div className={styles['chart-title']}>{mChart.name ? mChart.name : ""}</div>
+        </div>
         <div ref={this.handleRef} />
       </div>
     )
