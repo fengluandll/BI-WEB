@@ -296,7 +296,7 @@ class ReportBoard extends PureComponent {
       children.map((item, index) => { // 循环所有图表
         let spinning = true; // 加载中设为true
         const { type, name, chartId, styleConfig, relation } = item;
-        if (type == "search" || this.state.editModel == "true") { // 搜索框和编辑模式时候可以显示
+        if (type == "search") { // 搜索框不显示加载中
           spinning = false;
           this.renderContent(item, spinning);
         } else if (this.state.refreshType == "init") { // 用来全部显示加载中的
