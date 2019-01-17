@@ -75,6 +75,9 @@ class ReportBoardUtils {
             dragactH = 10;
         } else if (type == "6") {
             // text文本控件
+            tmpType = "text";
+            dragactW = 20;
+            dragactH = 10;
         } else if (type == "11") {
             //  搜索框
             tmpType = "search";

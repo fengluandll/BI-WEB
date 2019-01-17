@@ -3,11 +3,12 @@ import React, { PureComponent } from 'react';
 import ReactDom from 'react-dom';
 import { Switch, message, Tabs, Button, Spin, Modal, Radio } from 'antd';
 import ReportBoardUtils from '../../utils/reportBoardUtils';
+import ReportBoardmChartsUtils from '../../utils/reportBoardmChartsUtils';
 import TabUtils from '../../utils/tabUtils';
 import CssUtils from '../../utils/cssUtils';
 import { ChartList, TabList } from '../../componentsPro/ChartList';
 import { Relation, RelationChartsAuto, TabName } from '../../componentsPro/RelationUtil';
-import { Bar, Pie, Line, Table, Pivottable, Perspective } from '../../componentsPro/Charts';
+import { Bar, Pie, Line, Table, Pivottable, Perspective, Text } from '../../componentsPro/Charts';
 import { Search } from '../../componentsPro/NewDashboard';
 import { Dragact } from 'dragact';
 import styles from './index.less';
@@ -15,6 +16,7 @@ import styles from './index.less';
 const TabPane = Tabs.TabPane;
 const confirm = Modal.confirm;
 const reportBoardUtils = new ReportBoardUtils();
+const reportBoardmChartsUtils = new ReportBoardmChartsUtils();
 const tabUtils = new TabUtils();
 const cssUtils = new CssUtils();
 
@@ -132,6 +134,9 @@ class ReportBoard extends PureComponent {
           },
         },
       });
+    }
+    if (this.dataListCount == 0) { // 如果只有一个搜索框,那么就调用刷新,解决新增tab不刷新的问题
+      this.refreshDashboard();
     }
   }
 
@@ -296,9 +301,14 @@ class ReportBoard extends PureComponent {
       children.map((item, index) => { // 循环所有图表
         let spinning = true; // 加载中设为true
         const { type, name, chartId, styleConfig, relation } = item;
-        if (type == "search") { // 搜索框不显示加载中
+        if (type == "search" || this.state.editModel == "true") { // 搜索框直接刷新,编辑模式也直接刷新
           spinning = false;
           this.renderContent(item, spinning);
+          if (this.dataListCount == 0) {// 只有搜索框没有图表的时候
+            this.setState({
+              spinning: false,
+            });
+          }
         } else if (this.state.refreshType == "init") { // 用来全部显示加载中的
           spinning = true;
           this.renderContent(item, spinning);
@@ -401,7 +411,7 @@ class ReportBoard extends PureComponent {
     } else if (type == "perspective") {
       this.renderPerspective(name, dateSetList, mChart, spinning);
     } else if (type == "text") {
-      this.renderText();
+      this.renderText(item, mChart);
     }
   }
   /****************************************图形展示*****************************************************************/
@@ -548,8 +558,19 @@ class ReportBoard extends PureComponent {
       document.getElementById(name));
   }
   // text文本控件
-  renderText() {
-
+  renderText(item, mChart) {
+    const { name, chartId, value } = item;
+    let cssName = cssUtils.getBIContainer(mChart);
+    const { editModel } = this.state;
+    ReactDom.render(
+      <div className={cssName}>
+        <Text
+          item={item}
+          onSave={this.saveText}
+          editModel={editModel}
+        />
+      </div>,
+      document.getElementById(name));
   }
   // 展示 搜索框
   renderSearch(item, mChart) {
@@ -1114,6 +1135,20 @@ class ReportBoard extends PureComponent {
   updateState = (props) => {
     this.setState({
       ...props,
+    });
+  }
+
+  /*************************************************控件事件********************************************************/
+  /***
+   * 文本控件保存文本
+   * ***/
+  saveText = (value, item) => {
+    const { mDashboard } = this.state;
+    reportBoardmChartsUtils.saveTextValueToDashboard(value, item, mDashboard);
+    this.setState({
+      mDashboard,
+    }, () => {
+      message.success('保存成功');
     });
   }
 

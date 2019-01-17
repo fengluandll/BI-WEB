@@ -19,6 +19,7 @@ export default class Index extends PureComponent {
             chartIdArrayTable: [],
             chartIdArrayPivottable: [],
             chartIdArrayPerspective: [],
+            chartIdArrayText: [],
         };
     }
 
@@ -31,7 +32,7 @@ export default class Index extends PureComponent {
         let operateType;// 增加或者减少类型
         let chartId; // 图表Id
         let arr = [];
-        const { chartIdArrayLine, chartIdArrayBar, chartIdArrayPie, chartIdArrayTable, chartIdArrayPivottable, chartIdArrayPerspective } = this.state;
+        const { chartIdArrayLine, chartIdArrayBar, chartIdArrayPie, chartIdArrayTable, chartIdArrayPivottable, chartIdArrayPerspective, chartIdArrayText } = this.state;
         if (type == "0") {
             arr = chartIdArrayLine;
         } else if (type == "1") {
@@ -44,6 +45,8 @@ export default class Index extends PureComponent {
             arr = chartIdArrayPivottable;
         } else if (type == "5") {
             arr = chartIdArrayPerspective;
+        } else if (type == "6") {
+            arr = chartIdArrayText;
         }
         //增加
         if (checkValue.length > arr.length) {
@@ -102,6 +105,7 @@ export default class Index extends PureComponent {
         const arrTable = [];
         const arrPivottable = [];
         const arrPerspective = [];
+        const arrText = [];
         //  列表全部数据  mCharts 表中的
         mCharts.map((item, index) => {
             const type = reportBoardUtils.getTypeByChartId(mCharts, item.id.toString());// 获取图表类型
@@ -135,6 +139,11 @@ export default class Index extends PureComponent {
                     "label": item.name,
                     "value": item.id.toString(),
                 });
+            } else if (type == "6") {
+                arrText.push({
+                    "label": item.name,
+                    "value": item.id.toString(),
+                });
             }
         });
         //  列表选中数据  mDashboard 表中的
@@ -144,6 +153,7 @@ export default class Index extends PureComponent {
         const chartIdArrayTable = [];
         const chartIdArrayPivottable = [];
         const chartIdArrayPerspective = [];
+        const chartIdArrayText = [];
         const children = JSON.parse(mDashboard.style_config).children;
         children.map((item, index) => {
             const type = reportBoardUtils.getTypeByChartId(mCharts, item.chartId);// 获取图表类型
@@ -159,6 +169,8 @@ export default class Index extends PureComponent {
                 chartIdArrayPivottable.push(item.chartId);
             } else if (type == "5") {
                 chartIdArrayPerspective.push(item.chartId);
+            } else if (type == "6") {
+                chartIdArrayText.push(item.chartId);
             }
         });
         // 放入state中让点击后可以有比较对象
@@ -169,6 +181,7 @@ export default class Index extends PureComponent {
             chartIdArrayTable,
             chartIdArrayPivottable,
             chartIdArrayPerspective,
+            chartIdArrayText,
         });
         const content = (
             <div>
@@ -239,6 +252,17 @@ export default class Index extends PureComponent {
                                     defaultValue={chartIdArrayPerspective}
                                     style={{ display: 'block' }}
                                     onChange={this.addOrRemoveChart.bind(this, "5")}
+                                />
+                            </div>
+                            <div className={styles['field-name']} title="文本控件">
+                                <i className="anticon anticon-up" onClick={this.toogle.bind(this, 'text')} style={{ cursor: 'pointer' }} />文本控件
+                            </div>
+                            <div className={styles['field-content']} ref={this.handleFieldContent.bind(this, 'text')}>
+                                <CheckboxGroup
+                                    options={arrText}
+                                    defaultValue={chartIdArrayText}
+                                    style={{ display: 'block' }}
+                                    onChange={this.addOrRemoveChart.bind(this, "6")}
                                 />
                             </div>
                         </div>
