@@ -87,7 +87,7 @@ class Bar extends PureComponent {
       forceFit = true;
     }
     // 边距
-    let padding = ['10%', 30, '25%', 40];
+    let padding = ['10%', 30, '25%', 50];
     if (config.padding) {
       padding = config.padding;
     }
