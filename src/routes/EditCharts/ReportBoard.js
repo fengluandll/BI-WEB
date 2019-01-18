@@ -1147,8 +1147,6 @@ class ReportBoard extends PureComponent {
     reportBoardmChartsUtils.saveTextValueToDashboard(value, item, mDashboard);
     this.setState({
       mDashboard,
-    }, () => {
-      message.success('保存成功');
     });
   }
 

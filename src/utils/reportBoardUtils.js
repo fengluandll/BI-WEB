@@ -589,7 +589,7 @@ class ReportBoardUtils {
         for (let i = 0; i < children.length; i++) {
             const { chartId, name, relation, type } = children[i];
             // 排除搜索框和 点击plot的时候没有被关联的图表
-            if (type == "search" || (search_type == "plot" && null != value_plot && plotChartId.indexOf(chartId) < 0)) {
+            if (type == "search" || type == "text" || (search_type == "plot" && null != value_plot && plotChartId.indexOf(chartId) < 0)) {
                 continue;
             }
             const json_chart = { chart_id: chartId, name: name, params_search: {}, params_plot: {} }; // 每个chart图表的json

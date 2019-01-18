@@ -39,9 +39,23 @@ class EditBoard extends PureComponent {
 
 
     /***************************************编辑模块****************************************/
+    /***
+     * 展示编辑模块
+     * 根据图表不同的类型,展示不同的图表html
+     * ***/
+    getEditContent = () => {
+        const type = "";
+        if (type == "bar") {
+
+        } else if (type == "line") {
+
+        } else if (type == "text") {
+
+        }
+    }
 
 
-    
+
     /***
      * 展示内容
      * 

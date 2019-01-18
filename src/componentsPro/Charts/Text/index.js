@@ -12,7 +12,6 @@ const initialValue = Plain.deserialize('A string of plain text.');
 class Text extends PureComponent {
   state = {
     value: initialValue, // 文本框的值
-    save_value: initialValue, // 保存的数据库的值
   }
 
   /***初始化的时候如果有参数就用参数显示***/
@@ -34,19 +33,13 @@ class Text extends PureComponent {
 
   /*************************************************************************/
 
-  /***
-   * 保存事件
-   * ***/
-  saveText = () => {
-    const { editModel, onSave, item } = this.props;
-    this.props.onSave(this.state.save_value, item);
-  }
   /***修改事件***/
   onChange = ({ value }) => {
     const save_value = Plain.serialize(value); // 将数据转为序列化进行存储
+    const { editModel, onSave, item } = this.props;
+    this.props.onSave(save_value, item);
     this.setState({
       value,
-      save_value,
     });
   }
 
@@ -62,10 +55,7 @@ class Text extends PureComponent {
     }
     return (
       <div>
-        {editModel == "true" ? <div onClick={this.saveText.bind(this)}>保存</div> : <div></div>}
-        <div>
-          <Editor value={this.state.value} readOnly={readOnly} onChange={this.onChange} />
-        </div>
+        <Editor value={this.state.value} readOnly={readOnly} onChange={this.onChange} />
       </div>
     );
   }
