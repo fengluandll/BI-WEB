@@ -134,7 +134,7 @@ class Table extends PureComponent {
     let headDiv;
     if (config.head == "1") {
       headDiv = (<div style={{ height: '25px', lineHeight: '25px' }}>
-        <div className={styles['chart-title']} ref={this.handleTitle}>
+        <div className={styles['chart-title','chart-titleTable']} ref={this.handleTitle}>
           {config.name ? config.name : ''}
         </div>
         <Icon type="download" style={{ fontSize: 16, color: '#08c', position: 'absolute', right: '20px', top: '2.5px' }}
