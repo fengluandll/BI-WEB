@@ -104,7 +104,9 @@ class Pie extends Component {
 
     chart.legend({
       position: 'right', // 设置图例的显示位置
-      itemGap: 0 // 图例项之间的间距
+      itemGap: 0, // 图例项之间的间距
+      offsetY: 0,
+      offsetX: -30
     });
 
     chart.tooltip({
