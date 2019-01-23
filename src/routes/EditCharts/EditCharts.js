@@ -2,14 +2,14 @@ import { connect } from 'dva';
 import React, { PureComponent } from 'react';
 import ReactDom from 'react-dom';
 import { Icon } from 'antd';
-import DashBoardUtils from '../../utils/dashboardUtils';
+import ReportBoardUtils from '../../utils/reportBoardUtils';
 import { Bar, Pie, Line, Table, Pivottable } from '../../componentsPro/Charts';
 import PivotTableUI from 'react-pivottable/PivotTableUI';
 import 'react-pivottable/pivottable.css';
 
 
 
-const dashboardUtils = new DashBoardUtils();
+const reportBoardUtils = new ReportBoardUtils();
 
 class EditCharts extends PureComponent {
   constructor(props) {
@@ -25,14 +25,17 @@ class EditCharts extends PureComponent {
   componentWillMount() {
     const chartId = this.chartId;
     this.props.dispatch({
-      type: 'editCharts/fetch',
+      type: 'editCharts/findMcharts',
       payload: {
         chartId,
         callback: () => {
-          const { list, mCharts } = this.props.model;
+          const { mCharts } = this.props.model;
+          const type = mCharts.mc_type;
+          const type_str = reportBoardUtils.changeTypeStrNum(type); // 转换type类型从num变成str
+          const dateSetList = reportBoardUtils.getFakeData(type_str);
           this.setState({
             mCharts,
-            dateSetList: list,
+            dateSetList,
           });
         },
       },

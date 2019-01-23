@@ -10,8 +10,8 @@ export async function findChartDate(params) {
 }
 
 // 获取仪表板类型
-export async function findType(params) {
-  return request(`http://localhost:8088/api/edit/findType?${stringify(params)}`, {
+export async function findMcharts(params) {
+  return request(`http://localhost:8088/api/edit/findMcharts?${stringify(params)}`, {
     method: 'POST',
     mode: 'cors',
   });

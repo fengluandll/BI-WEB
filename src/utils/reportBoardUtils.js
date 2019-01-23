@@ -78,6 +78,11 @@ class ReportBoardUtils {
             tmpType = "text";
             dragactW = 20;
             dragactH = 10;
+        } else if (type == "7") {
+            // 自定义table
+            tmpType = "tableDiy";
+            dragactW = 20;
+            dragactH = 10;
         } else if (type == "11") {
             //  搜索框
             tmpType = "search";
@@ -299,6 +304,33 @@ class ReportBoardUtils {
             };
         }
         return fakeData;
+    }
+
+    /***
+     * 把数字类型的type转成str类型
+     * ***/
+    changeTypeStrNum = (type_num) => {
+        let type_str = "";
+        if (type_num == 0) {
+            type_str = "line";
+        } else if (type_num == 1) {
+            type_str = "bar";
+        } else if (type_num == 2) {
+            type_str = "pie";
+        } else if (type_num == 3) {
+            type_str = "table";
+        } else if (type_num == 4) {
+            type_str = "pivottable";
+        } else if (type_num == 5) {
+            type_str = "perspective";
+        } else if (type_num == 6) {
+            type_str = "text";
+        } else if (type_num == 7) {
+            type_str = "tableDiy";
+        } else if (type_num == 11) {
+            type_str = "search";
+        }
+        return type_str;
     }
 
     /***************************通用方法***************************************/
@@ -542,7 +574,7 @@ class ReportBoardUtils {
                 if (config.type == "11") { // 是搜索框
                     const { searchJson } = config; // item对象
                     for (let searchJson_key in searchJson) {
-                        if (searchJson[searchJson_key].type == "3") { // 找到时间Item
+                        if (searchJson[searchJson_key].type == "1") { // 找到时间Item
                             search_time_param = searchJson_key; // item的column id
                             const { name, date_type, time_type, from_type, time_from, time_to } = searchJson[searchJson_key];
                             // date_type日期类型 time_type:0相对时间 from_type:0日期区间 time_from:偏移量

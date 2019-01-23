@@ -135,38 +135,31 @@ export default class Index extends PureComponent {
           const { type, name } = relaJson;
 
           let child = null;
-          switch (type) {
-            case "1":
-              // num
-              child = <SearchNumber rela={rela} relaJson={relaJson} onChange={this.onChange.bind(this, key)} />;
-              break;
-            case "2":
-              // str
-              // 拼接数据 data
-              const data = [];
-              if (null != searchEnum[key]) {
-                for (let i = 0; i < searchEnum[key].length; i++) {
-                  data.push({
-                    id: `${i}`,
-                    name: searchEnum[key][i],
-                  });
-                }
+          if (type == "11" || type == "12") {// num
+            child = <SearchNumber rela={rela} relaJson={relaJson} onChange={this.onChange.bind(this, key)} />;
+          } else if (type == "2" || type == "3" || type == "4" || type == "21") { // str
+            // 拼接数据 data
+            const data = [];
+            if (null != searchEnum[key]) {
+              for (let i = 0; i < searchEnum[key].length; i++) {
+                data.push({
+                  id: `${i}`,
+                  name: searchEnum[key][i],
+                });
               }
-              const { chart_item } = this.props;// 取出搜索框控件的chartId
-              child = (
-                <SearchCharacter
-                  rela={rela} relaJson={relaJson}
-                  onChange={this.onChange.bind(this, key)}
-                  load={() => {
-                    onLoad(key, chart_item.chartId);
-                  }}
-                  data={data}
-                />);
-              break;
-            case "3":
-              // date
-              child = <SearchDate rela={rela} relaJson={relaJson} onChange={this.onChange.bind(this, key)} />;
-              break;
+            }
+            const { chart_item } = this.props;// 取出搜索框控件的chartId
+            child = (
+              <SearchCharacter
+                rela={rela} relaJson={relaJson}
+                onChange={this.onChange.bind(this, key)}
+                load={() => {
+                  onLoad(key, chart_item.chartId);
+                }}
+                data={data}
+              />);
+          } else if (type == "1") {// 日期
+            child = <SearchDate rela={rela} relaJson={relaJson} onChange={this.onChange.bind(this, key)} />;
           }
 
           return (

@@ -5,6 +5,7 @@ import Table from './Table';
 import Pivottable from './Pivottable';
 import Perspective from './Perspective';
 import Text from './Text';
+import TableDiy from './TableDiy';
 
 export {
   Bar,
@@ -14,4 +15,5 @@ export {
   Pivottable,
   Perspective,
   Text,
+  TableDiy,
 };

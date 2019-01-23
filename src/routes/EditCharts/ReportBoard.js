@@ -8,7 +8,7 @@ import TabUtils from '../../utils/tabUtils';
 import CssUtils from '../../utils/cssUtils';
 import { ChartList, TabList } from '../../componentsPro/ChartList';
 import { Relation, RelationChartsAuto, TabName } from '../../componentsPro/RelationUtil';
-import { Bar, Pie, Line, Table, Pivottable, Perspective, Text } from '../../componentsPro/Charts';
+import { Bar, Pie, Line, Table, Pivottable, Perspective, Text, TableDiy } from '../../componentsPro/Charts';
 import { Search } from '../../componentsPro/NewDashboard';
 import { Dragact } from 'dragact';
 import styles from './index.less';
@@ -412,6 +412,8 @@ class ReportBoard extends PureComponent {
       this.renderPerspective(name, dateSetList, mChart, spinning);
     } else if (type == "text") {
       this.renderText(item, mChart);
+    } else if (type == "tableDiy") {
+      this.renderTableDiy(name, dateSetList, mChart, spinning);
     }
   }
   /****************************************图形展示*****************************************************************/
@@ -569,6 +571,21 @@ class ReportBoard extends PureComponent {
           onSave={this.saveText}
           editModel={editModel}
         />
+      </div>,
+      document.getElementById(name));
+  }
+  // 展示 交叉表
+  renderTableDiy(name, dateSetList, mChart, spinning) {
+    let cssName = cssUtils.getBIContainer(mChart);
+    const { dragactStyle } = JSON.parse(this.state.mDashboard.style_config);
+    ReactDom.render(
+      <div className={cssName}>
+          <TableDiy
+            dragactStyle={dragactStyle}
+            editModel={this.state.editModel}
+            mChart={mChart}
+            dateSetList={dateSetList}
+          />
       </div>,
       document.getElementById(name));
   }
