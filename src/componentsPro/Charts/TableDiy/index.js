@@ -80,11 +80,11 @@ class TableDiy extends PureComponent {
           <tbody>
             <tr>
               <th>年龄结构</th>
-              <td colSpan={"2"}>25岁及以下</td>
-              <td colSpan={"2"}>26-35岁</td>
-              <td colSpan={"2"}>36-45岁</td>
-              <td colSpan={"2"}>45岁以上</td>
-              <td colSpan={"4"}>平均年龄</td>
+              <td colSpan={"2"} className = {styles['tabTd']}>25岁及以下</td>
+              <td colSpan={"2"} className = {styles['tabTd']}>26-35岁</td>
+              <td colSpan={"2"} className = {styles['tabTd']}>36-45岁</td>
+              <td colSpan={"2"} className = {styles['tabTd']}>45岁以上</td>
+              <td colSpan={"4"} className = {styles['tabTd']}>平均年龄</td>
             </tr>
             <tr>
               <th>人数</th>
@@ -120,11 +120,11 @@ class TableDiy extends PureComponent {
             </tr>
             <tr>
               <th>工龄结构</th>
-              <td colSpan={"2"}>1年以下</td>
-              <td colSpan={"2"}>1（含）-3年</td>
-              <td colSpan={"2"}>3（含）-5年</td>
-              <td colSpan={"2"}>5（含）-10年</td>
-              <td colSpan={"4"}>10年（含）以上</td>
+              <td colSpan={"2"} className = {styles['tabTd']}>1年以下</td>
+              <td colSpan={"2"} className = {styles['tabTd']}>1（含）-3年</td>
+              <td colSpan={"2"} className = {styles['tabTd']}>3（含）-5年</td>
+              <td colSpan={"2"} className = {styles['tabTd']}>5（含）-10年</td>
+              <td colSpan={"4"} className = {styles['tabTd']}>10年（含）以上</td>
             </tr>
             <tr>
               <th>人数</th>
@@ -160,10 +160,10 @@ class TableDiy extends PureComponent {
             </tr>
             <tr>
               <th>学历结构</th>
-              <td colSpan={"2"}>硕士及以上</td>
-              <td colSpan={"2"}>本科</td>
-              <td colSpan={"2"}>大专</td>
-              <td colSpan={"6"}>中专及以下</td>
+              <td colSpan={"2"} className = {styles['tabTd']}>硕士及以上</td>
+              <td colSpan={"2"} className = {styles['tabTd']}>本科</td>
+              <td colSpan={"2"} className = {styles['tabTd']}>大专</td>
+              <td colSpan={"6"} className = {styles['tabTd']}>中专及以下</td>
             </tr>
             <tr>
               <th>人数</th>
