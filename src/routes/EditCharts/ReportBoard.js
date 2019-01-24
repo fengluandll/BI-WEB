@@ -204,7 +204,7 @@ class ReportBoard extends PureComponent {
     });
     // 找到和 搜索框一起的 图表
     md_children.map((item, index) => {
-      if (item.fatherName == fatherName && item.type != "tab" && item.type != "search") {
+      if (item.type != "tab" && item.type != "search") {
         chart_children.push(item);
       }
     });
@@ -252,7 +252,7 @@ class ReportBoard extends PureComponent {
     });
     // 找到和 图表一起的 图表
     md_children.map((item, index) => {
-      if (item.fatherName == fatherName && item.type != "tab" && item.type != "search" && item.name != name) {
+      if (item.type != "tab" && item.type != "search" && item.name != name) {
         chart_children.push(item);
       }
     });

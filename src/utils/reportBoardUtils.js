@@ -125,6 +125,10 @@ class ReportBoardUtils {
     // 新增一个图表时，为搜索框的每个item自动关联上和图表的关联
     // 参数  mChart 新加的图表的mChart
     addSearchChartRelationAuto = (mDashboard, tableIdColumns, idColumns, mChart, mCharts) => {
+        // 没有数据集的图表也return
+        if (this.getIsNoDataSet(this.changeTypeStrNum(mChart.mc_type))) {
+            return;
+        }
         const { style_config } = mDashboard;
         const style_config_obj = JSON.parse(style_config);
         const md_children = style_config_obj.children;
@@ -184,8 +188,8 @@ class ReportBoardUtils {
         const dataSetRelation = JSON.parse(mDashboard.style_config).dataSetRelation;
         //  循环children
         children.map((item, index) => {
-            // 如果是搜索框自己就return
-            if (item.name == id) {
+            // 如果是搜索框自己就return,或者没有数据集的图表也return
+            if (item.name == id || this.getIsNoDataSet(item.type)) {
                 return;
             }
             // 找到 mChart
@@ -331,6 +335,14 @@ class ReportBoardUtils {
             type_str = "search";
         }
         return type_str;
+    }
+
+    /***判断是否没有数据集的mchart***/
+    getIsNoDataSet = (type) => {
+        if (type == "text") {
+            return true;
+        }
+        return false;
     }
 
     /***************************通用方法***************************************/
