@@ -154,6 +154,10 @@ export default class Index extends PureComponent {
                                 chart_children.map((item, index) => {
                                     const chartId = item.chartId;
                                     const mChart = reportBoardUtils.getMChartByChartId(mCharts, chartId);
+                                    // 没有数据集的图表也return
+                                    if (reportBoardUtils.getIsNoDataSet(reportBoardUtils.changeTypeStrNum(mChart.mc_type))) {
+                                        return;
+                                    }
                                     arr.push({
                                         "label": mChart.name,
                                         "value": chartId, // tips  为了不和其他的冲突所以后缀加了 searchItem `${chartId}:${searchItem}`

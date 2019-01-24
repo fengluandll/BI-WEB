@@ -1,17 +1,18 @@
 import React, { PureComponent } from 'react';
 import ReactDom from 'react-dom';
-import { Collapse, Tag, Card, Icon, Button, message, Input, Dropdown, Menu, Checkbox } from 'antd';
+import { Collapse, Checkbox } from 'antd';
+import ReportBoardUtils from '../../../utils/reportBoardUtils';
 import styles from './index.less';
 
 const Panel = Collapse.Panel;
 const CheckboxGroup = Checkbox.Group;
+const reportBoardUtils = new ReportBoardUtils();
 
 
 //  仪表板 右侧的  图表列表 组件  add by wangliu  20181102 新的 将之前选择每个具体的改为 选某个图表然后里面具体的字段自动关联
 export default class Index extends PureComponent {
     constructor(props) {
         super(props);
-
     }
 
     componentDidMount() {
@@ -83,6 +84,10 @@ export default class Index extends PureComponent {
                     mChart = m_item;
                 }
             });
+            // 没有数据集的图表也return
+            if (reportBoardUtils.getIsNoDataSet(reportBoardUtils.changeTypeStrNum(mChart.mc_type))) {
+                return;
+            }
             // mchart 的config
             const config = JSON.parse(mChart.config);
             // 取 数据集的 名称
