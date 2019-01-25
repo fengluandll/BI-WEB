@@ -137,13 +137,13 @@ class Table extends PureComponent {
         <div className={styles['chart-title','chart-titleTable']} ref={this.handleTitle}>
           {config.name ? config.name : ''}
         </div>
-        <Icon type="download" style={{ fontSize: 16, color: '#08c', position: 'absolute', right: '20px', top: '2.5px' }}
+        {/* <Icon type="download" style={{ fontSize: 16, color: '#08c', position: 'absolute', right: '20px', top: '2.5px' }}
           onClick={() => {
             if (typeof onExport == 'function') {
               onExport();
             }
           }}
-        />
+        /> */}
       </div>);
     } else {
       headDiv = (<div></div>);
