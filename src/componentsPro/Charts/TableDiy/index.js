@@ -62,19 +62,19 @@ class TableDiy extends PureComponent {
               <th>男</th>
               <th>女</th>
             </tr>
-            <tr>
-              <th>{data["1"]}</th>
-              <th>{data["2"]}</th>
-              <th>{data["3"]}</th>
-              <th>{data["4"]}</th>
-              <th>{data["5"]}</th>
-              <th>{data["6"]}</th>
-              <th>{data["7"]}</th>
-              <th>{data["8"]}</th>
-              <th>{data["9"]}</th>
-              <th>{data["10"]}</th>
-              <th>{data["11"]}</th>
-              <th>{data["12"]}</th>
+            <tr className = {styles['tabTr']}>
+              <td>{data["1"]}</td>
+              <td>{data["2"]}</td>
+              <td>{data["3"]}</td>
+              <td>{data["4"]}</td>
+              <td>{data["5"]}</td>
+              <td>{data["6"]}</td>
+              <td>{data["7"]}</td>
+              <td>{data["8"]}</td>
+              <td>{data["9"]}</td>
+              <td>{data["10"]}</td>
+              <td>{data["11"]}</td>
+              <td>{data["12"]}</td>
             </tr>
           </thead>
           <tbody>
@@ -86,7 +86,7 @@ class TableDiy extends PureComponent {
               <td colSpan={"2"} className = {styles['tabTd']}>45岁以上</td>
               <td colSpan={"4"} className = {styles['tabTd']}>平均年龄</td>
             </tr>
-            <tr>
+            <tr className = {styles['tabTr']}>
               <th>人数</th>
               <td colSpan={"2"}>{data["13"]}</td>
               <td colSpan={"2"}>{data["14"]}</td>
@@ -94,7 +94,7 @@ class TableDiy extends PureComponent {
               <td colSpan={"2"}>{data["16"]}</td>
               <td colSpan={"4"}>{data["17"]}</td>
             </tr>
-            <tr>
+            <tr className = {styles['tabTr']}>
               <th>实际占比值</th>
               <td colSpan={"2"}>{data["18"]}</td>
               <td colSpan={"2"}>{data["19"]}</td>
@@ -102,7 +102,7 @@ class TableDiy extends PureComponent {
               <td colSpan={"2"}>{data["21"]}</td>
               <td colSpan={"4"}></td>
             </tr>
-            <tr>
+            <tr className = {styles['tabTr']}>
               <th>规划值</th>
               <td colSpan={"2"}>{data["22"]}</td>
               <td colSpan={"2"}>{data["23"]}</td>
@@ -110,7 +110,7 @@ class TableDiy extends PureComponent {
               <td colSpan={"2"}>{data["25"]}</td>
               <td colSpan={"4"}></td>
             </tr>
-            <tr>
+            <tr className = {styles['tabTr']}>
               <th>规划占比</th>
               <td colSpan={"2"}>{data["26"]}</td>
               <td colSpan={"2"}>{data["27"]}</td>
@@ -126,7 +126,7 @@ class TableDiy extends PureComponent {
               <td colSpan={"2"} className = {styles['tabTd']}>5（含）-10年</td>
               <td colSpan={"4"} className = {styles['tabTd']}>10年（含）以上</td>
             </tr>
-            <tr>
+            <tr className = {styles['tabTr']}>
               <th>人数</th>
               <td colSpan={"2"}>{data["30"]}</td>
               <td colSpan={"2"}>{data["31"]}</td>
@@ -134,7 +134,7 @@ class TableDiy extends PureComponent {
               <td colSpan={"2"}>{data["33"]}</td>
               <td colSpan={"4"}>{data["34"]}</td>
             </tr>
-            <tr>
+            <tr className = {styles['tabTr']}>
               <th>实际占比值</th>
               <td colSpan={"2"}>{data["35"]}</td>
               <td colSpan={"2"}>{data["36"]}</td>
@@ -142,7 +142,7 @@ class TableDiy extends PureComponent {
               <td colSpan={"2"}>{data["38"]}</td>
               <td colSpan={"4"}>{data["39"]}</td>
             </tr>
-            <tr>
+            <tr className = {styles['tabTr']}>
               <th>规划值</th>
               <td colSpan={"2"}>{data["40"]}</td>
               <td colSpan={"2"}>{data["41"]}</td>
@@ -150,7 +150,7 @@ class TableDiy extends PureComponent {
               <td colSpan={"2"}>{data["43"]}</td>
               <td colSpan={"4"}>{data["44"]}</td>
             </tr>
-            <tr>
+            <tr className = {styles['tabTr']}>
               <th>规划占比</th>
               <td colSpan={"2"}>{data["45"]}</td>
               <td colSpan={"2"}>{data["46"]}</td>
@@ -165,28 +165,28 @@ class TableDiy extends PureComponent {
               <td colSpan={"2"} className = {styles['tabTd']}>大专</td>
               <td colSpan={"6"} className = {styles['tabTd']}>中专及以下</td>
             </tr>
-            <tr>
+            <tr className = {styles['tabTr']}>
               <th>人数</th>
               <td colSpan={"2"}>{data["50"]}</td>
               <td colSpan={"2"}>{data["51"]}</td>
               <td colSpan={"2"}>{data["52"]}</td>
               <td colSpan={"6"}>{data["53"]}</td>
             </tr>
-            <tr>
+            <tr className = {styles['tabTr']}>
               <th>实际占比值</th>
               <td colSpan={"2"}>{data["54"]}</td>
               <td colSpan={"2"}>{data["55"]}</td>
               <td colSpan={"2"}>{data["56"]}</td>
               <td colSpan={"6"}>{data["57"]}</td>
             </tr>
-            <tr>
+            <tr className = {styles['tabTr']}>
               <th>规划值</th>
               <td colSpan={"2"}>{data["58"]}</td>
               <td colSpan={"2"}>{data["59"]}</td>
               <td colSpan={"2"}>{data["60"]}</td>
               <td colSpan={"6"}>{data["61"]}</td>
             </tr>
-            <tr>
+            <tr className = {styles['tabTr']}>
               <th>规划占比</th>
               <td colSpan={"2"}>{data["62"]}</td>
               <td colSpan={"2"}>{data["63"]}</td>
