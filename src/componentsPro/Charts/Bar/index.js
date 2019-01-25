@@ -95,7 +95,6 @@ class Bar extends PureComponent {
     // 控制数据量特别大的情况
     let chartWidth = 0;
     let dataLength = dateSetList.length;
-    let chartFit = forceFit;
     if (dataLength > 5) {
       chartFit = false;
       chartWidth = dataLength * 55.6521;
@@ -104,6 +103,7 @@ class Bar extends PureComponent {
         chartWidth = 32000;
       }
     }
+    let chartFit = forceFit; // 自适应最后设置起作用 modify by wangliu 20190125
 
     // init
     const chart = new G2.Chart({
