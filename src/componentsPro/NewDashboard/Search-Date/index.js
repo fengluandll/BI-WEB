@@ -47,23 +47,7 @@ export default class Index extends PureComponent {
     // 组件中只能使用日期对象，因time返回为字符串形式例: '2018-1', 使用moment转为日期对象格式
     return moment(time);
   }
-  // 时间季度 startend
-  onChangeQuarter = (index, date, dateString) => {
-    const { rela, relaJson } = this.props;
-    const val = this.calcDate(rela.props, relaJson);
-    //  时间的参数为 数组
-    val[index] = date ? date.toDate() : null;
-    if (index === 0) {
-      this.setState({
-        startTime: relaJson.date_type == 4 ? this.startTiemAndEndTime(dateString) : date,
-      });
-    } else {
-      this.setState({
-        endTime: relaJson.date_type == 4 ? this.startTiemAndEndTime(dateString) : date,
-      });
-    }
-    this.props.onChange(val);
-  }
+
   // 运行时调用这个方式 所以设置下开始与结束时间 20190102 addby wangliu 切换tab的时候传新参数进来
   componentWillReceiveProps(nextProps) {
     const { rela, relaJson, onChange } = nextProps;
@@ -75,8 +59,8 @@ export default class Index extends PureComponent {
       startTime: startTimeDemo,
       endTime: endTimeDemo,
     };
-    // 将计算好的时候同步到父组件中
-    onChange([startTimeDemo, endTimeDemo]);
+    // 将计算好的时候同步到父组件中  add by wangliu 去掉这行因为季度修改后不刷新
+    // onChange([startTimeDemo, endTimeDemo]);
   }
   /***
    * 初始化的时候计算时间
@@ -144,6 +128,22 @@ export default class Index extends PureComponent {
     }
     this.props.onChange(rela.props);
   };
+  // 时间季度 startend
+  onChangeQuarter = (index, date, dateString) => {
+    const { rela, relaJson } = this.props;
+    //  时间的参数为 数组
+    rela.props[index] = date ? date : null;
+    if (index === 0) {
+      this.setState({
+        startTime: relaJson.date_type == 4 ? this.startTiemAndEndTime(dateString) : date,
+      });
+    } else {
+      this.setState({
+        endTime: relaJson.date_type == 4 ? this.startTiemAndEndTime(dateString) : date,
+      });
+    }
+    this.props.onChange(rela.props);
+  }
   render() {
     const monthFormat = 'YYYY-M';
     const { relaJson } = this.props;

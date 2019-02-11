@@ -91,6 +91,9 @@ class Bar extends PureComponent {
     if (config.padding) {
       padding = config.padding;
     }
+    if (config.legend == "1") {
+      padding = ['10%', 30, '25%', 150];
+    }
 
     // 控制数据量特别大的情况
     let chartWidth = 0;
@@ -136,7 +139,7 @@ class Bar extends PureComponent {
           style: { fill: '#0000CD' },
           cancelable: true,
         })
-        .label(`${y}`,{
+        .label(`${y}`, {
           offset: 10
         });
     } else {
@@ -146,12 +149,21 @@ class Bar extends PureComponent {
           style: { fill: '#0000CD' },
           cancelable: true,
         })
-        .label(`${y}`,{
+        .label(`${y}`, {
           offset: 10
         });
     }
 
-    chart.legend(false); // 隐藏全部图例
+    /*图例*/
+    if (config.legend == "1") {
+      chart.legend({
+        position: 'left', // 设置图例的显示位置
+        itemGap: 20 // 图例项之间的间距
+      });
+    } else {
+      chart.legend(false); // 隐藏全部图例
+    }
+
     chart.tooltip(true, {
       crosshairs: ['true'],
       showTitle: false,

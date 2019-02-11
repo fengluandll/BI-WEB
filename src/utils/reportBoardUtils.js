@@ -573,8 +573,8 @@ class ReportBoardUtils {
         const { children } = style_config;
         // 先循环每个chart找到搜索框的chart中的relation
         let relation_search;
-        let search_time_param; // 搜索框时间item的column_id
-        let search_time_value; // 搜索框时间item的值
+        let search_time_param = []; // 搜索框时间item的column_id,因为可以一个数据集有多个时间的字段所有这个变量为数组
+        let search_time_value = {}; // 搜索框时间item的值,{key为search_time_param数组中的column_id}
         for (let i = 0; i < children.length; i++) {
             const { chartId, name, relation, type } = children[i];
             if (type == "search") {
@@ -587,7 +587,7 @@ class ReportBoardUtils {
                     const { searchJson } = config; // item对象
                     for (let searchJson_key in searchJson) {
                         if (searchJson[searchJson_key].type == "1") { // 找到时间Item
-                            search_time_param = searchJson_key; // item的column id
+                            search_time_param.push(searchJson_key); // item的column id
                             const { name, date_type, time_type, from_type, time_from, time_to } = searchJson[searchJson_key];
                             // date_type日期类型 time_type:0相对时间 from_type:0日期区间 time_from:偏移量
                             // 目前时间的值写固定的就是用偏移量
@@ -609,7 +609,7 @@ class ReportBoardUtils {
                                     default:
                                         type = 'years';
                                 }
-                                search_time_value = [moment().subtract(time_from, type), moment().subtract(time_to, type)];
+                                search_time_value[searchJson_key] = [moment().subtract(time_from, type), moment().subtract(time_to, type)];
                             }
                         }
                     }
@@ -652,11 +652,23 @@ class ReportBoardUtils {
             for (let key in relation_search) { // 每个key是每个搜索框子项
                 const { label, order, relationFields, props } = relation_search[key];
                 for (let key_child in relationFields) { // 每个key_child是搜索框子项关联的chart的id
-                    const isDateSetsRelationed = this.getSearchChartsColumnYNrelationed(search_time_param, relationFields[key_child], idColumns);
                     if (key_child == chartId && null != props && null != props[0] && search_type == "plot") { // 如果搜索框的子项有关联这个chart
                         json_chart.params_search[relationFields[key_child]] = props;  // 放入搜索框参数{key:value}:{"字段id":"参数值"}
-                    } else if (key_child == chartId && null != search_time_param && (search_time_param == relationFields[key_child] || isDateSetsRelationed) && search_type == "init") { // 如果搜索框里有时间item,那就把他参数放进去 ps:时间参数是[],但是空的也传
-                        json_chart.params_search[relationFields[key_child]] = search_time_value;
+                    } else if (key_child == chartId && null != search_time_param && search_type == "init") {// 如果是初始化的时候
+                        // 默认先用props里的默认参数赋值
+                        if (null != props && null != props[0]) {
+                            json_chart.params_search[relationFields[key_child]] = props;
+                        }
+                        // 如果是初始化的时候,有时间参数的,要自己重新赋值自己拼的时间参数。拼接的时间可以是多个所以要循环search_time_param数组
+                        if (null != search_time_param && search_time_param.length > 0) {
+                            for (let search_time_param_id in search_time_param) {
+                                const isDateSetsRelationed = this.getSearchChartsColumnYNrelationed(search_time_param_id, relationFields[key_child], idColumns);
+                                // 如果搜索框中时间的参数column_id和图表中的column_id相同或者他们的display_name相同就是放入新的时间参数
+                                if (search_time_param_id == relationFields[key_child] || isDateSetsRelationed) {
+                                    json_chart.params_search[relationFields[key_child]] = search_time_value[search_time_param_id];
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -677,6 +689,8 @@ class ReportBoardUtils {
             // 最后把chart放入总json
             json.children.push(json_chart);
         }
+        // 输出json的log
+        //console.log("搜索的拼接json是: " + JSON.stringify(json));
         return json;
     }
 

@@ -1,4 +1,4 @@
-import { fetch, fetchData, fetchEdit, saveDashBoard, searchItemData, searchDate, search, pullSynchronizationTab } from '../services/reportBoard';
+import { fetch, fetchEdit, saveDashBoard, searchItemData, search, pullSynchronizationTab } from '../services/reportBoard';
 
 export default {
   // model 的命名空间，同时也是他在全局 state 上的属性，只能用字符串，不支持通过 . 的方式创建多层命名空间。
@@ -24,25 +24,11 @@ export default {
       yield put({ type: 'save', payload: { mDashboard_old: mDashboard, tDashboard, mCharts, idColumns, user_type, user_auth } });
       callback();
     },
-    *fetchData({ payload: { boardId, mDashboard, callback } }, { call, put }) {
-      const response = yield call(fetchData, { boardId, mDashboard });
-      const data = response.data;
-      const { dataList } = data;
-      yield put({ type: 'save', payload: { dataList } });
-      callback();
-    },
     *fetchEdit({ payload: { boardId, callback } }, { call, put }) {
       const response = yield call(fetchEdit, { boardId });
       const data = response.data;
       const { tableIdColumns } = data;
       yield put({ type: 'save', payload: { tableIdColumns } });
-      callback();
-    },
-    *searchData({ payload: { mDashboard, boardId, value, callback } }, { call, put }) {
-      const response = yield call(searchDate, { mDashboard, boardId, value });
-      const data = response.data;
-      const { dataList } = data;
-      yield put({ type: 'save', payload: { dataList } });
       callback();
     },
     *search({ payload: { params, callback } }, { call, put }) {
