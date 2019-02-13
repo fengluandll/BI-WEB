@@ -1,4 +1,4 @@
-import { fetch, fetchEdit, saveDashBoard, searchItemData, search, pullSynchronizationTab } from '../services/reportBoard';
+import { initFetch, fetchEdit, onTableExport, saveDashBoard, searchItemData, search, pullSynchronizationTab } from '../services/reportBoard';
 
 export default {
   // model 的命名空间，同时也是他在全局 state 上的属性，只能用字符串，不支持通过 . 的方式创建多层命名空间。
@@ -18,7 +18,7 @@ export default {
   // 可以和服务器交互，可以获取全局 state 的数据等等。
   effects: {
     *fetch({ payload: { boardId, callback } }, { call, put }) {
-      const response = yield call(fetch, { boardId });
+      const response = yield call(initFetch, { boardId });
       const data = response.data;
       const { mDashboard, tDashboard, mCharts, idColumns, user_type, user_auth } = data;
       yield put({ type: 'save', payload: { mDashboard_old: mDashboard, tDashboard, mCharts, idColumns, user_type, user_auth } });
@@ -37,6 +37,11 @@ export default {
       const { dataList } = data;
       yield put({ type: 'save', payload: { dataList } });
       callback(dataList);
+    },
+    *onTableExport({ payload: { params, callback } }, { call, put }) {
+      const response = yield call(onTableExport, { params });
+      const data = response.data;
+      callback();
     },
     *saveDashBoard({ payload: { mDashboard_porp, dashboard_type, callback } }, { call, put }) {
       const response = yield call(saveDashBoard, { mDashboard_porp, dashboard_type });

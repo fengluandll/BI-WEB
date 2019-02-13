@@ -520,6 +520,7 @@ class ReportBoard extends PureComponent {
             editModel={this.state.editModel}
             mChart={mChart}
             dateSetList={dateSetList}
+            onExport={this.onTableExport}
           />
         </Spin>
       </div>,
@@ -574,18 +575,18 @@ class ReportBoard extends PureComponent {
       </div>,
       document.getElementById(name));
   }
-  // 展示 交叉表
+  // 展示 自定义表格
   renderTableDiy(name, dateSetList, mChart, spinning) {
     let cssName = cssUtils.getBIContainer(mChart);
     const { dragactStyle } = JSON.parse(this.state.mDashboard.style_config);
     ReactDom.render(
       <div className={cssName}>
-          <TableDiy
-            dragactStyle={dragactStyle}
-            editModel={this.state.editModel}
-            mChart={mChart}
-            dateSetList={dateSetList}
-          />
+        <TableDiy
+          dragactStyle={dragactStyle}
+          editModel={this.state.editModel}
+          mChart={mChart}
+          dateSetList={dateSetList}
+        />
       </div>,
       document.getElementById(name));
   }
@@ -1155,7 +1156,7 @@ class ReportBoard extends PureComponent {
     });
   }
 
-  /*************************************************控件事件********************************************************/
+  /*************************************************图表事件********************************************************/
   /***
    * 文本控件保存文本
    * ***/
@@ -1164,6 +1165,38 @@ class ReportBoard extends PureComponent {
     reportBoardmChartsUtils.saveTextValueToDashboard(value, item, mDashboard);
     this.setState({
       mDashboard,
+    });
+  }
+  /***
+   * 交叉表table导出excel
+   * chart_id要导出的交叉表id
+   * ***/
+  onTableExport = (chart_id) => {
+    // 拼接查询参数
+    const params = reportBoardUtils.getSearchJson("plot", null, [], this.boardId, this.state.mDashboard, this.state.mDashboard_old, this.state.mCharts, this.state.idColumns);
+    const { children } = params;
+    const params_one = {};
+    params_one.report_id = params.report_id;
+    params_one.name = params.name;
+    params_one.dataSet = params.dataSet;
+    params_one.dataSetRelation = params.dataSetRelation;
+    params_one.search_id = params.search_id;
+    const child = [];
+    for (let key in children) {// 找到要导出的交叉表
+      if (children[key].chart_id == chart_id) {
+        child.push(children[key]);
+      }
+    }
+    params_one.children = child;
+    // 请求数据
+    this.props.dispatch({
+      type: 'reportBoard/onTableExport',
+      payload: {
+        params: params_one,
+        callback: () => {
+          message.success('下载成功');
+        },
+      },
     });
   }
 

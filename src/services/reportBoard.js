@@ -1,8 +1,9 @@
 import { stringify } from 'qs';
+import fetch from 'dva/fetch';
 import request from '../utils/request';
 
 // 初始化时获取结构数据
-export async function fetch(params) {
+export async function initFetch(params) {
   return request(`http://localhost:8088/api/reportBoard/fetch?${stringify(params)}`, {
     method: 'POST',
     mode: 'cors',
@@ -26,6 +27,26 @@ export async function search(params) {
     mode: 'cors',
     body: formData,
   });
+}
+
+// 导出交叉表excel
+export async function onTableExport(params) {
+  const formData = new FormData();
+  formData.append('params', JSON.stringify(params));
+  return fetch('http://localhost:8088/api/reportBoard/exportTableExcel', {
+    method: 'POST',
+    mode: 'cors',
+    body: formData,
+  })
+    .then(response => response.blob())
+    .then((blob) => {
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'export.xls';
+      a.click();
+      return 1;
+    });
 }
 
 // 保存dashboard

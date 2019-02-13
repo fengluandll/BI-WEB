@@ -24,6 +24,11 @@ class ChartHelper {
       fields: ['y'], // 根据指定的字段集进行排序，与lodash的sortBy行为一致
       order: 'DESC',        // 默认为 ASC，DESC 则为逆序
     });
+    dv.transform({    // addby wangliu 20181116永远按图例排序
+      type: 'sort-by',
+      fields: ['color'], 
+      order: 'ASC',        
+    });
     // 字段重命名
     dv.transform({
       type: 'rename',

@@ -22,11 +22,14 @@ class Table extends PureComponent {
   renderEmpty = () => {
     return (<div className={styles.empty}><span>数据返回为空</span></div>);
   };
+  onExport = () => {
+    const { mChart, dateSetList, editModel, dragactStyle, onExport } = this.props;
+    onExport(mChart.id);
+  }
 
-  renderChart(props) {
-    const mChart = this.props.mChart;
+  renderChart() {
+    const { mChart, dateSetList, editModel, dragactStyle } = this.props;
     const config = JSON.parse(mChart.config);
-    const dateSetList = this.props.dateSetList;
     const { header, body } = dateSetList;
 
     if (null == mChart || dateSetList == null) {
@@ -42,11 +45,11 @@ class Table extends PureComponent {
     if (config.height) {
       height = config.height;
     }
-    if (null != this.props.dragactStyle && this.props.dragactStyle.length > 0) {
-      const array = this.props.dragactStyle;
+    if (null != dragactStyle && dragactStyle.length > 0) {
+      const array = dragactStyle;
       array.map((item, index) => {
         if (item.key == mChart.id.toString()) {
-          if (this.props.editModel == "true") {
+          if (editModel == "true") {
             height = item.h * 40 - 20;
           } else {
             height = item.h * 40 - 20;
@@ -58,6 +61,11 @@ class Table extends PureComponent {
     let padding = ['10%', 30, '25%', 40];
     if (config.padding) {
       padding = config.padding;
+    }
+    // 固定前几列
+    let fixedColumnsLeft = 0;
+    if (config.fixedColumnsLeft) {
+      fixedColumnsLeft = config.fixedColumnsLeft
     }
 
     if (!body || (body && body.length < 1)) {
@@ -112,7 +120,7 @@ class Table extends PureComponent {
       data: body,
       rowHeaders: true,
       colHeaders: header,
-      fixedColumnsLeft: 0,
+      fixedColumnsLeft: fixedColumnsLeft,
       stretchH: 'all',
       height: height,
       colWidths: widthArray,
@@ -129,21 +137,19 @@ class Table extends PureComponent {
     });
   }
   render() {
-    const mChart = this.props.mChart;
+    const { mChart } = this.props;
     const config = JSON.parse(mChart.config);
     let headDiv;
     if (config.head == "1") {
       headDiv = (<div style={{ height: '25px', lineHeight: '25px' }}>
-        <div className={styles['chart-title','chart-titleTable']} ref={this.handleTitle}>
+        <div className={styles['chart-title', 'chart-titleTable']} ref={this.handleTitle}>
           {config.name ? config.name : ''}
         </div>
-        {/* <Icon type="download" style={{ fontSize: 16, color: '#08c', position: 'absolute', right: '20px', top: '2.5px' }}
+        <Icon type="download" style={{ fontSize: 16, color: '#08c', position: 'absolute', right: '20px', top: '2.5px' }}
           onClick={() => {
-            if (typeof onExport == 'function') {
-              onExport();
-            }
+            this.onExport();
           }}
-        /> */}
+        />
       </div>);
     } else {
       headDiv = (<div></div>);
