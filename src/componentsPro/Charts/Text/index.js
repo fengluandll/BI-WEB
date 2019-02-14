@@ -26,10 +26,17 @@ class Text extends PureComponent {
     }
   }
   componentDidMount() {
-
+    this.renderConten();
   }
   componentDidUpdate() {
+    this.renderConten();
   }
+  handleRef = (n) => {
+    this.node = n;
+  };
+  renderEmpty = () => {
+    return (<div className={styles.empty}><span>数据返回为空</span></div>);
+  };
 
   /*************************************************************************/
 
@@ -48,10 +55,13 @@ class Text extends PureComponent {
    * 
    * ***/
   renderConten = () => {
-    const { editModel } = this.props;
+    const { editModel,mChart,dateSetList } = this.props;
+    const config = JSON.parse(mChart.config);
     let readOnly = true; // 判断如果是编辑模式就不是只读模式
     if (editModel == "true") {
       readOnly = false;
+    }else{
+      readOnly = true;
     }
     return (
       <div>
@@ -61,9 +71,35 @@ class Text extends PureComponent {
   }
 
   render() {
+    let height = 60;
+    const mChart = this.props.mChart;
+    const config = JSON.parse(mChart.config);
+    let headDiv;
+    if (this.props.dragactStyle.length > 0) {
+      const array = this.props.dragactStyle;
+      array.map((item, index) => {
+        if (item.key == mChart.id.toString()) {
+          if (this.props.editModel == "true") {
+            height = item.h * 40 - 20;
+          } else {
+            height = item.h * 40 - 20;
+          }
+        }
+      });
+    }
+    if (config.head !== "1") {
+      headDiv = (<div style={{ height: '22px', lineHeight: '22px' }}>
+        <div className={styles['chart-title','chart-titleTable']} ref={this.handleTitle}>
+          {config.name ? config.name : mChart.name}
+        </div>
+      </div>);
+    } else {
+      headDiv = (<div></div>);
+    }
     return (
-      <div>
-        {this.renderConten()}
+      <div name="text" style={{height:height}}>
+        {headDiv}
+        <div>{this.renderConten()}</div>
       </div>
     )
   }

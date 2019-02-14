@@ -12,6 +12,7 @@ import { Bar, Pie, Line, Table, Pivottable, Perspective, Text, TableDiy } from '
 import { Search } from '../../componentsPro/NewDashboard';
 import { Dragact } from 'dragact';
 import styles from './index.less';
+import { Icon } from 'antd';
 
 const TabPane = Tabs.TabPane;
 const confirm = Modal.confirm;
@@ -411,7 +412,7 @@ class ReportBoard extends PureComponent {
     } else if (type == "perspective") {
       this.renderPerspective(name, dateSetList, mChart, spinning);
     } else if (type == "text") {
-      this.renderText(item, mChart);
+      this.renderText(item, dateSetList, mChart,spinning);
     } else if (type == "tableDiy") {
       this.renderTableDiy(name, dateSetList, mChart, spinning);
     }
@@ -561,17 +562,24 @@ class ReportBoard extends PureComponent {
       document.getElementById(name));
   }
   // text文本控件
-  renderText(item, mChart) {
-    const { name, chartId, value } = item;
+  renderText(item, dateSetList, mChart,spinning) {
     let cssName = cssUtils.getBIContainer(mChart);
-    const { editModel } = this.state;
+    const { dragactStyle } = JSON.parse(this.state.mDashboard.style_config);
+    const { name, chartId, value } = item;
+    // const { editModel } = this.state;
     ReactDom.render(
       <div className={cssName}>
+      <Spin spinning={spinning}>
         <Text
+          dragactStyle={dragactStyle}
+          editModel={this.state.editModel}
+          mChart={mChart}
+          dateSetList={dateSetList}
           item={item}
           onSave={this.saveText}
-          editModel={editModel}
+          // editModel={editModel}  
         />
+        </Spin>
       </div>,
       document.getElementById(name));
   }
@@ -691,28 +699,6 @@ class ReportBoard extends PureComponent {
         }
       });
     }
-  }
-  onMouseEnterShow = (e) => {
-    if (e.target.style.height === '180px') {
-      e.target.style.opacity = 1;
-      e.target.children[0].style.opacity = 1;
-    } else {
-      e.target.parentNode.style.opacity = 1;
-      e.target.style.opacity = 1;
-    }
-  }
-  onMouseLeaveHide = (e) => {
-    if (this.state.editModel == "true") {
-      return;
-    }
-    if (e.target.style.height === '180px') {
-      e.target.style.opacity = 0;
-      e.target.children[0].style.opacity = 0;
-    } else {
-      e.target.parentNode.style.opacity = 0;
-      e.target.style.opacity = 0;
-    }
-
   }
   /****************************************点击事件*****************************************************************/
 
@@ -1289,9 +1275,9 @@ class ReportBoard extends PureComponent {
       <div style={this.state.spinning == true ? { pointerEvents: 'none' } : {}}>{/*如果有图表在加载中那么就设置样式为不可点击状态*/}
         {/* 添加返回按钮的父级,根据权限参数控制是否显示 */}
         {this.state.user_auth == "1" ?
-          <div style={{ marginLeft: (this.state.editModel == "true") ? "170px" : "0", width: 30, height: 180, opacity: 0, position: 'fixed', top: '50%', marginTop: -90, left: 0, zIndex: 1000, fontSize: 26, textAlign: 'center', cursor: 'pointer' }} onClick={this.changeEditeMode} onMouseEnter={this.onMouseEnterShow.bind(this)} onMouseLeave={this.onMouseLeaveHide.bind(this)}>
-            <div style={{ marginLeft: (this.state.editModel == "true") ? "170px" : "0", width: 30, height: 60, opacity: '1 !important', border: '2px solid #ccc', borderRadius: 6, borderLeft: '1px solid #ccc', background: '#eee', color: '#000', position: 'fixed', top: '50%', marginTop: -30, left: 0, zIndex: 1000, fontSize: 26, textAlign: 'center', lineHeight: 2, cursor: 'pointer', }} >||</div>
-          </div>
+            <div style={{ marginRight: (this.state.editModel == "true") ? "200px" : "0", width: 40, height: 40, opacity: '1', border: '2px solid #ccc', borderLeft: '1px solid #ccc', background: '#eee', color: '#000', position: 'fixed', top: 0, right: 0, zIndex: 1000, fontSize: 22, textAlign: 'center', cursor: 'pointer' }} onClick={this.changeEditeMode} >
+            {this.state.editModel == "true" ? <Icon type="unlock" /> : <Icon type="lock" /> }
+            </div>
           :
           ""}
         {this.state.editModel == "true" ? <div className={styles['boardLeft']}>{this.disPlayLeft()} </div> : <div></div>}
