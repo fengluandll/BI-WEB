@@ -302,7 +302,7 @@ class ReportBoard extends PureComponent {
       children.map((item, index) => { // 循环所有图表
         let spinning = true; // 加载中设为true
         const { type, name, chartId, styleConfig, relation } = item;
-        if (type == "search" || this.state.editModel == "true") { // 搜索框直接刷新,编辑模式也直接刷新
+        if (type == "search" || type == "text" || this.state.editModel == "true") { // 搜索框直接刷新,编辑模式也直接刷新
           spinning = false;
           this.renderContent(item, spinning);
           if (this.dataListCount == 0) {// 只有搜索框没有图表的时候
@@ -412,7 +412,7 @@ class ReportBoard extends PureComponent {
     } else if (type == "perspective") {
       this.renderPerspective(name, dateSetList, mChart, spinning);
     } else if (type == "text") {
-      this.renderText(item, dateSetList, mChart,spinning);
+      this.renderText(item, dateSetList, mChart, spinning);
     } else if (type == "tableDiy") {
       this.renderTableDiy(name, dateSetList, mChart, spinning);
     }
@@ -562,14 +562,13 @@ class ReportBoard extends PureComponent {
       document.getElementById(name));
   }
   // text文本控件
-  renderText(item, dateSetList, mChart,spinning) {
+  renderText(item, dateSetList, mChart, spinning) {
     let cssName = cssUtils.getBIContainer(mChart);
     const { dragactStyle } = JSON.parse(this.state.mDashboard.style_config);
     const { name, chartId, value } = item;
     // const { editModel } = this.state;
     ReactDom.render(
       <div className={cssName}>
-      <Spin spinning={spinning}>
         <Text
           dragactStyle={dragactStyle}
           editModel={this.state.editModel}
@@ -577,9 +576,8 @@ class ReportBoard extends PureComponent {
           dateSetList={dateSetList}
           item={item}
           onSave={this.saveText}
-          // editModel={editModel}  
+        // editModel={editModel}  
         />
-        </Spin>
       </div>,
       document.getElementById(name));
   }
@@ -1275,9 +1273,9 @@ class ReportBoard extends PureComponent {
       <div style={this.state.spinning == true ? { pointerEvents: 'none' } : {}}>{/*如果有图表在加载中那么就设置样式为不可点击状态*/}
         {/* 添加返回按钮的父级,根据权限参数控制是否显示 */}
         {this.state.user_auth == "1" ?
-            <div style={{ marginRight: (this.state.editModel == "true") ? "200px" : "0", width: 40, height: 40, opacity: '1', border: '2px solid #ccc', borderLeft: '1px solid #ccc', background: '#eee', color: '#000', position: 'fixed', top: 0, right: 0, zIndex: 1000, fontSize: 22, textAlign: 'center', cursor: 'pointer' }} onClick={this.changeEditeMode} >
-            {this.state.editModel == "true" ? <Icon type="unlock" /> : <Icon type="lock" /> }
-            </div>
+          <div style={{ marginRight: (this.state.editModel == "true") ? "200px" : "0", width: 40, height: 40, opacity: '1', border: '2px solid #ccc', borderLeft: '1px solid #ccc', background: '#eee', color: '#000', position: 'fixed', top: 0, right: 0, zIndex: 1000, fontSize: 22, textAlign: 'center', cursor: 'pointer' }} onClick={this.changeEditeMode} >
+            {this.state.editModel == "true" ? <Icon type="unlock" /> : <Icon type="lock" />}
+          </div>
           :
           ""}
         {this.state.editModel == "true" ? <div className={styles['boardLeft']}>{this.disPlayLeft()} </div> : <div></div>}
