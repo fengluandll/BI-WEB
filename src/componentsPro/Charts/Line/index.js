@@ -23,9 +23,8 @@ class Line extends PureComponent {
   };
 
   renderChart() {
-    const mChart = this.props.mChart;
+    const { mChart, dateSetList } = this.props;
     const config = JSON.parse(mChart.config);
-    const dateSetList = this.props.dateSetList;
 
     if (null == mChart || dateSetList == null || dateSetList.length == 0) {
       ReactDom.render(this.renderEmpty(), this.node);
@@ -43,6 +42,7 @@ class Line extends PureComponent {
     if (config.height) {
       height = config.height;
     }
+    // 控制图形高度
     if (null != this.props.dragactStyle && this.props.dragactStyle.length > 0) {
       const array = this.props.dragactStyle;
       array.map((item, index) => {
@@ -84,9 +84,9 @@ class Line extends PureComponent {
 
     chart.source(dv, scaleConfig);
 
-    chart.areaStack().position(`${x}*${y}`).color(color);
-    const line = chart.lineStack().position(`${x}*${y}`);
-    const point = chart.point().position(`${x}*${y}`).size(3).adjust('stack')
+    // 控制线状图样式
+    const line = chart.line().position(`${x}*${y}`);
+    const point = chart.point().position(`${x}*${y}`).size(3)
       .shape('circle')
       .style({
         stroke: '#fff',
