@@ -66,7 +66,7 @@ export default class Index extends PureComponent {
   //  render searchitem
   renderItem = () => {
     // mdashBoard 中的 relation、styleConfig  mChart表
-    const { relation, mChart, styleConfig, searchEnum } = this.state;
+    const { relation, mChart, styleConfig, tagName, searchEnum } = this.state;
     const { onLoad } = this.props;
     const mChart_config = JSON.parse(mChart.config);
     // 取出 mchart 中的 搜索 searchJson
@@ -159,7 +159,11 @@ export default class Index extends PureComponent {
                 data={data}
               />);
           } else if (type == "1") {// 日期
-            child = <SearchDate rela={rela} relaJson={relaJson} onChange={this.onChange.bind(this, key)} />;
+            let tagName_name;
+            for (let key in tagName) {
+              tagName_name = tagName[key];
+            }
+            child = <SearchDate rela={rela} relaJson={relaJson} tagName_name={tagName_name} onChange={this.onChange.bind(this, key)} />;
           }
 
           return (

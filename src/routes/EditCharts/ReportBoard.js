@@ -626,6 +626,7 @@ class ReportBoard extends PureComponent {
           mChart={mChart}
           styleConfig={styleConfig}
           chart_item={item}
+          tagName={this.state.tagName}
           onLoad={this.searchItemData}
           searchEnum={searchEnum}
           clickSearch={this.searchData}
