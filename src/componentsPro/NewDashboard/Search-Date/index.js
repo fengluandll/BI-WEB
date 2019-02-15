@@ -17,7 +17,7 @@ const { MonthPicker, WeekPicker } = DatePicker;
 export default class Index extends PureComponent {
   constructor(props) {
     super(props);
-    const { rela, relaJson, tagName_name, onChange } = this.props;
+    const { rela, relaJson, onChange } = this.props;
     const arr = this.calcDate(rela.props, relaJson);
     // 判断是否是季度
     const startTimeDemo = relaJson.date_type == 4 ? this.startTiemAndEndTime(moment(arr[0]).format()) : arr[0];
@@ -26,7 +26,6 @@ export default class Index extends PureComponent {
     this.state = {
       startTime: startTimeDemo,
       endTime: endTimeDemo,
-      tagName_name,
     };
     // 将计算好的时候同步到父组件中
     onChange([startTimeDemo, endTimeDemo]);
@@ -51,21 +50,14 @@ export default class Index extends PureComponent {
 
   // 运行时调用这个方式 所以设置下开始与结束时间 20190102 addby wangliu 切换tab的时候传新参数进来
   componentWillReceiveProps(nextProps) {
-    const { rela, relaJson, tagName_name, onChange } = nextProps;
-    let arr = [];
-    // 这边注意就是说，参数传的是rela里的props如果是切换页签就会把它的原始值读进来。所以加了tagName判断，如果不是同一个页签那么就当做初始化。
-    if (tagName_name == this.state.tagName_name) {
-      arr = this.calcDate(rela.props, relaJson);
-    } else {
-      arr = this.calcDateProps(rela.props, relaJson);
-    }
+    const { rela, relaJson, onChange } = nextProps;
+    let arr = this.calcDateProps(rela.props, relaJson);
     const startTimeDemo = relaJson.date_type == 4 ? this.startTiemAndEndTime(moment(arr[0]).format()) : arr[0];
     const endTimeDemo = relaJson.date_type == 4 ? this.startTiemAndEndTime(moment(arr[1]).format()) : arr[1];
     // 参数先放到state里
     this.state = {
       startTime: startTimeDemo,
       endTime: endTimeDemo,
-      tagName_name,
     };
     // 将计算好的时候同步到父组件中  add by wangliu 去掉这行因为季度修改后不刷新
     // onChange([startTimeDemo, endTimeDemo]);

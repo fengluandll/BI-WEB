@@ -33,12 +33,12 @@ class Perspective extends Component {
     xhr.send(null);
 
     // 老版的
-    <perspective-viewer id="container" style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, width: 1200, height: 800, border: '1px solid #ccc' }}
-      row-pivots='["athlete"]'
-      column-pivots='["year"]'
-      columns='["gold","silver","bronze"]'
-      sort='[["gold","desc"]]'>
-    </perspective-viewer>
+    // <perspective-viewer id="container" style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, width: 1200, height: 800, border: '1px solid #ccc' }}
+    //   row-pivots='["athlete"]'
+    //   column-pivots='["year"]'
+    //   columns='["gold","silver","bronze"]'
+    //   sort='[["gold","desc"]]'>
+    // </perspective-viewer>
   }
 
   renderDate = () => {
@@ -67,12 +67,12 @@ class Perspective extends Component {
   renderChart = () => {
     return (
       <div>
-        <perspective-viewer id="container" style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, width: 1200, height: 800, border: '1px solid #ccc' }}
+        {/* <perspective-viewer id="container" style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, width: 1200, height: 800, border: '1px solid #ccc' }}
           row-pivots='["athlete"]'
           column-pivots='["year"]'
           columns='["gold","silver","bronze"]'
           sort='[["gold","desc"]]'>
-        </perspective-viewer>
+        </perspective-viewer> */}
       </div>
     );
 

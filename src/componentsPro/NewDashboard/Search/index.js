@@ -14,7 +14,11 @@ import styles from './index.less';
 export default class Index extends PureComponent {
   constructor(props) {
     super(props);
-    const { relation, mChart, styleConfig, searchEnum } = this.props;
+    const { relation, mChart, styleConfig, searchEnum, tagName } = this.props;
+    let tagName_key; // 获取当前页签的id
+    for (let key in tagName) {
+      tagName_key = key;
+    }
     this.state = {
       relation,
       mChart,
@@ -23,6 +27,7 @@ export default class Index extends PureComponent {
     };
     this.clickTime = 1; // 点击次数
     this.pages = 0;  // 搜索框页数  1为一页
+    this.tagName_key = tagName_key; // 当前tab的id
   }
   componentDidMount = () => {
     this.renderItem();
@@ -66,8 +71,8 @@ export default class Index extends PureComponent {
   //  render searchitem
   renderItem = () => {
     // mdashBoard 中的 relation、styleConfig  mChart表
-    const { relation, mChart, styleConfig, tagName, searchEnum } = this.state;
-    const { onLoad } = this.props;
+    const { relation, mChart, styleConfig, searchEnum } = this.state;
+    const { tagName, onLoad } = this.props;
     const mChart_config = JSON.parse(mChart.config);
     // 取出 mchart 中的 搜索 searchJson
     const searchJson = mChart_config.searchJson;
@@ -125,61 +130,64 @@ export default class Index extends PureComponent {
 
     //  mdashboard中放的是 搜索的关联关系和值    mchart中放的是搜索的样式  所以调用搜索子项的时候 两个参数都要传 
     //  参数  
+    let tagName_key;
+    for (let key in tagName) {
+      tagName_key = key;
+    }
+    if (tagName_key != this.tagName_key) { // 判断如果是切换页签,那就把所有的搜索框清空,等到再次刷新的时候再展示
+      ReactDom.render(<div></div>, this.queryArea);
+      this.tagName_key = tagName_key;
+    } else {
+      ReactDom.render(<div>
+        {
+          arrTmp.map((arrItem, index) => {
+            const { key } = arrItem;
+            const rela = relation[key];
+            const relaJson = searchJson[key];
+            const { type, name } = relaJson;
 
-    ReactDom.render(<div>
-      {
-        arrTmp.map((arrItem, index) => {
-          const { key } = arrItem;
-          const rela = relation[key];
-          const relaJson = searchJson[key];
-          const { type, name } = relaJson;
-
-          let child = null;
-          if (type == "11" || type == "12") {// num
-            child = <SearchNumber rela={rela} relaJson={relaJson} onChange={this.onChange.bind(this, key)} />;
-          } else if (type == "2" || type == "3" || type == "4" || type == "21") { // str
-            // 拼接数据 data
-            const data = [];
-            if (null != searchEnum[key]) {
-              for (let i = 0; i < searchEnum[key].length; i++) {
-                data.push({
-                  id: `${i}`,
-                  name: searchEnum[key][i],
-                });
+            let child = null;
+            if (type == "11" || type == "12") {// num
+              child = <SearchNumber rela={rela} relaJson={relaJson} onChange={this.onChange.bind(this, key)} />;
+            } else if (type == "2" || type == "3" || type == "4" || type == "21") { // str
+              // 拼接数据 data
+              const data = [];
+              if (null != searchEnum[key]) {
+                for (let i = 0; i < searchEnum[key].length; i++) {
+                  data.push({
+                    id: `${i}`,
+                    name: searchEnum[key][i],
+                  });
+                }
               }
+              const { chart_item } = this.props;// 取出搜索框控件的chartId
+              child = (
+                <SearchCharacter
+                  rela={rela} relaJson={relaJson}
+                  onChange={this.onChange.bind(this, key)}
+                  load={() => {
+                    onLoad(key, chart_item.chartId);
+                  }}
+                  data={data}
+                />);
+            } else if (type == "1") {// 日期
+              child = <SearchDate rela={rela} relaJson={relaJson} onChange={this.onChange.bind(this, key)} />;
             }
-            const { chart_item } = this.props;// 取出搜索框控件的chartId
-            child = (
-              <SearchCharacter
-                rela={rela} relaJson={relaJson}
-                onChange={this.onChange.bind(this, key)}
-                load={() => {
-                  onLoad(key, chart_item.chartId);
-                }}
-                data={data}
-              />);
-          } else if (type == "1") {// 日期
-            let tagName_name;
-            for (let key in tagName) {
-              tagName_name = tagName[key];
-            }
-            child = <SearchDate rela={rela} relaJson={relaJson} tagName_name={tagName_name} onChange={this.onChange.bind(this, key)} />;
-          }
 
-          return (
-            <div className={styles['query-area-item']} key={index} >
-              <div className={styles['query-area-item-label']}>
-                {name}:
+            return (
+              <div className={styles['query-area-item']} key={index} >
+                <div className={styles['query-area-item-label']}>
+                  {name}:
+                </div>
+                <div>
+                  {child}
+                </div>
               </div>
-              <div>
-                {child}
-              </div>
-            </div>
-          );
-        })
-      }
-    </div>, this.queryArea);
-
+            );
+          })
+        }
+      </div>, this.queryArea);
+    }
   }
   /***
    * 展示下一页的按钮
