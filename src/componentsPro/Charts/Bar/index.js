@@ -74,9 +74,9 @@ class Bar extends PureComponent {
       array.map((item, index) => {
         if (item.key == mChart.id.toString()) {
           if (this.props.editModel == "true") {
-            height = item.h * 40 - 50;
+            height = item.h * 40 - 42;
           } else {
-            height = item.h * 40 - 50;
+            height = item.h * 40 - 42;
           }
         }
       });
@@ -87,18 +87,36 @@ class Bar extends PureComponent {
       forceFit = true;
     }
     // 边距
-    let padding = ['10%', 30, '25%', 50];
-    if (config.padding) {
-      padding = config.padding;
-    }
-    if (config.legend == "1") {
-      padding = ['10%', 30, '25%', 150];
+    let padding = [26, 30, 34, 50];
+    for( var i = 0; i < dateSetList.length; i++){
+      // 获取x轴的数据
+      var str = dateSetList[i].x;
+      var strL = str.length;
+			var strB = 0;
+			for(var j = 0; j < strL; j++) {
+			if ((str.charCodeAt(j) & 0xff00) != 0) {
+			strB ++;
+			}
+			strB ++;
+			}
+      if (config.padding) {
+        padding = config.padding;
+      }
+      if(config.legend == "1"){
+        if(strB > 4 && strB < 8){
+          padding = [26, 30, 34, 150];
+        }
+        if(strB > 10 && strB < 18){
+          padding = [26, 30, 84, 150];
+        }
+      }
+      
     }
 
     // 控制数据量特别大的情况
     let chartWidth = 0;
     let dataLength = dateSetList.length;
-    if (dataLength > 5) {
+    if (dataLength > 34) {
       chartFit = false;
       chartWidth = dataLength * 55.6521;
       height = height - 4;
@@ -140,7 +158,14 @@ class Bar extends PureComponent {
           cancelable: true,
         })
         .label(`${y}`, {
-          offset: 10
+          offset: 6,
+          textStyle: {
+            textAlign: 'start', 
+            fill: '#404040', 
+            fontSize: '12',
+            rotate: -40,
+          },
+          autoRotate: true, 
         });
     } else {
       chart.interval().position(`${x}*${y}`)
@@ -150,7 +175,14 @@ class Bar extends PureComponent {
           cancelable: true,
         })
         .label(`${y}`, {
-          offset: 10
+          offset: 14,
+          textStyle: {
+            fill: '#404040',
+            fontSize: '12',
+            rotate: 0,
+            textBaseline: 'top'
+          },
+          autoRotate: true,
         });
     }
 

@@ -80,9 +80,9 @@ class Text extends PureComponent {
       array.map((item, index) => {
         if (item.key == mChart.id.toString()) {
           if (this.props.editModel == "true") {
-            height = item.h * 40 - 20;
+            height = item.h * 40 - 8;
           } else {
-            height = item.h * 40 - 20;
+            height = item.h * 40 - 8;
           }
         }
       });
@@ -98,7 +98,6 @@ class Text extends PureComponent {
     }
     return (
       <div name="text" style={{height:height}}>
-        {headDiv}
         <div>{this.renderConten()}</div>
       </div>
     )

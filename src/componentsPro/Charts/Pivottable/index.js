@@ -59,9 +59,9 @@ class Pivottable extends PureComponent {
       array.map((item, index) => {
         if (item.key == mChart.id.toString()) {
           if (this.props.editModel == "true") {
-            height = item.h * 40 - 20;
+            height = item.h * 40 - 12;
           } else {
-            height = item.h * 40 - 20;
+            height = item.h * 40 - 12;
           }
         }
       });

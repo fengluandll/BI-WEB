@@ -55,9 +55,9 @@ class Pie extends Component {
       array.map((item, index) => {
         if (item.key == mChart.id.toString()) {
           if (this.props.editModel == "true") {
-            height = item.h * 40 - 50;
+            height = item.h * 40 - 42;
           } else {
-            height = item.h * 40 - 50;
+            height = item.h * 40 - 42;
           }
         }
       });
