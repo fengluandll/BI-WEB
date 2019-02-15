@@ -33,7 +33,7 @@ class TabUtils {
         children.push(searchObj);
         style_config.children = children;
         const dragactStyle = [];// 布局样式
-        const dragct = { "GridX": 0, "GridY": 0, "w": '100%', "h": 2, "key": mChart.id.toString(), "type": "search" };
+        const dragct = { "GridX": 0, "GridY": 0, "w": 39, "h": 2, "key": mChart.id.toString(), "type": "search" };
         dragactStyle.push(dragct);
         style_config.dragactStyle = dragactStyle;
         style_config.dataSet = JSON.parse(mDashboard_old.style_config).dataSet; //dataSet
