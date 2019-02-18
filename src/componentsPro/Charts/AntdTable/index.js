@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import ReactDom from 'react-dom';
-import { Table, Divider, Tag } from 'antd';
+import { Table, Divider, Icon } from 'antd';
 
 import styles from '../index.less';
 
@@ -24,27 +24,15 @@ class AntdTable extends PureComponent {
   /***制造参数和列***/
   getTableData = () => {
     const { mChart, dateSetList, editModel, dragactStyle } = this.props;
-    const tableDate = {}; // 拼接好的参数对象
-    let columns = this.getColumns(dateSetList);
-    let data = this.getData(dateSetList);
-    tableDate["columns"] = columns;
-    tableDate["data"] = data;
-    return tableDate;
-  }
-  /***制造列***/
-  getColumns = (dateSetList) => {
     const { header, body } = dateSetList;
+    const tableDate = {}; // 拼接好的参数对象
+    /***制造列***/
     const columns = [];
     for (let key in header) {
       const obj = { "title": header[key], "dataIndex": header[key] };
       columns.push(obj);
     }
-    return columns;
-  }
-
-  /***制造数据***/
-  getData = (dateSetList) => {
-    const { header, body } = dateSetList;
+    /***制造数据***/
     const data = [];
     for (let key in body) {
       const obj = { "key": key };
@@ -54,16 +42,47 @@ class AntdTable extends PureComponent {
       }
       data.push(obj);
     }
-    return data;
+    tableDate["columns"] = columns;
+    tableDate["data"] = data;
+    return tableDate;
+  }
+
+  /***获取头部***/
+  getHeadDiv = () => {
+    const { mChart } = this.props;
+    const config = JSON.parse(mChart.config);
+    if (config.head == "1") {
+      return (
+        <div style={{ height: '25px', lineHeight: '25px' }}>
+          <div className={styles['chart-title', 'chart-titleTable']} ref={this.handleTitle}>
+            {config.name ? config.name : ''}
+          </div>
+          <Icon type="download" style={{ fontSize: 16, color: '#08c', position: 'absolute', right: '20px', top: '2.5px' }}
+            onClick={() => {
+              this.onExport();
+            }}
+          />
+        </div>
+      );
+    } else {
+      return (
+        <div></div>
+      );
+    }
   }
 
   renderContent() {
     const tableDate = this.getTableData();
     const { columns, data } = tableDate;
-
-    /******/
+    const { mChart } = this.props;
+    const config = JSON.parse(mChart.config);
+    /***展示table控件***/
     return (
       <div>
+        <div>
+          {/***head***/}
+          {this.getHeadDiv()}
+        </div>
         <Table
           columns={columns}
           dataSource={data}
