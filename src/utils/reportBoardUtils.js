@@ -83,6 +83,11 @@ class ReportBoardUtils {
             tmpType = "tableDiy";
             dragactW = 20;
             dragactH = 10;
+        } else if (type == "21") {
+            // antdTable
+            tmpType = "antdTable";
+            dragactW = 20;
+            dragactH = 10;
         } else if (type == "11") {
             //  搜索框
             tmpType = "search";
@@ -272,7 +277,7 @@ class ReportBoardUtils {
                 { x: '事例三', y: 17 },
                 { x: '事例四', y: 13 },
                 { x: '事例五', y: 9 },];
-        } else if (type == "table") {
+        } else if (type == "table" || type == "antdTable") {
             fakeData = {
                 header: ['列一', '列二', '列三', '列四', '列五', '列六'],
                 body: [
@@ -331,6 +336,8 @@ class ReportBoardUtils {
             type_str = "text";
         } else if (type_num == 7) {
             type_str = "tableDiy";
+        } else if (type_num == 21) {
+            type_str = "antdTable";
         } else if (type_num == 11) {
             type_str = "search";
         }
@@ -662,10 +669,10 @@ class ReportBoardUtils {
                         // 如果是初始化的时候,有时间参数的,要自己重新赋值自己拼的时间参数。拼接的时间可以是多个所以要循环search_time_param数组
                         if (null != search_time_param && search_time_param.length > 0) {
                             for (let search_time_param_id in search_time_param) {
-                                const isDateSetsRelationed = this.getSearchChartsColumnYNrelationed(search_time_param_id, relationFields[key_child], idColumns);
+                                const isDateSetsRelationed = this.getSearchChartsColumnYNrelationed(search_time_param[search_time_param_id], relationFields[key_child], idColumns);
                                 // 如果搜索框中时间的参数column_id和图表中的column_id相同或者他们的display_name相同就是放入新的时间参数
-                                if (search_time_param_id == relationFields[key_child] || isDateSetsRelationed) {
-                                    json_chart.params_search[relationFields[key_child]] = search_time_value[search_time_param_id];
+                                if (search_time_param[search_time_param_id] == relationFields[key_child] || isDateSetsRelationed) {
+                                    json_chart.params_search[relationFields[key_child]] = search_time_value[search_time_param[search_time_param_id]];
                                 }
                             }
                         }
