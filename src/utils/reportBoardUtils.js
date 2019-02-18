@@ -119,7 +119,15 @@ class ReportBoardUtils {
         md_children.push(item);
         // 增加dragact样式
         const dragactStyle = style_config_obj.dragactStyle;
-        const dragact_item = { GridX: 0, GridY: 25, w: dragactW, h: dragactH, key: chartId.toString() };
+        // 设置新控件的高度为 最大
+        let height = 2;// 是搜索框的高度
+        for(let key in dragactStyle){
+            const obj = dragactStyle[key];
+            if(obj.GridY>height){
+                height = obj.GridY; 
+            }
+        }
+        const dragact_item = { GridX: 0, GridY: height, w: dragactW, h: dragactH, key: chartId.toString() };
         dragactStyle.push(dragact_item);
         // md_children转回string  然后刷新state
         style_config_obj.children = md_children;
