@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import ReactDom from 'react-dom';
-import { Table, Divider, Icon } from 'antd';
+import { Table, Divider, Icon, Tooltip } from 'antd';
 
 import styles from '../index.less';
 
@@ -30,12 +30,16 @@ class AntdTable extends PureComponent {
     // f1 url跳转功能
     const columnUrl = config.columnUrl.split(",");
     const columnUrl_name = []; // url跳转的字段中文数组
+    const columnUrlStr = config.columnUrlStr; // url地址
+    const columnUrl_str = []; // 地址数组
     if (null != columnUrl && columnUrl != "") {
       for (let key in columnUrl) {
         const value = columnUrl[key];
         if (null != value && value != "") {
           const name = idColumns[value].rsc_display;
           columnUrl_name.push(name);
+          const url = columnUrlStr + value + "";
+          columnUrl_str.push(url);
         }
       }
     }
@@ -104,9 +108,12 @@ class AntdTable extends PureComponent {
       if (columnUrl_name.length > 0) {
         for (let key in columnUrl_name) {
           if (value == columnUrl_name[key]) {
-            obj.render = (text) => (
-              <a href="javascript:;">{text}</a>
-            );
+            obj.render = (text) => {
+              let src = columnUrl_str[key];
+              return (
+                <a target="_blank" href={src}>{text}</a>
+              );
+            }
           }
         }
       }
@@ -132,8 +139,8 @@ class AntdTable extends PureComponent {
         }
       }
       // f3 设置最大宽度
-      if (col_value_count_arr[key] && config.forceFit != "1") {  // 只有不是自适应宽度的时候才要每行都要赋值
-        //obj.width = col_value_count_arr[key] * 10;
+      if (col_value_count_arr[key] && config.forceFit != "1" && key != header.length - 1) {  // 如果不是自适应的情况下要显固定头部那么除了最后一列不舍宽度，其他都要设置宽度
+        obj.width = 200;
       }
       columns.push(obj);
     }
@@ -143,7 +150,15 @@ class AntdTable extends PureComponent {
       const obj = { "key": key };
       const body_line = body[key];
       for (let body_line_key in body_line) {
-        obj[header[body_line_key]] = body_line[body_line_key];
+        let value = body_line[body_line_key];
+        if (value.length > 12 && config.forceFit != "1") { // 如果字符大于12个的时候那就隐藏用Tooltip提示
+          value = (
+            <Tooltip title={value} placement="top">
+              <span>{value.substring(0, 12) + "..."}</span>
+            </Tooltip>
+          );
+        }
+        obj[header[body_line_key]] = value;
       }
       data.push(obj);
     }
@@ -201,11 +216,14 @@ class AntdTable extends PureComponent {
   getScroll = () => {
     const { mChart } = this.props;
     const config = JSON.parse(mChart.config);
+    const tableDate = this.getTableData();
+    const { columns, data } = tableDate;
+    const height = this.getHeight();
     let scroll = {};
-    if (config.forceFit == "1") {
+    if (config.forceFit == "1") { // 如果是自适应的时候就用100%
       scroll = { x: '100%' };
     } else {
-      scroll = { x: 3000 };
+      scroll = { x: columns.length * 200, y: height - 117 };// x轴滚动是列个数乘200,y轴是根据dragact算出的高度减去图表控件额外的高度。
     }
     return scroll;
   }
