@@ -1,7 +1,7 @@
 import { connect } from 'dva';
 import React, { PureComponent } from 'react';
 import ReactDom from 'react-dom';
-import { Switch, message, Tabs, Button, Spin, Modal, Radio } from 'antd';
+import { Switch, message, Tabs, Button, Spin, Modal, Radio, Icon } from 'antd';
 import ReportBoardUtils from '../../utils/reportBoardUtils';
 import ReportBoardmChartsUtils from '../../utils/reportBoardmChartsUtils';
 import TabUtils from '../../utils/tabUtils';
@@ -12,7 +12,6 @@ import { Bar, Pie, Line, Table, Pivottable, Perspective, Text, TableDiy, AntdTab
 import { Search } from '../../componentsPro/NewDashboard';
 import { Dragact } from 'dragact';
 import styles from './index.less';
-import { Icon } from 'antd';
 
 const TabPane = Tabs.TabPane;
 const confirm = Modal.confirm;
@@ -610,6 +609,7 @@ class ReportBoard extends PureComponent {
                         editModel={this.state.editModel}
                         mChart={mChart}
                         dateSetList={dateSetList}
+                        idColumns={this.props.model.idColumns}
                         onExport={this.onTableExport}
                     />
                 </Spin>
