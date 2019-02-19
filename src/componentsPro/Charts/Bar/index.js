@@ -109,6 +109,13 @@ class Bar extends PureComponent {
         if(strB > 10 && strB < 18){
           padding = [26, 30, 84, 150];
         }
+      }else{
+        if(strB > 4 && strB < 8){
+          padding = [26, 30, 34, 50];
+        }
+        if(strB > 10 && strB < 18){
+          padding = [26, 30, 84, 50];
+        }
       }
       
     }
@@ -119,7 +126,11 @@ class Bar extends PureComponent {
     if (dataLength > 34) {
       chartFit = false;
       chartWidth = dataLength * 55.6521;
-      height = height - 4;
+      if(config.legend == "1"){
+        height = height;
+      }else{
+        height = height - 4;
+      }
       if (chartWidth > 32000) {
         chartWidth = 32000;
       }
