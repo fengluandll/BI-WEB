@@ -123,8 +123,9 @@ class ReportBoardUtils {
         let height = 2;// 是搜索框的高度
         for(let key in dragactStyle){
             const obj = dragactStyle[key];
-            if(obj.GridY>height){
-                height = obj.GridY; 
+            const height_tmp = obj.GridY+obj.h;
+            if(height_tmp>height){
+                height = height_tmp;
             }
         }
         const dragact_item = { GridX: 0, GridY: height, w: dragactW, h: dragactH, key: chartId.toString() };

@@ -1294,7 +1294,7 @@ class ReportBoard extends PureComponent {
             <div style={this.state.spinning == true ? { pointerEvents: 'none' } : {}}>{/*如果有图表在加载中那么就设置样式为不可点击状态*/}
                 {/* 添加返回按钮的父级,根据权限参数控制是否显示 */}
                 {this.state.user_auth == "1" ?
-                    <div style={{ marginRight: (this.state.editModel == "true") ? "200px" : "0", width: 40, height: 40, opacity: '1', border: '2px solid #ccc', borderLeft: '1px solid #ccc', background: '#eee', color: '#000', position: 'fixed', top: 0, right: 0, zIndex: 1000, fontSize: 22, textAlign: 'center', cursor: 'pointer' }} onClick={this.changeEditeMode} >
+                    <div style={{ marginRight: (this.state.editModel == "true") ? "200px" : "0", width: 40, height: 40, opacity: '1', border: '2px solid #ccc', borderLeft: '1px solid #ccc', borderBottom:'1px solid #ccc', borderTop:'1px solid #ccc', background: '#eee', color: '#000', position: 'absolute', top: 0, right: '-5px', zIndex: 1000, fontSize: 22, textAlign: 'center', cursor: 'pointer' }} onClick={this.changeEditeMode} >
                         {this.state.editModel == "true" ? <Icon type="unlock" /> : <Icon type="lock" />}
                     </div>
                     :
