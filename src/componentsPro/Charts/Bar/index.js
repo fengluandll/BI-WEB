@@ -110,7 +110,8 @@ class Bar extends PureComponent {
         }
         if(strB > 10 && strB < 18){
           padding = [26, 30, 84, 150];
-        }else{
+        }
+        if(strB > 20 && strB < 40){
           padding = [26, 30, 94, 150];
         }
       }else{
@@ -119,7 +120,8 @@ class Bar extends PureComponent {
         }
         if(strB > 10 && strB < 18){
           padding = [26, 30, 84, 50];
-        }else{
+        }
+        if(strB > 20 && strB < 40){
           padding = [26, 30, 94, 50];
         }
       }
