@@ -8,7 +8,7 @@ import TabUtils from '../../utils/tabUtils';
 import CssUtils from '../../utils/cssUtils';
 import { ChartList, TabList } from '../../componentsPro/ChartList';
 import { Relation, RelationChartsAuto, TabName } from '../../componentsPro/RelationUtil';
-import { Bar, Pie, Line, Table, Pivottable, Perspective, Text, TableDiy, AntdTable } from '../../componentsPro/Charts';
+import { Bar, Pie, Line, Table, Pivottable, Perspective, Text, TableDiy, AntdTable, PivotDiy } from '../../componentsPro/Charts';
 import { Search } from '../../componentsPro/NewDashboard';
 import { Dragact } from 'dragact';
 import styles from './index.less';
@@ -416,6 +416,8 @@ class ReportBoard extends PureComponent {
             this.renderTableDiy(name, dateSetList, mChart, spinning);
         } else if (type == "antdTable") {
             this.renderAntdTable(name, dateSetList, mChart, spinning);
+        } else if (type == "pivotDiy") {
+            this.renderPivotDiy(name, dateSetList, mChart, spinning);
         }
     }
     /****************************************图形展示*****************************************************************/
@@ -605,6 +607,25 @@ class ReportBoard extends PureComponent {
             <div className={cssName}>
                 <Spin spinning={spinning}>
                     <AntdTable
+                        dragactStyle={dragactStyle}
+                        editModel={this.state.editModel}
+                        mChart={mChart}
+                        dateSetList={dateSetList}
+                        idColumns={this.props.model.idColumns}
+                        onExport={this.onTableExport}
+                    />
+                </Spin>
+            </div>,
+            document.getElementById(name));
+    }
+    // antd pivotDiy
+    renderPivotDiy(name, dateSetList, mChart, spinning) {
+        let cssName = cssUtils.getBIContainer(mChart);
+        const { dragactStyle } = JSON.parse(this.state.mDashboard.style_config);
+        ReactDom.render(
+            <div className={cssName}>
+                <Spin spinning={spinning}>
+                    <PivotDiy
                         dragactStyle={dragactStyle}
                         editModel={this.state.editModel}
                         mChart={mChart}
@@ -1294,7 +1315,7 @@ class ReportBoard extends PureComponent {
             <div style={this.state.spinning == true ? { pointerEvents: 'none' } : {}}>{/*如果有图表在加载中那么就设置样式为不可点击状态*/}
                 {/* 添加返回按钮的父级,根据权限参数控制是否显示 */}
                 {this.state.user_auth == "1" ?
-                    <div style={{ marginRight: (this.state.editModel == "true") ? "200px" : "0", width: 40, height: 40, opacity: '1', border: '2px solid #ccc', borderLeft: '1px solid #ccc', borderBottom:'1px solid #ccc', borderTop:'1px solid #ccc', background: '#eee', color: '#000', position: 'absolute', top: 0, right: '-5px', zIndex: 1000, fontSize: 22, textAlign: 'center', cursor: 'pointer' }} onClick={this.changeEditeMode} >
+                    <div style={{ marginRight: (this.state.editModel == "true") ? "200px" : "0", width: 40, height: 40, opacity: '1', border: '2px solid #ccc', borderLeft: '1px solid #ccc', borderBottom: '1px solid #ccc', borderTop: '1px solid #ccc', background: '#eee', color: '#000', position: 'absolute', top: 0, right: '-5px', zIndex: 1000, fontSize: 22, textAlign: 'center', cursor: 'pointer' }} onClick={this.changeEditeMode} >
                         {this.state.editModel == "true" ? <Icon type="unlock" /> : <Icon type="lock" />}
                     </div>
                     :

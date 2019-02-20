@@ -88,6 +88,11 @@ class ReportBoardUtils {
             tmpType = "antdTable";
             dragactW = 20;
             dragactH = 10;
+        } else if (type == "22") {
+            // pivotDiy
+            tmpType = "pivotDiy";
+            dragactW = 20;
+            dragactH = 10;
         } else if (type == "11") {
             //  搜索框
             tmpType = "search";
@@ -121,10 +126,10 @@ class ReportBoardUtils {
         const dragactStyle = style_config_obj.dragactStyle;
         // 设置新控件的高度为 最大
         let height = 2;// 是搜索框的高度
-        for(let key in dragactStyle){
+        for (let key in dragactStyle) {
             const obj = dragactStyle[key];
-            const height_tmp = obj.GridY+obj.h;
-            if(height_tmp>height){
+            const height_tmp = obj.GridY + obj.h;
+            if (height_tmp > height) {
                 height = height_tmp;
             }
         }
@@ -286,7 +291,7 @@ class ReportBoardUtils {
                 { x: '事例三', y: 17 },
                 { x: '事例四', y: 13 },
                 { x: '事例五', y: 9 },];
-        } else if (type == "table" || type == "antdTable") {
+        } else if (type == "table" || type == "antdTable" || type == "pivotDiy") {
             fakeData = {
                 header: ['列一', '列二', '列三', '列四', '列五', '列六'],
                 body: [
@@ -347,6 +352,8 @@ class ReportBoardUtils {
             type_str = "tableDiy";
         } else if (type_num == 21) {
             type_str = "antdTable";
+        } else if (type_num == 22) {
+            type_str = "pivotDiy";
         } else if (type_num == 11) {
             type_str = "search";
         }

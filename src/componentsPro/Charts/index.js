@@ -7,6 +7,7 @@ import Perspective from './Perspective';
 import Text from './Text';
 import TableDiy from './TableDiy';
 import AntdTable from './AntdTable';
+import PivotDiy from './PivotDiy';
 
 export {
   Bar,
@@ -18,4 +19,5 @@ export {
   Text,
   TableDiy,
   AntdTable,
+  PivotDiy,
 };
