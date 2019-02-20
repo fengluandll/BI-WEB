@@ -85,6 +85,8 @@ class Bar extends PureComponent {
     let forceFit = false;
     if (config.forceFit == "1") {
       forceFit = true;
+    }else{
+      height = height;
     }
     // 边距
     let padding = [26, 30, 34, 50];
@@ -108,6 +110,8 @@ class Bar extends PureComponent {
         }
         if(strB > 10 && strB < 18){
           padding = [26, 30, 84, 150];
+        }else{
+          padding = [26, 30, 94, 150];
         }
       }else{
         if(strB > 4 && strB < 8){
@@ -115,28 +119,35 @@ class Bar extends PureComponent {
         }
         if(strB > 10 && strB < 18){
           padding = [26, 30, 84, 50];
+        }else{
+          padding = [26, 30, 94, 50];
         }
       }
       
     }
 
     // 控制数据量特别大的情况
-    let chartWidth = 0;
+    let chartWidth = 200;
     let dataLength = dateSetList.length;
-    if (dataLength > 34) {
+    let chartFit = forceFit;
+    if (dataLength > 2) {
       chartFit = false;
-      chartWidth = dataLength * 55.6521;
+      chartWidth = dataLength * 100;
       if(config.legend == "1"){
         height = height;
       }else{
         height = height - 4;
       }
+      if (config.forceFit == "1") {
+        height = height + 4;
+      }else{
+        height = height;
+      }
       if (chartWidth > 32000) {
         chartWidth = 32000;
       }
     }
-    let chartFit = forceFit; // 自适应最后设置起作用 modify by wangliu 20190125
-
+    
     // init
     const chart = new G2.Chart({
       container: this.node, // 指定图表容器 ID
