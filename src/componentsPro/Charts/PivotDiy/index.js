@@ -1,8 +1,10 @@
 import React, { PureComponent } from 'react';
 import ReactDom from 'react-dom';
 import { Table, Divider, Icon, Tooltip } from 'antd';
-
+import PivotUtils from './pivotUtils';
 import styles from '../index.less';
+
+const pivotUtils = new PivotUtils();
 
 class PivotDiy extends PureComponent {
 

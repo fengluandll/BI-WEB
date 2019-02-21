@@ -1182,6 +1182,11 @@ class ReportBoard extends PureComponent {
         });
     }
 
+    // 打印
+    onPrint = () => {
+        window.print();
+    }
+
     /*************************************************图表事件********************************************************/
     /***
      * 文本控件保存文本
@@ -1320,6 +1325,7 @@ class ReportBoard extends PureComponent {
                     </div>
                     :
                     ""}
+                <div onClick={this.onPrint}><Icon type="file-pdf" /></div>
                 {this.state.editModel == "true" ? <div className={styles['boardLeft']}>{this.disPlayLeft()} </div> : <div></div>}
                 <div id="contents" className={`boardcenter_report`} ref={(instance) => { this.center = instance; }} style={{ paddingLeft: (this.state.editModel == "true") ? "200px" : "0", paddingRight: (this.state.editModel == "true") ? "200px" : "0", background: '#eee' }}>
                     {this.renderTab()}
