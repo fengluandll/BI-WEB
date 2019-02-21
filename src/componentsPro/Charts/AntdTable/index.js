@@ -31,15 +31,17 @@ class AntdTable extends PureComponent {
     const columnUrl = config.columnUrl.split(",");
     const columnUrl_name = []; // url跳转的字段中文数组
     const columnUrlStr = config.columnUrlStr; // url地址
-    const columnUrl_str = []; // 地址数组
+    const columnUrlParam = config.columnUrlParam; // 参数字段id
+    let columnUrlParam_name = "";
+    if (null != columnUrlParam) {
+      columnUrlParam_name = idColumns[columnUrlParam].rsc_display; // 字段的中文名称，也就是头部的名称
+    }
     if (null != columnUrl && columnUrl != "") {
       for (let key in columnUrl) {
         const value = columnUrl[key];
         if (null != value && value != "") {
           const name = idColumns[value].rsc_display;
           columnUrl_name.push(name);
-          const url = columnUrlStr + value + "";
-          columnUrl_str.push(url);
         }
       }
     }
@@ -69,7 +71,10 @@ class AntdTable extends PureComponent {
     }
     // f3 设置每列的宽度
     const col_value_count_arr = []; // 每列的最大字符数量
-    const body_first = body[0]; // 第一行的数据
+    let body_first = body[0]; // 第一行的数据
+    if (null == body_first) {
+      body_first = [];
+    }
     const col_count = body_first.length; // 数据总共有多少列
     for (let i = 0; i < col_count; i++) {  // 按照列循环
       const col_value = []; // 每列的所有数据数组
@@ -81,7 +86,10 @@ class AntdTable extends PureComponent {
       let col_value_count = 0;
       for (let key in col_value) {
         let tmp_count = 0;
-        const value = col_value[key];
+        let value = col_value[key];
+        if (null == value) {
+          value = "";
+        }
         for (var j = 0; j < value.length; j++) {
           var a = value.charAt(i);
           if (a.match(/[^\x00-\xff]/ig) != null) {
@@ -108,8 +116,8 @@ class AntdTable extends PureComponent {
       if (columnUrl_name.length > 0) {
         for (let key in columnUrl_name) {
           if (value == columnUrl_name[key]) {
-            obj.render = (text) => {
-              let src = columnUrl_str[key];
+            obj.render = (text, record, index) => {
+              const src = columnUrlStr + "/" + record[columnUrlParam_name];
               return (
                 <a target="_blank" href={src}>{text}</a>
               );
@@ -151,6 +159,9 @@ class AntdTable extends PureComponent {
       const body_line = body[key];
       for (let body_line_key in body_line) {
         let value = body_line[body_line_key];
+        if (null == value) {
+          value = "";
+        }
         if (value.length > 12 && config.forceFit != "1") { // 如果字符大于12个的时候那就隐藏用Tooltip提示
           value = (
             <Tooltip title={value} placement="top">
@@ -233,6 +244,10 @@ class AntdTable extends PureComponent {
     const { columns, data } = tableDate;
     const { mChart } = this.props;
     const config = JSON.parse(mChart.config);
+    let pagination = false; // 分页显示控制
+    if (config.pagination && config.pagination == "1") {
+      pagination = true;
+    }
     const height = this.getHeight();
     const scroll = this.getScroll();
     /***展示table控件***/
@@ -247,6 +262,8 @@ class AntdTable extends PureComponent {
             columns={columns}
             dataSource={data}
             scroll={scroll}
+            pagination={pagination}
+            size={"middle"}
           />
         </div>
       </div>

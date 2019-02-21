@@ -7,7 +7,7 @@ class PivotUtils {
      * 
      * ***/
     getData = (props) => {
-        const { mChart, dateSetList, editModel, dragactStyle, onExport } = props;
+        const { mChart, dateSetList, editModel, dragactStyle, idColumns } = props;
         const config = JSON.parse(mChart.config);
         const { header, body } = dateSetList;
 
@@ -36,6 +36,9 @@ class PivotUtils {
     }
 
     /***根据字段id取得在数据中的下标***/
+    getIndex = (idColumns, mChart, id) => {
+
+    }
 
 }
 export default PivotUtils;
