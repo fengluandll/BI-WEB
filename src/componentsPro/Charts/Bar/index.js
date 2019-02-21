@@ -133,7 +133,6 @@ class Bar extends PureComponent {
     let dataLength = dateSetList.length;
     let chartFit = forceFit;
     if (dataLength > 2) {
-      chartFit = false;
       chartWidth = dataLength * 100;
       if(config.legend == "1"){
         height = height;
