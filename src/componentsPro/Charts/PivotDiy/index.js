@@ -221,12 +221,7 @@ class PivotDiy extends PureComponent {
     const tableDate = this.getTableData();
     const { columns, data } = tableDate;
     const height = this.getHeight();
-    let scroll = {};
-    if (config.forceFit == "1") { // 如果是自适应的时候就用100%
-      scroll = { x: '100%' };
-    } else {
-      scroll = { x: columns.length * 200, y: height - 117 };// x轴滚动是列个数乘200,y轴是根据dragact算出的高度减去图表控件额外的高度。
-    }
+    const scroll = { x: columns.length * 200, y: height - 117 };// x轴滚动是列个数乘200,y轴是根据dragact算出的高度减去图表控件额外的高度。
     return scroll;
   }
 
