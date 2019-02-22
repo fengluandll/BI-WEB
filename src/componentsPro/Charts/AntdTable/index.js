@@ -111,7 +111,7 @@ class AntdTable extends PureComponent {
     const columns = [];
     for (let key in header) {
       const value = header[key];
-      const obj = { "title": value, "dataIndex": value, "key": value };
+      const obj = { "title": value, "dataIndex": value, "key": value, "align": "center" };
       // f1 判断并添加url跳转
       if (columnUrl_name.length > 0) {
         for (let key in columnUrl_name) {
@@ -211,12 +211,12 @@ class AntdTable extends PureComponent {
       array.map((item, index) => {
         if (item.key == mChart.id.toString()) {
           if (editModel == "true") {
-            height = item.h * 40 - 40;
+            height = item.h * 40 - 38;
           } else {
-            height = item.h * 40 - 40;
+            height = item.h * 40 - 38;
           }
           if (config.head != "1") { // 没有头部的时候
-            height = item.h * 40 - 13;
+            height = item.h * 40 - 11;
           }
         }
       });
