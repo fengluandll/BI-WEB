@@ -150,10 +150,11 @@ class Bar extends PureComponent {
         height = height;
       }
       for(var i = 0; i < dateSetList.length; i++){
-        console.log(dateSetList[0].color);
-        if(dateSetList[0].color == dateSetList[dateSetList.length -1].color && config.forceFit != "1"){
-          chartWidth = dataLength * 200;
-          height = height;
+        if(dateSetList[0].color){
+          if(dateSetList[0].color == dateSetList[dateSetList.length -1].color && config.forceFit != "1"){
+            chartWidth = dataLength * 200;
+            height = height;
+          }
         }
       }
       if (config.forceFit == "1") {
