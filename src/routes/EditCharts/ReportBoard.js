@@ -1321,11 +1321,14 @@ class ReportBoard extends PureComponent {
                 {/* 添加返回按钮的父级,根据权限参数控制是否显示 */}
                 {this.state.user_auth == "1" ?
                     <div style={{ marginRight: (this.state.editModel == "true") ? "200px" : "0", width: (this.state.editModel == "true") ? "40px" : "80px", height: 40, opacity: '1', border: '2px solid #ccc', borderLeft: '1px solid #ccc', borderBottom: '1px solid #ccc', borderTop: '1px solid #ccc', background: '#eee', color: '#000', position: 'absolute', top: 0, right: '-5px', zIndex: 1000, fontSize: 22, textAlign: 'center', cursor: 'pointer' }} >
-                        {this.state.editModel == "true" ? '' : <Icon onClick={this.onPrint} style={{ marginRight: '12px' }} type="printer" />}
-                        {this.state.editModel == "true" ? <Icon onClick={this.changeEditeMode} type="unlock" /> : <Icon onClick={this.changeEditeMode} type="lock" />}
+                        {this.state.editModel == "true" ? <Icon onClick={this.changeEditeMode} type="unlock" /> : <Icon onClick={this.changeEditeMode} style={{ marginRight: '5px' }} type="lock" />}
+                        {this.state.editModel == "true" ? '' : <i className={styles['fileLock']}></i>}
+                        {this.state.editModel == "true" ? '' : <Icon onClick={this.onPrint} type="printer" style={{marginRight:'6px',fontSize:'21px'}} />}
                     </div>
                     :
-                    ""}
+                    <div style={{ marginRight: (this.state.editModel == "true") ? "200px" : "0", width: 40, height: 40, opacity: '1', border: '2px solid #ccc', borderLeft: '1px solid #ccc', borderBottom: '1px solid #ccc', borderTop: '1px solid #ccc', background: '#eee', color: '#000', position: 'absolute', top: 0, right: '-5px', zIndex: 1000, fontSize: 22, textAlign: 'center', cursor: 'pointer' }} >
+                        {this.state.editModel == "true" ? '' : <Icon onClick={this.onPrint} type="printer" />}
+                    </div>}
                 {this.state.editModel == "true" ? <div className={styles['boardLeft']}>{this.disPlayLeft()} </div> : <div></div>}
                 <div id="contents" className={`boardcenter_report`} ref={(instance) => { this.center = instance; }} style={{ paddingLeft: (this.state.editModel == "true") ? "200px" : "0", paddingRight: (this.state.editModel == "true") ? "200px" : "0", background: '#eee' }}>
                     {this.renderTab()}
