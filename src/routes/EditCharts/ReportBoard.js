@@ -1203,6 +1203,12 @@ class ReportBoard extends PureComponent {
      * chart_id要导出的交叉表id
      * ***/
     onTableExport = (chart_id) => {
+        // 跟新refreshType状态
+        this.setState({
+            refreshType: "plot", // 修改刷新类型
+            spinning: true, // 设置不能点击
+        });
+        this.plotChartId.push(chart_id);
         // 拼接查询参数
         const params = reportBoardUtils.getSearchJson("plot", null, [], this.boardId, this.state.mDashboard, this.state.mDashboard_old, this.state.mCharts, this.state.idColumns);
         const { children } = params;
@@ -1226,6 +1232,12 @@ class ReportBoard extends PureComponent {
                 params: params_one,
                 callback: () => {
                     message.success('下载成功');
+                    const dataList_one = {};
+                    dataList_one[chart_id] = this.state.dataList[chart_id];
+                    this.setState({
+                        dataList_one: dataList_one, // 导出表格的时候刷新用的单个数据从之前所有数据中取
+                        refreshType: "search", // 修改刷新类型
+                    });
                 },
             },
         });
@@ -1323,7 +1335,7 @@ class ReportBoard extends PureComponent {
                     <div style={{ marginRight: (this.state.editModel == "true") ? "200px" : "0", width: (this.state.editModel == "true") ? "40px" : "80px", height: 40, opacity: '1', border: '2px solid #ccc', borderLeft: '1px solid #ccc', borderBottom: '1px solid #ccc', borderTop: '1px solid #ccc', background: '#eee', color: '#000', position: 'absolute', top: 0, right: '-5px', zIndex: 1000, fontSize: 22, textAlign: 'center', cursor: 'pointer' }} >
                         {this.state.editModel == "true" ? <Icon onClick={this.changeEditeMode} type="unlock" /> : <Icon onClick={this.changeEditeMode} style={{ marginRight: '5px' }} type="lock" />}
                         {this.state.editModel == "true" ? '' : <i className={styles['fileLock']}></i>}
-                        {this.state.editModel == "true" ? '' : <Icon onClick={this.onPrint} type="printer" style={{marginRight:'6px',fontSize:'21px'}} />}
+                        {this.state.editModel == "true" ? '' : <Icon onClick={this.onPrint} type="printer" style={{ marginRight: '6px', fontSize: '21px' }} />}
                     </div>
                     :
                     <div style={{ marginRight: (this.state.editModel == "true") ? "200px" : "0", width: 40, height: 40, opacity: '1', border: '2px solid #ccc', borderLeft: '1px solid #ccc', borderBottom: '1px solid #ccc', borderTop: '1px solid #ccc', background: '#eee', color: '#000', position: 'absolute', top: 0, right: '-5px', zIndex: 1000, fontSize: 22, textAlign: 'center', cursor: 'pointer' }} >

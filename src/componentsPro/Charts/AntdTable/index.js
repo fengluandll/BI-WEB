@@ -33,7 +33,7 @@ class AntdTable extends PureComponent {
     const columnUrlStr = config.columnUrlStr; // url地址
     const columnUrlParam = config.columnUrlParam; // 参数字段id
     let columnUrlParam_name = "";
-    if (null != columnUrlParam) {
+    if (null != columnUrlParam && columnUrlParam != "") {
       columnUrlParam_name = idColumns[columnUrlParam].rsc_display; // 字段的中文名称，也就是头部的名称
     }
     if (null != columnUrl && columnUrl != "") {
