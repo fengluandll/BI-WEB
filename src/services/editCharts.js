@@ -24,3 +24,11 @@ export async function findTableDate(params) {
     mode: 'cors',
   });
 }
+
+// 所有t_dashbaord的Mcharts数据
+export async function getMchartsList(params) {
+  return request(`http://localhost:8088/api/edit/getMchartsList?${stringify(params)}`, {
+    method: 'POST',
+    mode: 'cors',
+  });
+}

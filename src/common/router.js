@@ -69,6 +69,9 @@ export const getRouterData = (app) => {
     '/reportBoard/:boardId': {
       component: dynamicWrapper(app, ['reportBoard'], () => import('../routes/EditCharts/ReportBoard')),
     },
+    '/editBoard/:t_dashboard_id': {
+      component: dynamicWrapper(app, ['editBoard'], () => import('../routes/EditCharts/EditBoard')),
+    },
   };
   // Get name from ./menu.js or just set it in the router data.
   const menuData = getFlatMenuData(getMenuData());
