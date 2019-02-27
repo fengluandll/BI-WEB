@@ -884,6 +884,7 @@ class ReportBoard extends PureComponent {
         this.setState({
             mDashboard: mDashboard,
         });
+        this.refreshDashboard(); // 刷新页面，mDashboard修改state后页面没有刷新可能是因为它还是用的原来的对象。
     }
 
     //  点击搜索框,str的时候查询下拉框的数据
