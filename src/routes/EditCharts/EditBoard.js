@@ -24,6 +24,7 @@ class EditBoard extends PureComponent {
             mChartsList: {}, // 所有mCharts对象 key为chart_id,value为对象
             mchart_id: "", // 当前编辑的图表id
             idColumns: {}, // column id对象
+            tDashboard: {}, // tDashboard对象
         };
         // get t_dashboard_id
         this.t_dashboard_id = this.props.match.params.t_dashboard_id;
@@ -38,7 +39,7 @@ class EditBoard extends PureComponent {
             payload: {
                 t_dashboard_id,
                 callback: () => {
-                    const { mChartsList, idColumns } = this.props.model;  // 所有mcharts对象
+                    const { mChartsList, idColumns, tDashboard } = this.props.model;  // 所有mcharts对象
                     let mchart_id = mchart_id;  // 搜索框的id
                     for (let key in mChartsList) {
                         const mCharts = mChartsList[key];
@@ -50,6 +51,7 @@ class EditBoard extends PureComponent {
                         mChartsList: mChartsList,
                         mchart_id: mchart_id,
                         idColumns: idColumns,
+                        tDashboard: tDashboard,
                     });
                 }
             }
@@ -206,6 +208,7 @@ class EditBoard extends PureComponent {
                 <div>
                     <EditAntdTable
                         mChart={mCharts}
+                        tDashboard={this.state.tDashboard}
                     />
                 </div>
             );
