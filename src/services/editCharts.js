@@ -32,3 +32,11 @@ export async function getMchartsList(params) {
     mode: 'cors',
   });
 }
+
+// 保存config
+export async function saveConfig(params) {
+  return request(`http://localhost:8088/api/edit/update?${stringify(params)}`, {
+    method: 'POST',
+    mode: 'cors',
+  });
+}

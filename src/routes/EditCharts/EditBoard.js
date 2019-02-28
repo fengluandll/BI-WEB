@@ -1,6 +1,7 @@
 import { connect } from 'dva';
 import React, { PureComponent } from 'react';
 import ReactDom from 'react-dom';
+import { message } from 'antd';
 import DashBoardUtils from '../../utils/dashboardUtils';
 import MchartsList from '../../componentsPro/EditDashboard/MchartsList';
 import EditAntdTable from '../../componentsPro/EditDashboard/EditAntdTable';
@@ -25,6 +26,7 @@ class EditBoard extends PureComponent {
             mchart_id: "", // 当前编辑的图表id
             idColumns: {}, // column id对象
             tDashboard: {}, // tDashboard对象
+            dataSetList: {}, // 数据集对象
         };
         // get t_dashboard_id
         this.t_dashboard_id = this.props.match.params.t_dashboard_id;
@@ -39,7 +41,7 @@ class EditBoard extends PureComponent {
             payload: {
                 t_dashboard_id,
                 callback: () => {
-                    const { mChartsList, idColumns, tDashboard } = this.props.model;  // 所有mcharts对象
+                    const { mChartsList, idColumns, tDashboard, dataSetList } = this.props.model;  // 所有mcharts对象
                     let mchart_id = mchart_id;  // 搜索框的id
                     for (let key in mChartsList) {
                         const mCharts = mChartsList[key];
@@ -52,6 +54,7 @@ class EditBoard extends PureComponent {
                         mchart_id: mchart_id,
                         idColumns: idColumns,
                         tDashboard: tDashboard,
+                        dataSetList: dataSetList,
                     });
                 }
             }
@@ -62,6 +65,26 @@ class EditBoard extends PureComponent {
     }
     componentWillUnmount() {
 
+    }
+
+    /************************************点击事件****************************************/
+    // 保存编辑
+    saveConfig = (config, id) => {
+        this.props.dispatch({
+            type: 'editBoard/saveConfig',
+            payload: {
+                id,
+                config,
+                callback: (success) => {
+                    // alert 保存成功
+                    if (success == "success") {
+                        message.success('保存成功');
+                    } else {
+                        message.error('保存失败');
+                    }
+                }
+            }
+        });
     }
 
     /************************************mcharts列表****************************************/
@@ -209,6 +232,8 @@ class EditBoard extends PureComponent {
                     <EditAntdTable
                         mChart={mCharts}
                         tDashboard={this.state.tDashboard}
+                        dataSetList={this.state.dataSetList}
+                        onSave={this.saveConfig}
                     />
                 </div>
             );

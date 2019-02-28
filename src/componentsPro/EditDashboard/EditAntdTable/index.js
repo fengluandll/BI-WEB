@@ -75,25 +75,28 @@ class EditAntdTable extends PureComponent {
         });
     }
 
-    // select
-    handleChangeSelect = () => {
-
-    }
-
-    // Switch
-    handleChangeSwitch = () => {
-
-    }
-
     // Checkbox
     handleChangeCheckbox = () => {
 
+    }
+
+
+    /***保存***/
+    onSave = () => {
+        const { mChart, onSave } = this.props;
+        const { config } = this.state;
+        onSave(JSON.stringify(config), mChart.id);
     }
 
     /*******************************************************************/
 
     render() {
         const { config } = this.state;
+        const { tDashboard, dataSetList } = this.props;
+        const dataSetArr = [];
+        for (let key in dataSetList) {
+            dataSetArr.push(dataSetList[key]);
+        }
         const formItemLayout = {
             labelCol: { span: 4 },
             wrapperCol: { span: 14 },
@@ -123,9 +126,11 @@ class EditAntdTable extends PureComponent {
                             value={config.dataSetName}
                             onChange={this.handleChangeInput.bind(this, "dataSetName")}
                         >
-                            <Select.Option value="jack">Jack</Select.Option>
-                            <Select.Option value="lucy">Lucy</Select.Option>
-                            <Select.Option value="tom">Tom</Select.Option>
+                            {dataSetArr.map((item, index) => {
+                                return (
+                                    <Select.Option key={index} value={item.ds_name}>{item.ds_display}</Select.Option>
+                                );
+                            })}
                         </Select>
                     </Form.Item>
                     <Form.Item
@@ -174,7 +179,7 @@ class EditAntdTable extends PureComponent {
                     </Form.Item>
 
                     <Form.Item {...buttonItemLayout}>
-                        <Button type="primary">保存</Button>
+                        <Button type="primary" onClick={this.onSave}>保存</Button>
                     </Form.Item>
                 </Form>
             </div>
