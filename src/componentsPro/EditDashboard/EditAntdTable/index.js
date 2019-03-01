@@ -12,7 +12,9 @@ class EditAntdTable extends PureComponent {
             mChart, // mChart对象
             config, // config对象
             column: false, // 显示字段的弹出框是否开启
+            columnUrl: false, // 跳转地址
             columnCheckbox: config.column, // checkbox弹出框的临时值
+            columnUrlCheckbox: config.columnUrl, // checkbox弹出框的临时值
             refreshUI: 0, // 用来刷新页面的
         };
     }
@@ -77,7 +79,7 @@ class EditAntdTable extends PureComponent {
             refreshUI: this.state.refreshUI + 1,
         });
     }
-
+    /************************字段column*****************************/
     // Checkbox
     handleChangeCheckbox = (checkedList) => {
         let columnCheckbox = "";
@@ -120,6 +122,52 @@ class EditAntdTable extends PureComponent {
         });
         this.selectColumn.refreshUI(); // 取消就调用子的方法刷新
     }
+
+    /************************字段columnUrl*****************************/
+
+    // Checkbox
+    handleChangeCheckboxColumnUrl = (checkedList) => {
+        let str = "";
+        for (let key in checkedList) {
+            str = str + checkedList[key] + ",";
+        }
+        str = str.substring(0, str.length - 1);
+        this.setState({
+            columnUrlCheckbox: str,
+        });
+    }
+    // ref
+    onRefSelectColumnUrl = (ref) => {
+        this.selectColumnUrl = ref;
+    }
+    // 显示字段 弹出框
+    showColumnUrl = () => {
+        this.setState({
+            columnUrl: true,
+        });
+    }
+    // 显示字段回调函数
+    handleColumnUrlOk = () => {
+        const { config, columnUrlCheckbox } = this.state;
+        config.columnUrl = columnUrlCheckbox;
+        this.setState({
+            columnUrl: false,
+            config,
+            refreshUI: this.state.refreshUI + 1,
+        });
+    }
+    // 取消
+    handleColumnUrlCancel = () => {
+        const { config } = this.state;
+        this.setState({
+            columnUrl: false,
+            columnUrlCheckbox: config.columnUrl,
+            refreshUI: this.state.refreshUI + 1,
+        });
+        this.selectColumnUrl.refreshUI(); // 取消就调用子的方法刷新
+    }
+
+
 
     /***保存***/
     onSave = () => {
@@ -217,11 +265,41 @@ class EditAntdTable extends PureComponent {
                             onCancel={this.handleColumnCancel}
                         >
                             <SelectColumn
+                                type="column"
                                 dataSetList={this.props.dataSetList}
                                 idColumns={this.props.idColumns}
                                 config={this.state.config}
                                 onChange={this.handleChangeCheckbox}
                                 ref={this.onRefSelectColumn}
+                            />
+                        </Modal>
+                    </Form.Item>
+                    <Form.Item
+                        label="跳转url地址"
+                        {...formItemLayout}
+                    >
+                        <Input placeholder="输入url地址" value={config.columnUrlStr} onChange={this.handleChangeInput.bind(this, "columnUrlStr")} />
+                    </Form.Item>
+                    <Form.Item
+                        label="选择显示的跳转字段"
+                        {...formItemLayout}
+                    >
+                        <Button type="primary" onClick={this.showColumnUrl}>
+                            编辑要跳转的字段
+                        </Button>
+                        <Modal
+                            title="跳转字段"
+                            visible={this.state.columnUrl}
+                            onOk={this.handleColumnUrlOk}
+                            onCancel={this.handleColumnUrlCancel}
+                        >
+                            <SelectColumn
+                                type="columnUrl"
+                                dataSetList={this.props.dataSetList}
+                                idColumns={this.props.idColumns}
+                                config={this.state.config}
+                                onChange={this.handleChangeCheckboxColumnUrl}
+                                ref={this.onRefSelectColumnUrl}
                             />
                         </Modal>
                     </Form.Item>

@@ -7,8 +7,8 @@ const CheckboxGroup = Checkbox.Group;
 class SelectColumn extends PureComponent {
     constructor(props) {
         super(props);
-        const { config } = this.props;
-        const column = config.column;
+        const { config, type } = this.props; // type是调用组件的类型,就是config里面的字段名称
+        const column = config[type];
         let checkedList = [];
         if (null != column) {
             checkedList = column.split(",");
@@ -28,8 +28,8 @@ class SelectColumn extends PureComponent {
     }
 
     componentWillReceiveProps(nextProps) {
-        const { config } = nextProps;
-        const column = config.column;
+        const { config, type } = nextProps;
+        const column = config[type];
         let checkedList = [];
         if (null != column) {
             checkedList = column.split(",");
