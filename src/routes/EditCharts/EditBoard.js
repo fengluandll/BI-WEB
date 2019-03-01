@@ -85,6 +85,14 @@ class EditBoard extends PureComponent {
                 }
             }
         });
+        // 刷新原有的state
+        const { mChartsList } = this.state;
+        const mCharts = mChartsList[id];
+        mCharts.config = config;
+        mChartsList[id] = mCharts;
+        this.setState({
+            mChartsList,
+        });
     }
 
     /************************************mcharts列表****************************************/
@@ -233,6 +241,7 @@ class EditBoard extends PureComponent {
                         mChart={mCharts}
                         tDashboard={this.state.tDashboard}
                         dataSetList={this.state.dataSetList}
+                        idColumns={this.state.idColumns}
                         onSave={this.saveConfig}
                     />
                 </div>

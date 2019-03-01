@@ -1,6 +1,7 @@
 import React, { PureComponent } from 'react';
 import ReactDom from 'react-dom';
-import { Form, Input, Button, Radio, Select, Switch, Checkbox, Row, Col } from 'antd';
+import { Form, Input, Button, Modal, Select, Switch, Checkbox, Row, Col } from 'antd';
+import SelectColumn from '../SelectColumn';
 
 class EditAntdTable extends PureComponent {
     constructor(props) {
@@ -8,8 +9,10 @@ class EditAntdTable extends PureComponent {
         const { mChart } = this.props;
         const config = JSON.parse(mChart.config);
         this.state = {
-            mChart,
-            config,
+            mChart, // mChart对象
+            config, // config对象
+            column: false, // 显示字段的弹出框是否开启
+            columnCheckbox: config.column, // checkbox弹出框的临时值
             refreshUI: 0, // 用来刷新页面的
         };
     }
@@ -76,10 +79,47 @@ class EditAntdTable extends PureComponent {
     }
 
     // Checkbox
-    handleChangeCheckbox = () => {
-
+    handleChangeCheckbox = (checkedList) => {
+        let columnCheckbox = "";
+        for (let key in checkedList) {
+            columnCheckbox = columnCheckbox + checkedList[key] + ",";
+        }
+        columnCheckbox = columnCheckbox.substring(0, columnCheckbox.length - 1);
+        this.setState({
+            columnCheckbox: columnCheckbox,
+        });
+    }
+    // ref
+    onRefSelectColumn = (ref) => {
+        this.selectColumn = ref;
     }
 
+    // 显示字段 弹出框
+    showColumn = () => {
+        this.setState({
+            column: true,
+        });
+    }
+    // 显示字段回调函数
+    handleColumnOk = () => {
+        const { config, columnCheckbox } = this.state;
+        config.column = columnCheckbox;
+        this.setState({
+            column: false,
+            config,
+            refreshUI: this.state.refreshUI + 1,
+        });
+    }
+    // 取消
+    handleColumnCancel = () => {
+        const { config } = this.state;
+        this.setState({
+            column: false,
+            columnCheckbox: config.column,
+            refreshUI: this.state.refreshUI + 1,
+        });
+        this.selectColumn.refreshUI(); // 取消就调用子的方法刷新
+    }
 
     /***保存***/
     onSave = () => {
@@ -92,7 +132,7 @@ class EditAntdTable extends PureComponent {
 
     render() {
         const { config } = this.state;
-        const { tDashboard, dataSetList } = this.props;
+        const { dataSetList } = this.props;
         const dataSetArr = [];
         for (let key in dataSetList) {
             dataSetArr.push(dataSetList[key]);
@@ -167,15 +207,23 @@ class EditAntdTable extends PureComponent {
                         label="选择显示的字段"
                         {...formItemLayout}
                     >
-                        <Checkbox.Group style={{ width: '100%' }}>
-                            <Row>
-                                <Col span={8}><Checkbox value="A">A</Checkbox></Col>
-                                <Col span={8}><Checkbox value="B">B</Checkbox></Col>
-                                <Col span={8}><Checkbox value="C">C</Checkbox></Col>
-                                <Col span={8}><Checkbox value="D">D</Checkbox></Col>
-                                <Col span={8}><Checkbox value="E">E</Checkbox></Col>
-                            </Row>
-                        </Checkbox.Group>
+                        <Button type="primary" onClick={this.showColumn}>
+                            编辑显示字段
+                        </Button>
+                        <Modal
+                            title="显示字段"
+                            visible={this.state.column}
+                            onOk={this.handleColumnOk}
+                            onCancel={this.handleColumnCancel}
+                        >
+                            <SelectColumn
+                                dataSetList={this.props.dataSetList}
+                                idColumns={this.props.idColumns}
+                                config={this.state.config}
+                                onChange={this.handleChangeCheckbox}
+                                ref={this.onRefSelectColumn}
+                            />
+                        </Modal>
                     </Form.Item>
 
                     <Form.Item {...buttonItemLayout}>
