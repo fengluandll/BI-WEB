@@ -1,4 +1,4 @@
-import { findChartDate, findType, findTableDate, getMchartsList, saveConfig } from '../services/editCharts';
+import { findChartDate, findType, findTableDate, getMchartsList, saveConfig, newCharts } from '../services/editCharts';
 
 export default {
   // model 的命名空间，同时也是他在全局 state 上的属性，只能用字符串，不支持通过 . 的方式创建多层命名空间。
@@ -35,6 +35,12 @@ export default {
     },
     *saveConfig({ payload: { id, config, callback } }, { call, put }) {
       const response = yield call(saveConfig, { id, config });
+      const data = response.data;
+      const { success } = data;
+      callback(success);
+    },
+    *newCharts({ payload: { id, config, callback } }, { call, put }) {
+      const response = yield call(newCharts, { id, config });
       const data = response.data;
       const { success } = data;
       callback(success);

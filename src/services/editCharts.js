@@ -40,3 +40,11 @@ export async function saveConfig(params) {
     mode: 'cors',
   });
 }
+
+// 新建图表
+export async function newCharts(params) {
+  return request(`http://localhost:8088/api/edit/newCharts?${stringify(params)}`, {
+    method: 'POST',
+    mode: 'cors',
+  });
+}

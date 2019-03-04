@@ -1,7 +1,6 @@
 import React, { PureComponent } from 'react';
 import ReactDom from 'react-dom';
 import { List, Avatar } from 'antd';
-import NewCharts from '../NewCharts';
 
 class MchartsList extends PureComponent {
     constructor(props) {
@@ -37,7 +36,6 @@ class MchartsList extends PureComponent {
         const data = this.getData();
         return (
             <div>
-                <NewCharts />
                 <List
                     itemLayout="horizontal"
                     dataSource={data}

@@ -5,6 +5,7 @@ import { message } from 'antd';
 import DashBoardUtils from '../../utils/dashboardUtils';
 import MchartsList from '../../componentsPro/EditDashboard/MchartsList';
 import EditAntdTable from '../../componentsPro/EditDashboard/EditAntdTable';
+import NewCharts from '../../componentsPro/EditDashboard/NewCharts';
 import { Bar, Pie, Line, Table, Pivottable, AntdTable } from '../../componentsPro/Charts';
 import ReportBoardUtils from '../../utils/reportBoardUtils';
 
@@ -27,14 +28,26 @@ class EditBoard extends PureComponent {
             idColumns: {}, // column id对象
             tDashboard: {}, // tDashboard对象
             dataSetList: {}, // 数据集对象
+            refreshUI: 0, // 用来刷新页面的
         };
         // get t_dashboard_id
         this.t_dashboard_id = this.props.match.params.t_dashboard_id;
     }
 
     componentWillMount() {
-        const t_dashboard_id = this.t_dashboard_id;
+        this.fetchData();
+    }
+    componentDidUpdate() {
 
+    }
+    componentWillUnmount() {
+
+    }
+
+    /************************************点击事件****************************************/
+    // 请求数据
+    fetchData = () => {
+        const t_dashboard_id = this.t_dashboard_id;
         // 初始化加载数据
         this.props.dispatch({
             type: 'editBoard/getMchartsList',
@@ -42,7 +55,7 @@ class EditBoard extends PureComponent {
                 t_dashboard_id,
                 callback: () => {
                     const { mChartsList, idColumns, tDashboard, dataSetList } = this.props.model;  // 所有mcharts对象
-                    let mchart_id = mchart_id;  // 搜索框的id
+                    let mchart_id = "";  // 搜索框的id
                     for (let key in mChartsList) {
                         const mCharts = mChartsList[key];
                         if (mCharts.mc_type == "11") {
@@ -60,14 +73,6 @@ class EditBoard extends PureComponent {
             }
         });
     }
-    componentDidUpdate() {
-
-    }
-    componentWillUnmount() {
-
-    }
-
-    /************************************点击事件****************************************/
     // 保存编辑
     saveConfig = (config, id) => {
         this.props.dispatch({
@@ -92,6 +97,30 @@ class EditBoard extends PureComponent {
         mChartsList[id] = mCharts;
         this.setState({
             mChartsList,
+            refreshUI: this.state.refreshUI + 1,
+        });
+    }
+    // 新建图表
+    newCharts = (config) => {
+        const id = this.t_dashboard_id;
+        this.props.dispatch({
+            type: 'editBoard/newCharts',
+            payload: {
+                id,
+                config,
+                callback: (success) => {
+                    // alert 保存成功
+                    if (success == "success") {
+                        message.success('保存成功');
+                        this.fetchData();
+                        this.setState({
+                            refreshUI: this.state.refreshUI + 1,
+                        });
+                    } else {
+                        message.error('保存失败');
+                    }
+                }
+            }
         });
     }
 
@@ -101,6 +130,9 @@ class EditBoard extends PureComponent {
         const { mChartsList, mchart_id } = this.state;
         return (
             <div>
+                <NewCharts
+                    onNewCharts={this.newCharts}
+                />
                 <MchartsList
                     mChartsList={mChartsList}
                     mchart_id={mchart_id}
