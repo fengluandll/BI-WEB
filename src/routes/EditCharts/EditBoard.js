@@ -5,8 +5,9 @@ import { message } from 'antd';
 import DashBoardUtils from '../../utils/dashboardUtils';
 import MchartsList from '../../componentsPro/EditDashboard/MchartsList';
 import EditAntdTable from '../../componentsPro/EditDashboard/EditAntdTable';
+import EditPivotDiy from '../../componentsPro/EditDashboard/EditPivotDiy';
 import NewCharts from '../../componentsPro/EditDashboard/NewCharts';
-import { Bar, Pie, Line, Table, Pivottable, AntdTable } from '../../componentsPro/Charts';
+import { Bar, Pie, Line, Table, Pivottable, AntdTable, PivotDiy } from '../../componentsPro/Charts';
 import ReportBoardUtils from '../../utils/reportBoardUtils';
 
 import styles from './index.less';
@@ -224,7 +225,11 @@ class EditBoard extends PureComponent {
         } else if (type == "22") {
             content =
                 <div>
-
+                    <PivotDiy
+                        mChart={mCharts}
+                        dateSetList={dateSetList}
+                        idColumns={this.state.idColumns}
+                    />
                 </div>;
         } else if (type == "11") {
             // 搜索栏
@@ -282,7 +287,13 @@ class EditBoard extends PureComponent {
             // pivotDiy 自定义antd透视表
             return (
                 <div>
-
+                    <EditPivotDiy
+                        mChart={mCharts}
+                        tDashboard={this.state.tDashboard}
+                        dataSetList={this.state.dataSetList}
+                        idColumns={this.state.idColumns}
+                        onSave={this.saveConfig}
+                    />
                 </div>
             );
         } else if (type == "11") {

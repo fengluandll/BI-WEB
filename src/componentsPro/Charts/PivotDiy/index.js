@@ -29,121 +29,12 @@ class PivotDiy extends PureComponent {
     const config = JSON.parse(mChart.config);
     const { header, body } = dateSetList;
 
-    // f1 url跳转功能
-    const columnUrl = config.columnUrl.split(",");
-    const columnUrl_name = []; // url跳转的字段中文数组
-    const columnUrlStr = config.columnUrlStr; // url地址
-    const columnUrl_str = []; // 地址数组
-    if (null != columnUrl && columnUrl != "") {
-      for (let key in columnUrl) {
-        const value = columnUrl[key];
-        if (null != value && value != "") {
-          const name = idColumns[value].rsc_display;
-          columnUrl_name.push(name);
-          const url = columnUrlStr + value + "";
-          columnUrl_str.push(url);
-        }
-      }
-    }
-    // f2 固定单元格
-    const { fixed_left, fixed_right } = config;
-    const left_name = []; // 固定左侧的中文数组
-    const right_name = []; // 固定右侧的中文数组
-    if (null != fixed_left && fixed_left != "") {
-      const left = fixed_left.split(",");
-      for (let key in left) {
-        const value = left[key];
-        if (null != value && value != "") {
-          const name = idColumns[value].rsc_display;
-          left_name.push(name);
-        }
-      }
-    }
-    if (null != fixed_right && fixed_right != "") {
-      const right = fixed_right.split(",");
-      for (let key in right) {
-        const value = right[key];
-        if (null != value && value != "") {
-          const name = idColumns[value].rsc_display;
-          right_name.push(name);
-        }
-      }
-    }
-    // f3 设置每列的宽度
-    const col_value_count_arr = []; // 每列的最大字符数量
-    const body_first = body[0]; // 第一行的数据
-    const col_count = body_first.length; // 数据总共有多少列
-    for (let i = 0; i < col_count; i++) {  // 按照列循环
-      const col_value = []; // 每列的所有数据数组
-      for (let key in body) {
-        const body_line = body[key]; // 每行数据
-        col_value.push(body_line[i]); // 每行数据的当前列数据放入数组
-      }
-      // 计算出每列数据的最大的字符个数
-      let col_value_count = 0;
-      for (let key in col_value) {
-        let tmp_count = 0;
-        const value = col_value[key];
-        for (var j = 0; j < value.length; j++) {
-          var a = value.charAt(i);
-          if (a.match(/[^\x00-\xff]/ig) != null) {
-            tmp_count += 2;
-          }
-          else {
-            tmp_count += 1;
-          }
-        }
-        if (tmp_count > col_value_count) {
-          col_value_count = tmp_count;
-        }
-      }
-      col_value_count_arr.push(col_value_count);
-    }
-
     const tableDate = {}; // 拼接好的参数对象
     /***制造列***/
     const columns = [];
     for (let key in header) {
       const value = header[key];
       const obj = { "title": value, "dataIndex": value, "key": value };
-      // f1 判断并添加url跳转
-      if (columnUrl_name.length > 0) {
-        for (let key in columnUrl_name) {
-          if (value == columnUrl_name[key]) {
-            obj.render = (text) => {
-              let src = columnUrl_str[key];
-              return (
-                <a target="_blank" href={src}>{text}</a>
-              );
-            }
-          }
-        }
-      }
-      // f2 固定单元格
-      if (left_name.length > 0) {
-        for (let key in left_name) {
-          if (value == left_name[key]) {
-            obj.fixed = 'left';
-            if (col_value_count_arr[key]) { // 如果是固定列那么这一列是要加上宽度的不然就会出现列的重叠
-              obj.width = col_value_count_arr[key] * 10;
-            }
-          }
-        }
-      }
-      if (right_name.length > 0) {
-        for (let key in right_name) {
-          if (value == right_name[key]) {
-            obj.fixed = 'right';
-            if (col_value_count_arr[key]) {
-              obj.width = col_value_count_arr[key] * 10;
-            }
-          }
-        }
-      }
-      // f3 设置最大宽度
-      if (col_value_count_arr[key] && config.forceFit != "1" && key != header.length - 1) {  // 如果不是自适应的情况下要显固定头部那么除了最后一列不舍宽度，其他都要设置宽度
-        obj.width = 200;
-      }
       columns.push(obj);
     }
     /***制造数据***/
