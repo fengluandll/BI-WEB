@@ -1,17 +1,17 @@
 import React, { PureComponent } from 'react';
 import ReactDom from 'react-dom';
 import { List, Avatar } from 'antd';
+import NewCharts from '../NewCharts';
 
 class MchartsList extends PureComponent {
+    constructor(props) {
+        super(props);
+    }
 
     componentDidMount() {
     }
     componentDidUpdate() {
     }
-
-    renderEmpty = () => {
-        return (<div className={styles.empty}><span>数据返回为空</span></div>);
-    };
 
     // 点击事件
     onChange = (id) => {
@@ -37,6 +37,7 @@ class MchartsList extends PureComponent {
         const data = this.getData();
         return (
             <div>
+                <NewCharts />
                 <List
                     itemLayout="horizontal"
                     dataSource={data}

@@ -79,6 +79,8 @@ class EditAntdTable extends PureComponent {
             } else {
                 config.pagination = "0";
             }
+        } else if (key == "columnUrlStr") {
+            config.columnUrlStr = event.target.value;
         }
         this.setState({
             config,
@@ -264,6 +266,48 @@ class EditAntdTable extends PureComponent {
 
     /************************字段fixed_right*****************************/
 
+    // Checkbox
+    handleChangeCheckboxFixed_right = (checkedList) => {
+        let str = "";
+        for (let key in checkedList) {
+            str = str + checkedList[key] + ",";
+        }
+        str = str.substring(0, str.length - 1);
+        this.setState({
+            fixed_rightCheckbox: str,
+        });
+    }
+    // ref
+    onRefSelectFixed_right = (ref) => {
+        this.selectFixed_right = ref;
+    }
+    // 显示字段 弹出框
+    showFixed_right = () => {
+        this.setState({
+            fixed_right: true,
+        });
+    }
+    // 显示字段回调函数
+    handleFixed_rightOk = () => {
+        const { config, fixed_rightCheckbox } = this.state;
+        config.fixed_right = fixed_rightCheckbox;
+        this.setState({
+            fixed_right: false,
+            config,
+            refreshUI: this.state.refreshUI + 1,
+        });
+    }
+    // 取消
+    handleFixed_rightCancel = () => {
+        const { config } = this.state;
+        this.setState({
+            fixed_right: false,
+            fixed_rightCheckbox: config.fixed_right,
+            refreshUI: this.state.refreshUI + 1,
+        });
+        this.selectFixed_right.refreshUI(); // 取消就调用子的方法刷新
+    }
+    /*************************************************************/
 
 
     /***保存***/
@@ -437,12 +481,35 @@ class EditAntdTable extends PureComponent {
                             onCancel={this.handleFixed_leftCancel}
                         >
                             <SelectColumn
-                                type="columnUrlParam"
+                                type="fixed_left"
                                 dataSetList={this.props.dataSetList}
                                 idColumns={this.props.idColumns}
                                 config={this.state.config}
                                 onChange={this.handleChangeCheckboxFixed_left}
                                 ref={this.onRefSelectFixed_left}
+                            />
+                        </Modal>
+                    </Form.Item>
+                    <Form.Item
+                        label="固定右侧"
+                        {...formItemLayout}
+                    >
+                        <Button type="primary" onClick={this.showFixed_right}>
+                            固定右侧列
+                        </Button>
+                        <Modal
+                            title="固定右侧列"
+                            visible={this.state.fixed_right}
+                            onOk={this.handleFixed_rightOk}
+                            onCancel={this.handleFixed_rightCancel}
+                        >
+                            <SelectColumn
+                                type="fixed_right"
+                                dataSetList={this.props.dataSetList}
+                                idColumns={this.props.idColumns}
+                                config={this.state.config}
+                                onChange={this.handleChangeCheckboxFixed_right}
+                                ref={this.onRefSelectFixed_right}
                             />
                         </Modal>
                     </Form.Item>
