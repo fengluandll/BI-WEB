@@ -13,8 +13,14 @@ class EditAntdTable extends PureComponent {
             config, // config对象
             column: false, // 显示字段的弹出框是否开启
             columnUrl: false, // 跳转地址
+            columnUrlParam: false,
+            fixed_left: false,
+            fixed_right: false,
             columnCheckbox: config.column, // checkbox弹出框的临时值
             columnUrlCheckbox: config.columnUrl, // checkbox弹出框的临时值
+            columnUrlParamCheckbox: config.columnUrlParam, // checkbox弹出框的临时值
+            fixed_leftCheckbox: config.fixed_left,
+            fixed_rightCheckbox: config.fixed_right,
             refreshUI: 0, // 用来刷新页面的
         };
     }
@@ -167,6 +173,97 @@ class EditAntdTable extends PureComponent {
         this.selectColumnUrl.refreshUI(); // 取消就调用子的方法刷新
     }
 
+    /************************字段columnUrlParam*****************************/
+
+    // Checkbox
+    handleChangeCheckboxColumnUrlParam = (checkedList) => {
+        let str = "";
+        for (let key in checkedList) {
+            str = str + checkedList[key] + ",";
+        }
+        str = str.substring(0, str.length - 1);
+        this.setState({
+            columnUrlParamCheckbox: str,
+        });
+    }
+    // ref
+    onRefSelectColumnUrlParam = (ref) => {
+        this.selectColumnUrlParam = ref;
+    }
+    // 显示字段 弹出框
+    showColumnUrlParam = () => {
+        this.setState({
+            columnUrlParam: true,
+        });
+    }
+    // 显示字段回调函数
+    handleColumnUrlParamOk = () => {
+        const { config, columnUrlParamCheckbox } = this.state;
+        config.columnUrlParam = columnUrlParamCheckbox;
+        this.setState({
+            columnUrlParam: false,
+            config,
+            refreshUI: this.state.refreshUI + 1,
+        });
+    }
+    // 取消
+    handleColumnUrlParamCancel = () => {
+        const { config } = this.state;
+        this.setState({
+            columnUrlParam: false,
+            columnUrlParamCheckbox: config.columnUrl,
+            refreshUI: this.state.refreshUI + 1,
+        });
+        this.selectColumnUrlParam.refreshUI(); // 取消就调用子的方法刷新
+    }
+
+    /************************字段fixed_left*****************************/
+
+    // Checkbox
+    handleChangeCheckboxFixed_left = (checkedList) => {
+        let str = "";
+        for (let key in checkedList) {
+            str = str + checkedList[key] + ",";
+        }
+        str = str.substring(0, str.length - 1);
+        this.setState({
+            fixed_leftCheckbox: str,
+        });
+    }
+    // ref
+    onRefSelectFixed_left = (ref) => {
+        this.selectFixed_left = ref;
+    }
+    // 显示字段 弹出框
+    showFixed_left = () => {
+        this.setState({
+            fixed_left: true,
+        });
+    }
+    // 显示字段回调函数
+    handleFixed_leftOk = () => {
+        const { config, fixed_leftCheckbox } = this.state;
+        config.fixed_left = fixed_leftCheckbox;
+        this.setState({
+            fixed_left: false,
+            config,
+            refreshUI: this.state.refreshUI + 1,
+        });
+    }
+    // 取消
+    handleFixed_leftCancel = () => {
+        const { config } = this.state;
+        this.setState({
+            fixed_left: false,
+            fixed_leftCheckbox: config.fixed_left,
+            refreshUI: this.state.refreshUI + 1,
+        });
+        this.selectFixed_left.refreshUI(); // 取消就调用子的方法刷新
+    }
+
+
+    /************************字段fixed_right*****************************/
+
 
 
     /***保存***/
@@ -300,6 +397,52 @@ class EditAntdTable extends PureComponent {
                                 config={this.state.config}
                                 onChange={this.handleChangeCheckboxColumnUrl}
                                 ref={this.onRefSelectColumnUrl}
+                            />
+                        </Modal>
+                    </Form.Item>
+                    <Form.Item
+                        label="跳转参数字段"
+                        {...formItemLayout}
+                    >
+                        <Button type="primary" onClick={this.showColumnUrlParam}>
+                            编辑要跳转的字段
+                        </Button>
+                        <Modal
+                            title="跳转参数"
+                            visible={this.state.columnUrlParam}
+                            onOk={this.handleColumnUrlParamOk}
+                            onCancel={this.handleColumnUrlParamCancel}
+                        >
+                            <SelectColumn
+                                type="columnUrlParam"
+                                dataSetList={this.props.dataSetList}
+                                idColumns={this.props.idColumns}
+                                config={this.state.config}
+                                onChange={this.handleChangeCheckboxColumnUrlParam}
+                                ref={this.onRefSelectColumnUrlParam}
+                            />
+                        </Modal>
+                    </Form.Item>
+                    <Form.Item
+                        label="固定左侧"
+                        {...formItemLayout}
+                    >
+                        <Button type="primary" onClick={this.showFixed_left}>
+                            固定左侧列
+                        </Button>
+                        <Modal
+                            title="固定左侧列"
+                            visible={this.state.fixed_left}
+                            onOk={this.handleFixed_leftOk}
+                            onCancel={this.handleFixed_leftCancel}
+                        >
+                            <SelectColumn
+                                type="columnUrlParam"
+                                dataSetList={this.props.dataSetList}
+                                idColumns={this.props.idColumns}
+                                config={this.state.config}
+                                onChange={this.handleChangeCheckboxFixed_left}
+                                ref={this.onRefSelectFixed_left}
                             />
                         </Modal>
                     </Form.Item>
