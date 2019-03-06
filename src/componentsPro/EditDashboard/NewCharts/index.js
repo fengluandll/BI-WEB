@@ -115,6 +115,7 @@ class NewCharts extends PureComponent {
             config.cal_column = ""; // 指标组，用来计算的组
             config.sum_col = ""; // 全局列汇总,Y是汇总，N是不汇总
             config.sum_row = ""; // 全局行汇总,Y是汇总，N是不会总
+            config.formula = []; // 计算公式
         } else if (type == "11") {//  搜索框
 
         }

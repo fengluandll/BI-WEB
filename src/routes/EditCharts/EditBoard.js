@@ -316,7 +316,7 @@ class EditBoard extends PureComponent {
     renderContent = () => {
         return (
             <div>
-                <div className={styles['boardLeft']} style={{ width: '600px' }}>
+                <div className={styles['boardLeft']} style={{ width: '600px', overflowY: 'auto' }}>
                     {/***左侧的mcharts列表***/}
                     {this.renderMchartsList()}
                 </div>
@@ -329,7 +329,7 @@ class EditBoard extends PureComponent {
                         {/***暂时没想好用途***/}
                     </div>
                 </div>
-                <div className={styles['boardRight']} style={{ width: '600px' }}>
+                <div className={styles['boardRight']} style={{ width: '600px', overflowY: 'auto' }}>
                     {/***右侧的mcharts编辑界面***/}
                     {this.renderEditContent()}
                 </div>

@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import ReactDom from 'react-dom';
-import { Form, Input, Button, Modal, Select, Switch, Checkbox, Row, Col } from 'antd';
+import { Form, Input, Button, Modal, Select, Switch, List, Avatar, Row, Col } from 'antd';
 import SelectColumn from '../SelectColumn';
 
 class EditPivotDiy extends PureComponent {
@@ -15,11 +15,15 @@ class EditPivotDiy extends PureComponent {
             base_column: false, // 行组，显示在头部的固定列
             col_column: false, // 列组,显示在右侧的头部大标题
             cal_column: false, // 指标组，用来计算的组
+            formula: false, // 计算公式
             columnCheckbox: config.column, // checkbox弹出框的临时值
             base_columnCheckbox: config.base_column,
             col_columnCheckbox: config.col_column,
             cal_columnCheckbox: config.cal_column,
             refreshUI: 0, // 用来刷新页面的
+            formula_name: "", // 计算公式新增的临时值
+            formula_value: "",
+            formulaData: config.formula, //计算公式临时值
         };
     }
 
@@ -83,6 +87,14 @@ class EditPivotDiy extends PureComponent {
             } else {
                 config.sum_row = "0";
             }
+        } else if (key == "formula_name") {
+            this.setState({
+                formula_name: event.target.value,
+            });
+        } else if (key == "formula_value") {
+            this.setState({
+                formula_value: event.target.value,
+            });
         }
         this.setState({
             config,
@@ -267,6 +279,53 @@ class EditPivotDiy extends PureComponent {
         this.selectCal_column.refreshUI(); // 取消就调用子的方法刷新
     }
 
+    /*****************************formula********************************/
+
+    // 显示字段 弹出框
+    showFormula = () => {
+        this.setState({
+            formula: true,
+        });
+    }
+    // 显示字段回调函数
+    handleFormulaOk = () => {
+        const { formulaData, formula_name, formula_value } = this.state;
+        const obj = { "name": formula_name, "value": formula_value };
+        formulaData.push(obj);
+        this.setState({
+            formula: false,
+            formulaData,
+            formula_name: "",
+            formula_value: "",
+            refreshUI: this.state.refreshUI + 1,
+        });
+    }
+    // 取消
+    handleFormulaCancel = () => {
+        this.setState({
+            formula: false,
+            formula_name: "",
+            formula_value: "",
+            refreshUI: this.state.refreshUI + 1,
+        });
+    }
+    // 删除计算字段
+    deleteFormula = (name) => {
+        let { formulaData } = this.state;
+        let index = 0; //要删除的下标
+        for (let key in formulaData) {
+            if (formulaData[key].name == name) {
+                index = key;
+            }
+        }
+        formulaData.splice(index, 1); //删除
+        this.setState({
+            formula: false,
+            formulaData: formulaData,
+            refreshUI: this.state.refreshUI + 1,
+        });
+    }
+
 
     /***保存***/
     onSave = () => {
@@ -446,6 +505,47 @@ class EditPivotDiy extends PureComponent {
                                 onChange={this.handleChangeCheckboxCal_column}
                                 ref={this.onRefSelectCal_column}
                             />
+                        </Modal>
+                    </Form.Item>
+                    <Form.Item
+                        label="计算公式"
+                        {...formItemLayout}
+                    >
+                        <Button type="primary" onClick={this.showFormula}>
+                            计算公式
+                        </Button>
+                        <div>
+                            <List
+                                itemLayout="horizontal"
+                                dataSource={this.state.formulaData}
+                                renderItem={item => (
+                                    <List.Item actions={[<a href="javascript:void(0);" onClick={this.deleteFormula.bind(this, item.name)}>delete</a>]}>
+                                        <List.Item.Meta
+                                            title={item.name}
+                                            description={item.value}
+                                        />
+                                    </List.Item>
+                                )}
+                            />
+                        </div>
+                        <Modal
+                            title="计算公式"
+                            visible={this.state.formula}
+                            onOk={this.handleFormulaOk}
+                            onCancel={this.handleFormulaCancel}
+                        >
+                            <Form.Item
+                                label="公式名称"
+                                {...formItemLayout}
+                            >
+                                <Input placeholder="输入公式名称" value={this.state.formula_name} onChange={this.handleChangeInput.bind(this, "formula_name")} />
+                            </Form.Item>
+                            <Form.Item
+                                label="公式内容"
+                                {...formItemLayout}
+                            >
+                                <Input placeholder="输入公式内容" value={this.state.formula_value} onChange={this.handleChangeInput.bind(this, "formula_value")} />
+                            </Form.Item>
                         </Modal>
                     </Form.Item>
 

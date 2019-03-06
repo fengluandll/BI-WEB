@@ -14,10 +14,6 @@ class PivotDiy extends PureComponent {
   componentDidUpdate() {
   }
 
-  renderEmpty = () => {
-    return (<div className={styles.empty}><span>数据返回为空</span></div>);
-  };
-
   /***导出excel***/
   onExport = () => {
     const { mChart, dateSetList, editModel, dragactStyle, onExport } = this.props;
@@ -28,6 +24,13 @@ class PivotDiy extends PureComponent {
     const { mChart, dateSetList, editModel, dragactStyle, idColumns } = this.props;
     const config = JSON.parse(mChart.config);
     const { header, body } = dateSetList;
+
+    try {
+      pivotUtils.getData(this.props);
+    } catch (error) {
+      console.log("error");
+    }
+    
 
     const tableDate = {}; // 拼接好的参数对象
     /***制造列***/
