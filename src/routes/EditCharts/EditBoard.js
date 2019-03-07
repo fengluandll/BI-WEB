@@ -222,7 +222,7 @@ class EditBoard extends PureComponent {
                         idColumns={this.state.idColumns}
                     />
                 </div>;
-        } else if (type == "22") {
+        } else if (type == "222") {
             content =
                 <div>
                     <PivotDiy

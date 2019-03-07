@@ -10,8 +10,14 @@ class SelectColumn extends PureComponent {
         const { config, type } = this.props; // type是调用组件的类型,就是config里面的字段名称
         const column = config[type];
         let checkedList = [];
-        if (null != column) {
+        if (null != column && column != "") {
             checkedList = column.split(",");
+        }
+        // 去除空值
+        for (let key in checkedList) {
+            if (checkedList[key] == "") {
+                checkedList.splice(key, 1);
+            }
         }
         this.state = {
             checkedList: checkedList, // 选中的字段
@@ -31,8 +37,14 @@ class SelectColumn extends PureComponent {
         const { config, type } = nextProps;
         const column = config[type];
         let checkedList = [];
-        if (null != column) {
+        if (null != column && column != "") {
             checkedList = column.split(",");
+        }
+        // 去除空值
+        for (let key in checkedList) {
+            if (checkedList[key] == "") {
+                checkedList.splice(key, 1);
+            }
         }
         this.state = {
             checkedList: checkedList, // 选中的字段

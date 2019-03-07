@@ -175,6 +175,8 @@ class PivotUtils {
          * 
          * **/
         const tableDate = {};
+        const columns = {};
+        const data = {};
         tableDate["columns"] = columns;
         tableDate["data"] = data;
         return tableDate;
@@ -185,9 +187,10 @@ class PivotUtils {
      * 
      * ***/
     getIndex = (idColumns, header, column) => {
+        const column_arr = column.split(",");
         const column_index = []; // 字段在数据中所在的下标
-        for (let key in column) {
-            const name = idColumns[column[key]].rsc_display; // 每个column字段的中文名称
+        for (let key in column_arr) {
+            const name = idColumns[column_arr[key]].rsc_display; // 每个column字段的中文名称
             for (let key in header) {
                 if (header[key] == name) {
                     column_index.push(key);

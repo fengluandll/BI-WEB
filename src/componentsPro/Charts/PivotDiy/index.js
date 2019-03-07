@@ -25,11 +25,7 @@ class PivotDiy extends PureComponent {
     const config = JSON.parse(mChart.config);
     const { header, body } = dateSetList;
 
-    try {
       pivotUtils.getData(this.props);
-    } catch (error) {
-      console.log("error");
-    }
     
 
     const tableDate = {}; // 拼接好的参数对象
