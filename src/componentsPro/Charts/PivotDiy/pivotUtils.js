@@ -1,3 +1,4 @@
+import { Tooltip } from 'antd';
 
 class PivotUtils {
     /*** 制造透视表所需要的列和数据***
@@ -16,14 +17,23 @@ class PivotUtils {
         const col_column_index = this.getIndex(idColumns, header, col_column); // 大标题的下标组成的数组，个数为一个
         const cal_column_index = this.getIndex(idColumns, header, cal_column); // 计算字段下标组成的数组
 
+        console.log("--------------------------------------------------------------------------------------------------------");
+        //console.log(JSON.stringify(header)+"--------header---------------");
+        //console.log(JSON.stringify(body)+"--------body---------------");
+
+        const base_column_set_nameMap = {}; // 存放固定列字段,key为所有固定列字段相加
         const base_column_set = new Set(); // 固定列的中文名称数组
         for (let key in body) {
             const body_line = body[key]; //body数据中每一行的数据
             let name = ""; // 固定列的名称相加组成的名称
+            const name_arr = []; // 固定列数组
             for (let index in base_column_index) {
-                name = name + body_line[base_column_index[index]];
+                const value = body_line[base_column_index[index]];
+                name = name + value;
+                name_arr.push(value);
             }
             base_column_set.add(name);
+            base_column_set_nameMap[name] = name_arr;
         }
         const col_column_set = new Set(); // 大标题的中文名称数组
         for (let key in body) {
@@ -33,6 +43,7 @@ class PivotUtils {
 
         // 开始拼接数据
         let body_arr = []; // 拼接完成后的数据
+        let body_arr_final = []; //最终数据
         for (let item of base_column_set) {
             const base_column_data_arr = []; // 根据固定列分组的数据
             const cal_column_line_arr = []; // 指标汇总数据的数组
@@ -124,6 +135,7 @@ class PivotUtils {
             }
             body_arr.push(cal_column_line_total); // 每一行完整的数据放入总数据中
         }
+        //console.log(JSON.stringify(body_arr)+"--------body_arr---------------");
 
         //把最终查出来的数据行汇总
         const final_line = []; //最后的一行数据
@@ -153,21 +165,28 @@ class PivotUtils {
                 final_line.push(eval(value));
             }
         }
+        let final_line_final = [];
+        const final_line_tmp_arr = [];
+        for (let i = 0; i < this.getArrByStr(base_column).length; i++) {
+            final_line_tmp_arr.push("");
+        }
+        final_line_final = final_line_tmp_arr.concat(final_line);
         body_arr.push(final_line); // 加了最后汇总的所有数据
-        console.log(JSON.stringify(body_arr));
 
-        /*****拼接列*******
-         * 
-         * 根据mChart中的配置，取出固定的列和要度量的列和要透视的列，然后把它们拼接成复杂的头部样式。
-         * 
-         * ******/
+        //console.log(JSON.stringify(final_line)+"--------final_line---------------");
+        //console.log(JSON.stringify(body_arr)+"--------body_arr---------------");
 
+        let line_index = 0;
+        for (let item of base_column_set) {
+            line_index++;
+            const name_arr = base_column_set_nameMap[item];
+            const body_arr_line = body_arr[line_index];
+            const arr = name_arr.concat(body_arr_line);
+            body_arr_final.push(arr);
+        }
+        body_arr_final.push(final_line_final);
 
-        /*****拼接数据********
-         * 
-         * 数据需要经过复杂的转化和计算
-         * 
-         * **/
+        console.log(JSON.stringify(body_arr_final)+"--------body_arr_final---------------");
 
         /*****返回数据****
          * 
@@ -175,10 +194,78 @@ class PivotUtils {
          * 
          * **/
         const tableDate = {};
-        const columns = {};
-        const data = {};
+        const columns = [];
+        const data = [];
         tableDate["columns"] = columns;
         tableDate["data"] = data;
+
+        /*****拼接列*******
+        * 
+        * 根据mChart中的配置，取出固定的列和要度量的列和要透视的列，然后把它们拼接成复杂的头部样式。
+        * 
+        * ******/
+        const head_base_name = []; // 头部基础列中文名称
+        const head_col_name = ["合计"]; // 后面大标题的中文名称
+        const head_cal_name = []; // 计算字段中文名称
+        const head_for_data = []; //每个行所有字段的中文用来给下面的data拼接做key引导的
+        for (let key in base_column_index) {
+            const value = header[key];
+            head_base_name.push(value);
+        }
+        for (let item of base_column_set) {
+            head_col_name.push(item);
+        }
+        for (let key in cal_column_index) {
+            const value = header[key];
+            head_cal_name.push(value);
+        }
+        for (let key in formula) {
+            head_cal_name.push(key);
+        }
+        // 开始拼接头
+        for (let key in head_base_name) {
+            const value = head_base_name[key];
+            const obj = { "title": value, "dataIndex": value, "key": value };
+            columns.push(obj);
+            head_for_data.push(value);
+        }
+        for (let key in head_col_name) {
+            const value = head_col_name[key];
+            const obj = { "title": value, children: [] };
+            for (let k in head_cal_name) {
+                const va = head_cal_name[k] + key;
+                const child = { "title": head_cal_name[k], "dataIndex": va, "key": va };
+                obj.children.push(child);
+                head_for_data.push(va);
+            }
+            columns.push(obj);
+        }
+        console.log(JSON.stringify(columns)+"--------columns---------------");
+        console.log(JSON.stringify(head_for_data)+"--------head_for_data---------------");
+
+        /*****拼接数据********
+         * 
+         * 数据需要经过复杂的转化和计算
+         * 
+         * **/
+        for (let key in body_arr_final) {
+            const obj = { "key": key };
+            const body_line = body_arr_final[key];
+            for (let k in body_line) {
+                let value = body_line[k];
+                if (value.length > 12 && config.forceFit != "1") { // 如果字符大于12个的时候那就隐藏用Tooltip提示
+                    value = (
+                        <Tooltip title={value} placement="top">
+                            <span>{value.substring(0, 12) + "..."}</span>
+                        </Tooltip>
+                    );
+                }
+                obj[head_for_data[k]] = value;
+            }
+            data.push(obj);
+        }
+        console.log(JSON.stringify(data)+"--------data---------------");
+
         return tableDate;
     }
 
@@ -198,6 +285,14 @@ class PivotUtils {
             }
         }
         return column_index;
+    }
+    /***
+     * str转arr
+     * 
+     * ***/
+    getArrByStr = (value) => {
+        const arr = value.split(",");
+        return arr;
     }
 
 }

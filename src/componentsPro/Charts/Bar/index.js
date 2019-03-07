@@ -85,47 +85,51 @@ class Bar extends PureComponent {
     let forceFit = false;
     if (config.forceFit == "1") {
       forceFit = true;
-    }else{
+    } else {
       height = height;
     }
     // 边距
     let padding = [26, 30, 34, 50];
-    for( var i = 0; i < dateSetList.length; i++){
+    for (var i = 0; i < dateSetList.length; i++) {
       // 获取x轴的数据
       var str = dateSetList[i].x;
       var strL = str.length;
-			var strB = 0;
-			for(var j = 0; j < strL; j++) {
-			if ((str.charCodeAt(j) & 0xff00) != 0) {
-			strB ++;
-			}
-			strB ++;
-			}
+      var strB = 0;
+      for (var j = 0; j < strL; j++) {
+        if ((str.charCodeAt(j) & 0xff00) != 0) {
+          strB++;
+        }
+        strB++;
+      }
       if (config.padding) {
         padding = config.padding;
       }
-      if(config.legend == "1"){
-        if(strB > 4 && strB < 8){
+      if (config.legend == "1") {
+        if (strB >= 0 && strB <= 8) {
           padding = [26, 30, 34, 150];
         }
-        if(strB > 10 && strB < 18){
+        if (strB >= 9 && strB <= 18) {
           padding = [26, 30, 84, 150];
         }
-        if(strB > 20 && strB < 40){
+        if (strB >= 19 && strB < 40) {
           padding = [26, 30, 94, 150];
+        } else {
+          padding = [26, 30, 100, 150];
         }
-      }else{
-        if(strB > 4 && strB < 8){
+      } else {
+        if (strB >= 0 && strB <= 8) {
           padding = [26, 30, 34, 50];
         }
-        if(strB > 10 && strB < 18){
+        if (strB >= 9 && strB <= 18) {
           padding = [26, 30, 84, 50];
         }
-        if(strB > 20 && strB < 40){
+        if (strB >= 19 && strB < 40) {
           padding = [26, 30, 94, 50];
+        } else {
+          padding = [26, 30, 100, 150];
         }
       }
-      
+
     }
 
     // 控制数据量特别大的情况
@@ -134,24 +138,24 @@ class Bar extends PureComponent {
     let chartFit = forceFit;
     if (dataLength > 2) {
       chartWidth = dataLength * 100;
-      if(config.legend == "1"){
+      if (config.legend == "1") {
         height = height - 4;
-      }else{
+      } else {
         height = height;
       }
-      if(config.legend == "1" && config.forceFit == "1"){
+      if (config.legend == "1" && config.forceFit == "1") {
         height = height + 4;
-      }else{
+      } else {
         height = height;
       }
-      if(config.legend != "1" && config.forceFit != "1"){
+      if (config.legend != "1" && config.forceFit != "1") {
         height = height - 4;
-      }else{
+      } else {
         height = height;
       }
-      for(var i = 0; i < dateSetList.length; i++){
-        if(dateSetList[0].color){
-          if(dateSetList[0].color == dateSetList[dateSetList.length -1].color && config.forceFit != "1"){
+      for (var i = 0; i < dateSetList.length; i++) {
+        if (dateSetList[0].color) {
+          if (dateSetList[0].color == dateSetList[dateSetList.length - 1].color && config.forceFit != "1") {
             chartWidth = dataLength * 200;
             height = height;
           }
@@ -159,14 +163,14 @@ class Bar extends PureComponent {
       }
       if (config.forceFit == "1") {
         height = height;
-      }else{
+      } else {
         height = height;
       }
       if (chartWidth > 32000) {
         chartWidth = 32000;
       }
     }
-    
+
     // init
     const chart = new G2.Chart({
       container: this.node, // 指定图表容器 ID
@@ -201,12 +205,12 @@ class Bar extends PureComponent {
         .label(`${y}`, {
           offset: 6,
           textStyle: {
-            textAlign: 'start', 
-            fill: '#404040', 
+            textAlign: 'start',
+            fill: '#404040',
             fontSize: '12',
             rotate: -40,
           },
-          autoRotate: true, 
+          autoRotate: true,
         });
     } else {
       chart.interval().position(`${x}*${y}`)

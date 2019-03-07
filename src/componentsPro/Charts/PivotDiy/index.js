@@ -25,37 +25,8 @@ class PivotDiy extends PureComponent {
     const config = JSON.parse(mChart.config);
     const { header, body } = dateSetList;
 
-      pivotUtils.getData(this.props);
-    
+    const tableDate = pivotUtils.getData(this.props);
 
-    const tableDate = {}; // 拼接好的参数对象
-    /***制造列***/
-    const columns = [];
-    for (let key in header) {
-      const value = header[key];
-      const obj = { "title": value, "dataIndex": value, "key": value };
-      columns.push(obj);
-    }
-    /***制造数据***/
-    const data = [];
-    for (let key in body) {
-      const obj = { "key": key };
-      const body_line = body[key];
-      for (let body_line_key in body_line) {
-        let value = body_line[body_line_key];
-        if (value.length > 12 && config.forceFit != "1") { // 如果字符大于12个的时候那就隐藏用Tooltip提示
-          value = (
-            <Tooltip title={value} placement="top">
-              <span>{value.substring(0, 12) + "..."}</span>
-            </Tooltip>
-          );
-        }
-        obj[header[body_line_key]] = value;
-      }
-      data.push(obj);
-    }
-    tableDate["columns"] = columns;
-    tableDate["data"] = data;
     return tableDate;
   }
 
