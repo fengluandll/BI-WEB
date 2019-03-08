@@ -129,6 +129,9 @@ class Bar extends PureComponent {
           padding = [26, 30, 100, 150];
         }
       }
+      if(config.legend == "1" && strB === 10){
+        padding = [26, 30, 34, 150];
+      }
 
     }
 
