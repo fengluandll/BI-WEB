@@ -10,17 +10,20 @@ class PivotUtils {
         const { mChart, dateSetList, editModel, dragactStyle, idColumns } = props;
         const config = JSON.parse(mChart.config);
         const { header, body } = dateSetList;
-        // 字段列，基础列，大标题，指标列，全局列汇总，全局行汇总
+        // 字段列，基础列，大标题，指标列，全局列汇总，全局行汇总，计算字段
         const { column, base_column, col_column, cal_column, sum_col, sum_row, formula } = config;
 
         const base_column_index = this.getIndex(idColumns, header, base_column); // 固定列的下标组成的数组
         const col_column_index = this.getIndex(idColumns, header, col_column); // 大标题的下标组成的数组，个数为一个
         const cal_column_index = this.getIndex(idColumns, header, cal_column); // 计算字段下标组成的数组
 
-        console.log("--------------------------------------------------------------------------------------------------------");
+        console.log("---------------------------------------------pivotDiy转换数据-----------------------------------------------------------");
         //console.log(JSON.stringify(header)+"--------header---------------");
         //console.log(JSON.stringify(body)+"--------body---------------");
 
+        /***
+         * 找到数据的唯一键，固定列做一个key，固定列+大标题做一个key
+         * ***/
         const base_column_set_nameMap = {}; // 存放固定列字段,key为所有固定列字段相加
         const base_column_set = new Set(); // 固定列的中文名称数组
         for (let key in body) {
@@ -41,7 +44,10 @@ class PivotUtils {
             col_column_set.add(body_line[col_column_index[0]]);
         }
 
-        // 开始拼接数据
+        /***
+         * 开始拼接数据
+         * 
+         * ***/
         let body_arr = []; // 拼接完成后的数据
         let body_arr_final = []; //最终数据
         for (let item of base_column_set) {
@@ -85,7 +91,8 @@ class PivotUtils {
                     let value = "";
                     for (let key_child in value_arr) {
                         let tmp_value = value_arr[key_child];
-                        if (typeof (tmp_value) == 'number') {
+                        const ret = /^[0-9]+.?[0-9]*$/; // 正则表达式判断是否是数字
+                        if (ret.test(tmp_value)) {
                             tmp_value = cal_column_line[tmp_value];
                         }
                         value = value + tmp_value;
@@ -101,7 +108,7 @@ class PivotUtils {
 
             // 算出每行数据的求和
             const tmp_value = cal_column_line_arr[0];
-            for (let index = 0; index++; index < tmp_value.length - formula.length) { // 后面几位不要
+            for (let index = 0; index < tmp_value.length - formula.length; index++) { // 后面几位不要
                 let add_tmp = 0; // 
                 for (let key in cal_column_line_arr) {
                     const value = cal_column_line_arr[key];
@@ -117,7 +124,8 @@ class PivotUtils {
                 let value = "";
                 for (let key_child in value_arr) {
                     let tmp_value = value_arr[key_child];
-                    if (typeof (tmp_value) == 'number') {
+                    const ret = /^[0-9]+.?[0-9]*$/; // 正则表达式判断是否是数字
+                    if (ret.test(tmp_value)) {
                         tmp_value = cal_column_line_add[tmp_value];
                     }
                     value = value + tmp_value;
@@ -135,7 +143,6 @@ class PivotUtils {
             }
             body_arr.push(cal_column_line_total); // 每一行完整的数据放入总数据中
         }
-        //console.log(JSON.stringify(body_arr)+"--------body_arr---------------");
 
         //把最终查出来的数据行汇总
         const final_line = []; //最后的一行数据
@@ -149,15 +156,16 @@ class PivotUtils {
             final_line.push(add_tmp);
         }
         // 循环分类的个数
-        for (let i = 0; i < col_column_set.length + 1; i++) { //循环每一个类别
+        for (let i = 0; i < col_column_set.size + 1; i++) { //循环每一个类别
             for (let key in formula) {
                 const value_str = formula[key].value;
                 const value_arr = value_str.split('');
                 let value = "";
                 for (let key_child in value_arr) {
                     let tmp_value = value_arr[key_child];
-                    if (typeof (tmp_value) == 'number') {// 如果是number那么这个就是数组的下标
-                        tmp_value = (cal_column.length + formula.length) * i + tmp_value;
+                    const ret = /^[0-9]+.?[0-9]*$/; // 正则表达式判断是否是数字
+                    if (ret.test(tmp_value)) {// 如果是number那么这个就是数组的下标
+                        tmp_value = (this.getArrByStr(cal_column).length + formula.length) * i + tmp_value;
                         tmp_value = final_line[tmp_value];
                     }
                     value = value + tmp_value;
@@ -171,22 +179,16 @@ class PivotUtils {
             final_line_tmp_arr.push("");
         }
         final_line_final = final_line_tmp_arr.concat(final_line);
-        body_arr.push(final_line); // 加了最后汇总的所有数据
-
-        //console.log(JSON.stringify(final_line)+"--------final_line---------------");
-        //console.log(JSON.stringify(body_arr)+"--------body_arr---------------");
 
         let line_index = 0;
         for (let item of base_column_set) {
-            line_index++;
             const name_arr = base_column_set_nameMap[item];
             const body_arr_line = body_arr[line_index];
             const arr = name_arr.concat(body_arr_line);
             body_arr_final.push(arr);
+            line_index++;
         }
         body_arr_final.push(final_line_final);
-
-        console.log(JSON.stringify(body_arr_final)+"--------body_arr_final---------------");
 
         /*****返回数据****
          * 
@@ -212,20 +214,20 @@ class PivotUtils {
             const value = header[key];
             head_base_name.push(value);
         }
-        for (let item of base_column_set) {
+        for (let item of col_column_set) {
             head_col_name.push(item);
         }
         for (let key in cal_column_index) {
-            const value = header[key];
+            const value = header[cal_column_index[key]];
             head_cal_name.push(value);
         }
         for (let key in formula) {
-            head_cal_name.push(key);
+            head_cal_name.push(formula[key].name);
         }
         // 开始拼接头
         for (let key in head_base_name) {
             const value = head_base_name[key];
-            const obj = { "title": value, "dataIndex": value, "key": value };
+            const obj = { "title": value, "dataIndex": value, "key": value, "align": "center", "width": 300 };
             columns.push(obj);
             head_for_data.push(value);
         }
@@ -234,14 +236,12 @@ class PivotUtils {
             const obj = { "title": value, children: [] };
             for (let k in head_cal_name) {
                 const va = head_cal_name[k] + key;
-                const child = { "title": head_cal_name[k], "dataIndex": va, "key": va };
+                const child = { "title": head_cal_name[k], "dataIndex": va, "key": va, "width": 100 };
                 obj.children.push(child);
                 head_for_data.push(va);
             }
             columns.push(obj);
         }
-        console.log(JSON.stringify(columns)+"--------columns---------------");
-        console.log(JSON.stringify(head_for_data)+"--------head_for_data---------------");
 
         /*****拼接数据********
          * 
@@ -264,7 +264,6 @@ class PivotUtils {
             }
             data.push(obj);
         }
-        console.log(JSON.stringify(data)+"--------data---------------");
 
         return tableDate;
     }
