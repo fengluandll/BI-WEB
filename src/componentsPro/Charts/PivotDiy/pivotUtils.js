@@ -89,13 +89,21 @@ class PivotUtils {
                     const value_str = formula[key].value;
                     const value_arr = value_str.split('');
                     let value = "";
+                    let number_flag = false; //判断下标数字,当前如果是#设置为true，那么下个值就是根据下标的数字去取值
                     for (let key_child in value_arr) {
                         let tmp_value = value_arr[key_child];
-                        const ret = /^[0-9]+.?[0-9]*$/; // 正则表达式判断是否是数字
-                        if (ret.test(tmp_value)) {
-                            tmp_value = cal_column_line[tmp_value];
+                        if (tmp_value == "#") { //如果这个字符以#开头那么这个就是下标数字,改变number_flag为true等下个字符的时候就选择下标位的值
+                            number_flag = true;
+                        } else {
+                            if (number_flag) { // 如果是下标数字
+                                const ret = /^[0-9]+.?[0-9]*$/; // 正则表达式判断是否是数字
+                                if (ret.test(tmp_value)) {
+                                    tmp_value = cal_column_line[tmp_value];
+                                }
+                            }
+                            value = value + tmp_value;
+                            number_flag = false;
                         }
-                        value = value + tmp_value;
                     }
                     formula_column.push(eval(value));
                 }
@@ -122,13 +130,21 @@ class PivotUtils {
                 const value_str = formula[key].value;
                 const value_arr = value_str.split('');
                 let value = "";
+                let number_flag = false; //判断下标数字,当前如果是#设置为true，那么下个值就是根据下标的数字去取值
                 for (let key_child in value_arr) {
                     let tmp_value = value_arr[key_child];
-                    const ret = /^[0-9]+.?[0-9]*$/; // 正则表达式判断是否是数字
-                    if (ret.test(tmp_value)) {
-                        tmp_value = cal_column_line_add[tmp_value];
+                    if (tmp_value == "#") { //如果这个字符以#开头那么这个就是下标数字,改变number_flag为true等下个字符的时候就选择下标位的值
+                        number_flag = true;
+                    } else {
+                        if (number_flag) { // 如果是下标数字
+                            const ret = /^[0-9]+.?[0-9]*$/; // 正则表达式判断是否是数字
+                            if (ret.test(tmp_value)) {
+                                tmp_value = cal_column_line_add[tmp_value];
+                            }
+                        }
+                        value = value + tmp_value;
+                        number_flag = false;
                     }
-                    value = value + tmp_value;
                 }
                 formula_column.push(eval(value));
             }
@@ -161,14 +177,22 @@ class PivotUtils {
                 const value_str = formula[key].value;
                 const value_arr = value_str.split('');
                 let value = "";
+                let number_flag = false; //判断下标数字,当前如果是#设置为true，那么下个值就是根据下标的数字去取值
                 for (let key_child in value_arr) {
                     let tmp_value = value_arr[key_child];
-                    const ret = /^[0-9]+.?[0-9]*$/; // 正则表达式判断是否是数字
-                    if (ret.test(tmp_value)) {// 如果是number那么这个就是数组的下标
-                        tmp_value = (this.getArrByStr(cal_column).length + formula.length) * i + tmp_value;
-                        tmp_value = final_line[tmp_value];
+                    if (tmp_value == "#") { //如果这个字符以#开头那么这个就是下标数字,改变number_flag为true等下个字符的时候就选择下标位的值
+                        number_flag = true;
+                    } else {
+                        if (number_flag) { // 如果是下标数字
+                            const ret = /^[0-9]+.?[0-9]*$/; // 正则表达式判断是否是数字
+                            if (ret.test(tmp_value)) {// 如果是number那么这个就是数组的下标
+                                tmp_value = (this.getArrByStr(cal_column).length + formula.length) * i + tmp_value;
+                                tmp_value = final_line[tmp_value];
+                            }
+                        }
+                        value = value + tmp_value;
+                        number_flag = false;
                     }
-                    value = value + tmp_value;
                 }
                 final_line.push(eval(value));
             }
@@ -236,7 +260,7 @@ class PivotUtils {
             const obj = { "title": value, children: [] };
             for (let k in head_cal_name) {
                 const va = head_cal_name[k] + key;
-                const child = { "title": head_cal_name[k], "dataIndex": va, "key": va, "width": 100 };
+                const child = { "title": head_cal_name[k], "dataIndex": va, "key": va, "align": "center", "width": 100 };
                 obj.children.push(child);
                 head_for_data.push(va);
             }

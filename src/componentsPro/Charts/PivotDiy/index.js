@@ -77,15 +77,10 @@ class PivotDiy extends PureComponent {
   }
   // 获取scroll
   getScroll = () => {
-    const { mChart } = this.props;
-    const config = JSON.parse(mChart.config);
-    const { column, base_column, col_column, cal_column, sum_col, sum_row, formula } = config;
-    const base_column_arr = base_column.split(",");
-    const col_column_arr = col_column.split(",");
-    const cal_column_arr = cal_column.split(",");
-    let width = (base_column_arr.length + col_column_arr.length * cal_column_arr.length) * 500;
+    const { data } = this.getTableData();
+    const width = data.length * 150;
     const height = this.getHeight();
-    const scroll = { x: width, y: height - 163 };// x轴滚动是列个数乘200,y轴是根据dragact算出的高度减去图表控件额外的高度。
+    const scroll = { x: width, y: height - 98 };// x轴滚动是列个数乘200,y轴是根据dragact算出的高度减去图表控件额外的高度。
     return scroll;
   }
 
@@ -108,6 +103,7 @@ class PivotDiy extends PureComponent {
             columns={columns}
             dataSource={data}
             scroll={scroll}
+            pagination={false}
           />
         </div>
       </div>
