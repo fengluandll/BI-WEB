@@ -78,9 +78,9 @@ class PivotDiy extends PureComponent {
   // 获取scroll
   getScroll = () => {
     const { data } = this.getTableData();
-    const width = data.length * 150;
+    const width = data.length * 170;
     const height = this.getHeight();
-    const scroll = { x: width, y: height - 98 };// x轴滚动是列个数乘200,y轴是根据dragact算出的高度减去图表控件额外的高度。
+    const scroll = { x: width, y: height - 58 };// x轴滚动是列个数乘200,y轴是根据dragact算出的高度减去图表控件额外的高度。
     return scroll;
   }
 
