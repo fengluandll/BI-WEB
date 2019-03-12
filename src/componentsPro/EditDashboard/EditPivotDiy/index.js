@@ -22,7 +22,9 @@ class EditPivotDiy extends PureComponent {
             cal_columnCheckbox: config.cal_column,
             refreshUI: 0, // 用来刷新页面的
             formula_name: "", // 计算公式新增的临时值
-            formula_value: "",
+            formula_value: "", // 计算公式新增的临时值
+            decimal: "", // 计算公式新增的临时值小数位
+            format: "", // 计算公式新增的临时值格式化
             formulaData: config.formula, //计算公式临时值
         };
     }
@@ -94,6 +96,14 @@ class EditPivotDiy extends PureComponent {
         } else if (key == "formula_value") {
             this.setState({
                 formula_value: event.target.value,
+            });
+        } else if (key == "decimal") {
+            this.setState({
+                decimal: event.target.value,
+            });
+        } else if (key == "format") {
+            this.setState({
+                format: event.target.value,
             });
         }
         this.setState({
@@ -289,14 +299,16 @@ class EditPivotDiy extends PureComponent {
     }
     // 显示字段回调函数
     handleFormulaOk = () => {
-        const { formulaData, formula_name, formula_value } = this.state;
-        const obj = { "name": formula_name, "value": formula_value };
+        const { formulaData, formula_name, formula_value, decimal, format } = this.state;
+        const obj = { "name": formula_name, "value": formula_value, "decimal": decimal, "format": format };
         formulaData.push(obj);
         this.setState({
             formula: false,
             formulaData,
             formula_name: "",
             formula_value: "",
+            decimal: "",
+            format: "",
             refreshUI: this.state.refreshUI + 1,
         });
     }
@@ -306,6 +318,8 @@ class EditPivotDiy extends PureComponent {
             formula: false,
             formula_name: "",
             formula_value: "",
+            decimal: "",
+            format: "",
             refreshUI: this.state.refreshUI + 1,
         });
     }
@@ -522,7 +536,7 @@ class EditPivotDiy extends PureComponent {
                                     <List.Item actions={[<a href="javascript:void(0);" onClick={this.deleteFormula.bind(this, item.name)}>delete</a>]}>
                                         <List.Item.Meta
                                             title={item.name}
-                                            description={item.value}
+                                            description={`公式:${item.value}-小数位:${item.decimal}-格式化:${item.format}`}
                                         />
                                     </List.Item>
                                 )}
@@ -545,6 +559,18 @@ class EditPivotDiy extends PureComponent {
                                 {...formItemLayout}
                             >
                                 <Input placeholder="输入公式内容" value={this.state.formula_value} onChange={this.handleChangeInput.bind(this, "formula_value")} />
+                            </Form.Item>
+                            <Form.Item
+                                label="保留小数点"
+                                {...formItemLayout}
+                            >
+                                <Input placeholder="输入小数点位数" value={this.state.decimal} onChange={this.handleChangeInput.bind(this, "decimal")} />
+                            </Form.Item>
+                            <Form.Item
+                                label="格式化"
+                                {...formItemLayout}
+                            >
+                                <Input placeholder="输入格式化(%)" value={this.state.format} onChange={this.handleChangeInput.bind(this, "format")} />
                             </Form.Item>
                         </Modal>
                     </Form.Item>

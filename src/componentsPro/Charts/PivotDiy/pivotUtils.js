@@ -108,7 +108,8 @@ class PivotUtils {
                             number_flag = false;
                         }
                     }
-                    formula_column.push(eval(value));
+                    value = eval(value);
+                    formula_column.push(value);
                 }
                 // 把计算完的字段放到指标汇总数据末尾
                 for (let key in formula_column) {
@@ -151,7 +152,8 @@ class PivotUtils {
                         number_flag = false;
                     }
                 }
-                formula_column.push(eval(value));
+                value = eval(value);
+                formula_column.push(value);
             }
             // 把计算字段数组中的数据拼接到 汇总 大标题下的数组数据里面
             for (let key in formula_column) {
@@ -240,9 +242,28 @@ class PivotUtils {
         }
         body_arr_final.push(final_line); // 再放最后一行的数据
 
+        /***
+         * E步骤：根据计算公式字段的json将计算字段的值格式化
+         * 
+         * ***/
+        // 计算出计算字段在总数据中的下标
+        const base_length = this.getArrByStr(base_column).length; //固定列字段长度
+        const cal_length = this.getArrByStr(cal_column).length; // 计算字段长度
+        const col_length = col_column_set.size; // 大标题长度
+        const formula_length = parseInt(formula.length); //计算公式字段长度
+        for (let key = 0; key < col_length + 1; key++) {
+            for (let k in formula) {
+                const index = parseInt(base_length) + parseInt(cal_length * (key + 1)) + parseInt(formula_length * key) + parseInt(k); //计算公式字段下标
+                for (let m in body_arr_final) {
+                    let body_line = body_arr_final[m]; //所有最终数据中的每行数据
+                    body_line[index] = this.getFormat(body_line[index], formula[k]);
+                }
+            }
+        }
+
         /*****返回数据****
          * 
-         * E步骤：制造返回数据，拼接antdtable所需要的columns和data数据json
+         * F步骤：制造返回数据，拼接antdtable所需要的columns和data数据json
          * 
          * **/
         const tableDate = {};
@@ -351,14 +372,16 @@ class PivotUtils {
         const { name, value, decimal, format } = formula;
         // 判断保留小数位
         let num = 1;
-        if (null != decimal && decimal != "0") {
+        const r = /^[0-9]+.?[0-9]*$/; // 正则表达式判断是否是数字
+        if (null != decimal && decimal != "0" && r.test(parseInt(decimal))) {
             num = 10 * parseInt(decimal);
             ret = Math.round(ret * num) / num;
         }
         // 先判断有没有%
-        if (format == "1") {
+        if (format == "%") {
             ret = ret * 100 + '%';
         }
+        return ret;
     }
 
 }
