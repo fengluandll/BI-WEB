@@ -370,6 +370,10 @@ class PivotUtils {
      * ***/
     getFormat = (ret, formula) => {
         const { name, value, decimal, format } = formula;
+        if (ret == Infinity || isNaN(ret)) { // 如果计算的值不对，进行处理
+            ret = "计算异常";
+            return ret;
+        }
         // 判断保留小数位
         let num = 1;
         const r = /^[0-9]+.?[0-9]*$/; // 正则表达式判断是否是数字
