@@ -19,8 +19,8 @@ class Bar extends PureComponent {
   handleRef = (n) => {
     this.node = n;
   };
-  renderEmpty = () => {
-    return (<div className={styles.empty}><span>数据返回为空</span></div>);
+  renderEmpty = (height) => {
+    return (<div style={{height:height+4}} className={styles.empty}><span>数据返回为空</span></div>);
   };
 
   renderChart1() {
@@ -53,13 +53,6 @@ class Bar extends PureComponent {
     const config = JSON.parse(mChart.config);
     const dateSetList = this.props.dateSetList;
 
-    if (null == mChart || dateSetList == null || dateSetList.length == 0) {
-      ReactDom.render(this.renderEmpty(), this.node);
-      return;
-    }
-    // clean
-    this.node.innerHTML = '';
-
     // -------------------图表配置--------------------------------
     let width = 600;
     if (config.width) {
@@ -81,6 +74,12 @@ class Bar extends PureComponent {
         }
       });
     }
+    if (null == mChart || dateSetList == null || dateSetList.length == 0) {
+      ReactDom.render(this.renderEmpty(height), this.node);
+      return;
+    }
+    // clean
+    this.node.innerHTML = '';
     // 自适应宽度
     let forceFit = false;
     if (config.forceFit == "1") {
