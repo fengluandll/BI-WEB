@@ -20,7 +20,7 @@ class Table extends PureComponent {
     this.node = n;
   };
   renderEmpty = () => {
-    return (<div className={styles.empty}><span>数据返回为空</span></div>);
+    return (<div className={styles.empty}><span>No data</span></div>);
   };
   onExport = () => {
     const { mChart, dateSetList, editModel, dragactStyle, onExport } = this.props;

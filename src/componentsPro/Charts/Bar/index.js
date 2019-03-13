@@ -20,7 +20,7 @@ class Bar extends PureComponent {
     this.node = n;
   };
   renderEmpty = (height) => {
-    return (<div style={{height:height+4}} className={styles.empty}><span>数据返回为空</span></div>);
+    return (<div style={{height:height+4}} className={styles.empty}><span>No data</span></div>);
   };
 
   renderChart1() {
