@@ -541,6 +541,35 @@ class ReportBoardUtils {
         }
         return dataList;
     }
+    // 将t_dashboard中的图表放入到m_dashboard中
+    addMfromT = (mDashboard_old, tDashboard) => {
+        const m_config = JSON.parse(mDashboard_old.style_config);
+        const t_config = JSON.parse(tDashboard.style_config);
+        const m_children = m_config.children;
+        const t_children = t_config.children;
+        for (let key in t_children) {
+            let chart = t_children[key];
+            chart.t_type = "t_dashboard";
+            m_children[key] = chart;
+        }
+        mDashboard_old.styleConfig = JSON.stringify(m_children);
+    }
+    // 根据user_type判断是t_dashboard保存还是m_dashboard保存，如果是m_dashboard就把加上的t_dashbaord中的t_type为"t_dashboard"的图表去掉
+    getM_dashbaordByUser_type = (mDashboard_old, user_type) => {
+        if (user_type == "customer") { // m_dashboard
+            const style_config = JSON.parse(mDashboard_old.style_config);
+            const children = style_config.children;
+            for (let key in children) {
+                const value = children[key];
+                if (value.t_type == "t_dashboard") {
+                    delete children[key];
+                }
+            }
+            mDashboard_old.style_config = JSON.stringify(style_config);
+        } else if (user_type == "self") {
+
+        }
+    }
 
     /***************************plot***************************************/
     // 将点击plot后要查询的图表id放入plotChartId

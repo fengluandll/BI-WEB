@@ -22,6 +22,8 @@ class TabsUI extends PureComponent {
     }
 
     componentWillReceiveProps(nextProps) {
+        // 用户类别，当前dashbaord对象,t_dashboard,保存方法
+        const { user_type, mDashboard_old, tDashboard, onSave } = nextProps;
     }
 
     /*************************************************************/
