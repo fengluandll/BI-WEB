@@ -5,7 +5,7 @@ import { Form, Input, Button, Modal, Select, Switch, Checkbox, Row, Col } from '
 /***
  * tabs组件
  * 页签组件
- * 
+ * --
  * ***/
 class TabsUI extends PureComponent {
     constructor(props) {
