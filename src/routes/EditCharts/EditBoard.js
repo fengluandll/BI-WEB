@@ -18,7 +18,7 @@ const reportBoardUtils = new ReportBoardUtils();
 /***
  * BI报表后台编辑界面
  * wangliu 20190116
- * --
+ * 
  * ***/
 class EditBoard extends PureComponent {
     constructor(props) {
