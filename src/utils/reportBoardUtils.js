@@ -542,17 +542,19 @@ class ReportBoardUtils {
         return dataList;
     }
     // 将t_dashboard中的图表放入到m_dashboard中
-    addMfromT = (mDashboard_old, tDashboard) => {
-        const m_config = JSON.parse(mDashboard_old.style_config);
-        const t_config = JSON.parse(tDashboard.style_config);
-        const m_children = m_config.children;
-        const t_children = t_config.children;
-        for (let key in t_children) {
-            let chart = t_children[key];
-            chart.t_type = "t_dashboard";
-            m_children[key] = chart;
+    addMfromT = (mDashboard_old, tDashboard, user_type) => {
+        if (user_type == "customer") { // 如果是用户
+            const m_config = JSON.parse(mDashboard_old.style_config);
+            const t_config = JSON.parse(tDashboard.style_config);
+            const m_children = m_config.children;
+            const t_children = t_config.children;
+            for (let key in t_children) {
+                let chart = t_children[key];
+                chart.t_type = "t_dashboard";
+                m_children[key] = chart;
+            }
+            mDashboard_old.styleConfig = JSON.stringify(t_config);
         }
-        mDashboard_old.styleConfig = JSON.stringify(m_children);
     }
     // 根据user_type判断是t_dashboard保存还是m_dashboard保存，如果是m_dashboard就把加上的t_dashbaord中的t_type为"t_dashboard"的图表去掉
     getM_dashbaordByUser_type = (mDashboard_old, user_type) => {

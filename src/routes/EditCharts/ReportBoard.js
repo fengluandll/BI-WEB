@@ -68,7 +68,7 @@ class ReportBoard extends PureComponent {
                 boardId,
                 callback: () => {
                     const { mDashboard_old, tDashboard, mCharts, idColumns, user_type, user_auth } = this.props.model;
-                    //reportBoardUtils.addMfromT(mDashboard_old, tDashboard); //首先就将t_dashboard合进m_dashboard里面
+                    reportBoardUtils.addMfromT(mDashboard_old, tDashboard, user_type); //首先就将t_dashboard合进m_dashboard里面
                     const { tagName, tagNames } = this.state;
                     const mDashboard = reportBoardUtils.getStyle_configByOrder(mDashboard_old, tagName, tagNames);
                     this.setState({
@@ -1188,48 +1188,48 @@ class ReportBoard extends PureComponent {
 
     // 打印
     onPrint = () => {
-        html2canvas(this.divDom,{
+        html2canvas(this.divDom, {
             useCORS: true,//保证跨域图片的显示
             width: window.screen.availWidth,//显示的canvas窗口的宽度
             height: window.screen.availHeight,//显示的canvas窗口的高度
-            windowWidth :this.divDom.scrollWidth,//获取x方向滚动条中内容
+            windowWidth: this.divDom.scrollWidth,//获取x方向滚动条中内容
             windowHeight: this.divDom.scrollHeight,//获取y方向滚动条中内容
-            foreignObjectRendering:true,//在浏览器支持时使用ForeignObject渲染
-           }).then(function(canvas) {
-                var contentWidth = canvas.width;
-              var contentHeight = canvas.height;
+            foreignObjectRendering: true,//在浏览器支持时使用ForeignObject渲染
+        }).then(function (canvas) {
+            var contentWidth = canvas.width;
+            var contentHeight = canvas.height;
 
-              //一页pdf显示html页面生成的canvas高度;
-              var pageHeight = contentWidth / 595.28 * 841.89;
-              //未生成pdf的html页面高度
-              var leftHeight = contentHeight;
-              //pdf页面偏移
-              var position = 0;
-              //a4纸的尺寸[595.28,841.89]，html页面生成的canvas在pdf中图片的宽高
-              var imgWidth = 595.28;
-              var imgHeight = 595.28/contentWidth * contentHeight;
+            //一页pdf显示html页面生成的canvas高度;
+            var pageHeight = contentWidth / 595.28 * 841.89;
+            //未生成pdf的html页面高度
+            var leftHeight = contentHeight;
+            //pdf页面偏移
+            var position = 0;
+            //a4纸的尺寸[595.28,841.89]，html页面生成的canvas在pdf中图片的宽高
+            var imgWidth = 595.28;
+            var imgHeight = 595.28 / contentWidth * contentHeight;
 
-              var pageData = canvas.toDataURL('image/jpeg', 1.0);
+            var pageData = canvas.toDataURL('image/jpeg', 1.0);
 
-              var pdf = new jsPDF('', 'pt', 'a4');
-              //有两个高度需要区分，一个是html页面的实际高度，和生成pdf的页面高度(841.89)
-              //当内容未超过pdf一页显示的范围，无需分页
-              if (leftHeight < pageHeight) {
-                  pdf.addImage(pageData, 'JPEG', 0, 0, imgWidth, imgHeight );
-              } else {
-                  while(leftHeight > 0) {
-                      pdf.addImage(pageData, 'JPEG', 0, position, imgWidth, imgHeight)
-                      leftHeight -= pageHeight;
-                      position -= 841.89;
-                      //避免添加空白页
-                      if(leftHeight > 0) {
-                          pdf.addPage();
-                      }
-                  }
-              }
+            var pdf = new jsPDF('', 'pt', 'a4');
+            //有两个高度需要区分，一个是html页面的实际高度，和生成pdf的页面高度(841.89)
+            //当内容未超过pdf一页显示的范围，无需分页
+            if (leftHeight < pageHeight) {
+                pdf.addImage(pageData, 'JPEG', 0, 0, imgWidth, imgHeight);
+            } else {
+                while (leftHeight > 0) {
+                    pdf.addImage(pageData, 'JPEG', 0, position, imgWidth, imgHeight)
+                    leftHeight -= pageHeight;
+                    position -= 841.89;
+                    //避免添加空白页
+                    if (leftHeight > 0) {
+                        pdf.addPage();
+                    }
+                }
+            }
 
-              pdf.save('report.pdf');
-          })
+            pdf.save('report.pdf');
+        })
     }
 
     /*************************************************图表事件********************************************************/
@@ -1380,7 +1380,7 @@ class ReportBoard extends PureComponent {
                     <div style={{ marginRight: (this.state.editModel == "true") ? "200px" : "0", width: (this.state.editModel == "true") ? "40px" : "80px", height: 40, opacity: '1', border: '2px solid #ccc', borderLeft: '1px solid #ccc', borderBottom: '1px solid #ccc', borderTop: '1px solid #ccc', background: '#eee', color: '#000', position: 'absolute', top: 0, right: '-5px', zIndex: 1000, fontSize: 22, textAlign: 'center', cursor: 'pointer' }} >
                         {this.state.editModel == "true" ? <Icon onClick={this.changeEditeMode} type="unlock" /> : <Icon onClick={this.changeEditeMode} style={{ marginRight: '5px' }} type="lock" />}
                         {this.state.editModel == "true" ? '' : <i className={styles['fileLock']}></i>}
-                        {this.state.editModel == "true" ? '' : <Icon onClick={this.onPrint} type="printer" style={{ marginRight: '6px', height:'auto', fontSize: '21px' }} />}
+                        {this.state.editModel == "true" ? '' : <Icon onClick={this.onPrint} type="printer" style={{ marginRight: '6px', height: 'auto', fontSize: '21px' }} />}
                     </div>
                     :
                     <div style={{ marginRight: (this.state.editModel == "true") ? "200px" : "0", width: 40, height: 40, opacity: '1', border: '2px solid #ccc', borderLeft: '1px solid #ccc', borderBottom: '1px solid #ccc', borderTop: '1px solid #ccc', background: '#eee', color: '#000', position: 'absolute', top: 0, right: '-5px', zIndex: 1000, fontSize: 22, textAlign: 'center', cursor: 'pointer' }} >
@@ -1390,48 +1390,48 @@ class ReportBoard extends PureComponent {
                 <div id="contents" className={`boardcenter_report`} ref={(instance) => { this.center = instance; }} style={{ paddingLeft: (this.state.editModel == "true") ? "200px" : "0", paddingRight: (this.state.editModel == "true") ? "200px" : "0", background: '#eee' }}>
                     {this.renderTab()}
                     <div ref={(n) => { this.divDom = n; }}>
-                    <Dragact
-                        {...dragactInit}
-                        ref={node => node ? this.dragactNode = node : null}
-                        onDragEnd={this.handleOnDragEnd}>
-                        {(item, provided) => {
-                            let zIndex = 1;
-                            if (item.type && item.type == "search") {
-                                zIndex = 5;
-                            }
-                            return (
-                                <div
-                                    {...provided.props}
-                                    //provided.dragHandle:获取拖拽的属性
-                                    {...provided.dragHandle}
-                                    //设置样式
-                                    style={{
-                                        //获取原型父组件的样式
-                                        ...provided.props.style,
-                                        //监听每一个组件的拖拽状态
-                                        ...getblockStyle(provided.isDragging),
-                                        zIndex: zIndex,
-                                        backgroundColor: this.state.editModel == "true" ? '#eee' : '#eee'
-                                    }}
-                                >
-                                    {this.state.editModel == "true" ?
-                                        <span
-                                            //调整大小
-                                            {...provided.resizeHandle}
-                                            style={{
-                                                position: 'absolute',
-                                                width: 10, height: 10, right: 6, bottom: 4, cursor: 'se-resize',
-                                                zIndex: 1,
-                                                borderRight: '2px solid rgba(15,15,15,0.2)',
-                                                borderBottom: '2px solid rgba(15,15,15,0.2)'
-                                            }}
-                                        /> : <div></div>}
-                                    <div id={item.key}></div>
-                                </div>
-                            )
-                        }}
-                    </Dragact>
-                </div>
+                        <Dragact
+                            {...dragactInit}
+                            ref={node => node ? this.dragactNode = node : null}
+                            onDragEnd={this.handleOnDragEnd}>
+                            {(item, provided) => {
+                                let zIndex = 1;
+                                if (item.type && item.type == "search") {
+                                    zIndex = 5;
+                                }
+                                return (
+                                    <div
+                                        {...provided.props}
+                                        //provided.dragHandle:获取拖拽的属性
+                                        {...provided.dragHandle}
+                                        //设置样式
+                                        style={{
+                                            //获取原型父组件的样式
+                                            ...provided.props.style,
+                                            //监听每一个组件的拖拽状态
+                                            ...getblockStyle(provided.isDragging),
+                                            zIndex: zIndex,
+                                            backgroundColor: this.state.editModel == "true" ? '#eee' : '#eee'
+                                        }}
+                                    >
+                                        {this.state.editModel == "true" ?
+                                            <span
+                                                //调整大小
+                                                {...provided.resizeHandle}
+                                                style={{
+                                                    position: 'absolute',
+                                                    width: 10, height: 10, right: 6, bottom: 4, cursor: 'se-resize',
+                                                    zIndex: 1,
+                                                    borderRight: '2px solid rgba(15,15,15,0.2)',
+                                                    borderBottom: '2px solid rgba(15,15,15,0.2)'
+                                                }}
+                                            /> : <div></div>}
+                                        <div id={item.key}></div>
+                                    </div>
+                                )
+                            }}
+                        </Dragact>
+                    </div>
                 </div>
                 {this.state.editModel == "true" ? <div className={styles['boardRight']} ref={(instance) => { this.right = instance; }} >
                     {/* 切换按钮start */}
