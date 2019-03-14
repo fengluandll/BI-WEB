@@ -18,20 +18,13 @@ class Line extends PureComponent {
   handleRef = (n) => {
     this.node = n;
   };
-  renderEmpty = () => {
-    return (<div className={styles.empty}><span>数据返回为空</span></div>);
+  renderEmpty = (height) => {
+    return (<div style={{height:height+4}} className={styles.empty}><span>No data</span></div>);
   };
 
   renderChart() {
     const { mChart, dateSetList } = this.props;
     const config = JSON.parse(mChart.config);
-
-    if (null == mChart || dateSetList == null || dateSetList.length == 0) {
-      ReactDom.render(this.renderEmpty(), this.node);
-      return;
-    }
-    // clean
-    this.node.innerHTML = '';
 
     // -------------------图表配置--------------------------------
     let width = 600;
@@ -55,6 +48,12 @@ class Line extends PureComponent {
         }
       });
     }
+    if (null == mChart || dateSetList == null || dateSetList.length == 0) {
+      ReactDom.render(this.renderEmpty(height), this.node);
+      return;
+    }
+    // clean
+    this.node.innerHTML = '';
     // 自适应宽度
     let forceFit = false;
     if (config.forceFit == "1") {
