@@ -541,19 +541,26 @@ class ReportBoardUtils {
         }
         return dataList;
     }
-    // 将t_dashboard中的图表放入到m_dashboard中
+    // 将t_dashboard中的图表放入到m_dashboard中,先把t_dashboard中的style_config复制给m_dashboard
     addMfromT = (mDashboard_old, tDashboard, user_type) => {
         if (user_type == "customer") { // 如果是用户
-            const m_config = JSON.parse(mDashboard_old.style_config);
-            const t_config = JSON.parse(tDashboard.style_config);
-            const m_children = m_config.children;
-            const t_children = t_config.children;
-            for (let key in t_children) {
-                let chart = t_children[key];
+            const t_style_config_str = tDashboard.style_config;
+            const m_style_config_str = mDashboard_old.style_config;
+            const m_style_config = JSON.parse(mDashboard_old.style_config);
+            const m_style_config_tmp = JSON.parse(tDashboard.style_config); // 最终拼接好的m_dashbaord,先从t_dashboard复制整个json
+            const m_children_tmp = m_style_config_tmp.children;
+            for (let key in m_children_tmp) { // t_dashboard中的图表加上标志
+                let chart = m_children_tmp[key];
                 chart.t_type = "t_dashboard";
-                m_children[key] = chart;
             }
-            mDashboard_old.styleConfig = JSON.stringify(t_config);
+            const m_children = m_style_config.children;
+            if (null != m_children) { // 把m_dashboard中的tab合并进去
+                for (let key in m_children) {
+                    const chart = m_children[key];
+                    m_children_tmp[key] = chart;
+                }
+            }
+            mDashboard_old.style_config = JSON.stringify(m_style_config_tmp);
         }
     }
     // 根据user_type判断是t_dashboard保存还是m_dashboard保存，如果是m_dashboard就把加上的t_dashbaord中的t_type为"t_dashboard"的图表去掉
