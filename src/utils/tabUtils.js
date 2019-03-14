@@ -16,13 +16,17 @@ class TabUtils {
     }
 
     // 增加一个tab
-    addTab = (mCharts, mDashboard_old, mDashboard, tagName, tagNames) => {
+    addTab = (mCharts, mDashboard_old, mDashboard, tagName, tagNames, user_type) => {
         let mChart = reportBoardUtils.getMChartOfSearch(mCharts); //找到搜索框mChart
         // 新建一个mDashboard
         const style_config = {};//style_config
         style_config.name = "新建tab";
         style_config.type = "root";
-        style_config.order = this.getMaxBorder(mDashboard_old) + 1; // 取最大的order
+        let order = this.getMaxBorder(mDashboard_old) + 1; // 取最大的order
+        if (user_type == "customer" && parseInt(order) < 100) { // 用户编辑的时候新建的tab最小值是100
+            order = 100;
+        }
+        style_config.order = 100;
         const children = [];//children
         const searchObj = {};//搜索框
         searchObj.name = mChart.id.toString();
@@ -129,7 +133,7 @@ class TabUtils {
                 maxId = orders.length;
             }
         }
-        return maxId;
+        return parseInt(maxId);
     }
 }
 

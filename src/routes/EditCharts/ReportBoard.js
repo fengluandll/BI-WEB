@@ -794,7 +794,7 @@ class ReportBoard extends PureComponent {
             this.refreshDashboard();//刷新
         } else if (action == "add") {
             // 新建
-            tabUtils.addTab(mCharts, mDashboard_old, mDashboard, tagName, tagNames);
+            tabUtils.addTab(mCharts, mDashboard_old, mDashboard, tagName, tagNames, this.state.user_type);
         }
         this.setState({
             mDashboard_old: mDashboard_old,
