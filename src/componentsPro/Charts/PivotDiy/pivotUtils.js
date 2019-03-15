@@ -298,7 +298,7 @@ class PivotUtils {
         // 开始拼接头
         for (let key in head_base_name) { // 先拼基础列的头部
             const value = head_base_name[key];
-            const obj = { "title": value, "dataIndex": value, "key": value, "align": "center", "width": 300 };
+            const obj = { "title": value, "dataIndex": value, "key": value, "align": "center", "width": 300, "fixed": "left" };
             columns.push(obj);
             head_for_data.push(value);
         }
@@ -307,7 +307,10 @@ class PivotUtils {
             const obj = { "title": value, children: [] };
             for (let k in head_cal_name) {
                 const va = head_cal_name[k] + key;
-                const child = { "title": head_cal_name[k], "dataIndex": va, "key": va, "align": "center", "width": 100 };
+                const child = { "title": head_cal_name[k], "dataIndex": va, "key": va, "align": "center" };
+                if (k < head_cal_name.length - 1) { //非固定列最后一个列不能加宽度不然会出现重叠列
+                    child.width = 100;
+                }
                 obj.children.push(child);
                 head_for_data.push(va);
             }
