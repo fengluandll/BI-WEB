@@ -6,6 +6,7 @@ import DashBoardUtils from '../../utils/dashboardUtils';
 import MchartsList from '../../componentsPro/EditDashboard/MchartsList';
 import EditAntdTable from '../../componentsPro/EditDashboard/EditAntdTable';
 import EditPivotDiy from '../../componentsPro/EditDashboard/EditPivotDiy';
+import EditSearch from '../../componentsPro/EditDashboard/EditSearch';
 import NewCharts from '../../componentsPro/EditDashboard/NewCharts';
 import { Bar, Pie, Line, Table, Pivottable, AntdTable, PivotDiy } from '../../componentsPro/Charts';
 import ReportBoardUtils from '../../utils/reportBoardUtils';
@@ -300,7 +301,13 @@ class EditBoard extends PureComponent {
             // 搜索栏
             return (
                 <div>
-
+                    <EditSearch
+                        mChart={mCharts}
+                        tDashboard={this.state.tDashboard}
+                        dataSetList={this.state.dataSetList}
+                        idColumns={this.state.idColumns}
+                        onSave={this.saveConfig}
+                    />
                 </div>
             );
         }
