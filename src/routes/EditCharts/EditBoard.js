@@ -30,6 +30,7 @@ class EditBoard extends PureComponent {
             idColumns: {}, // column id对象
             tDashboard: {}, // tDashboard对象
             dataSetList: {}, // 数据集对象
+            tableIdColumns: {}, // 数据集,字段list
             refreshUI: 0, // 用来刷新页面的
         };
         // get t_dashboard_id
@@ -56,7 +57,7 @@ class EditBoard extends PureComponent {
             payload: {
                 t_dashboard_id,
                 callback: () => {
-                    const { mChartsList, idColumns, tDashboard, dataSetList } = this.props.model;  // 所有mcharts对象
+                    const { mChartsList, idColumns, tDashboard, dataSetList, tableIdColumns } = this.props.model;  // 所有mcharts对象
                     let mchart_id = "";  // 搜索框的id
                     for (let key in mChartsList) {
                         const mCharts = mChartsList[key];
@@ -70,6 +71,7 @@ class EditBoard extends PureComponent {
                         idColumns: idColumns,
                         tDashboard: tDashboard,
                         dataSetList: dataSetList,
+                        tableIdColumns: tableIdColumns,
                     });
                 }
             }
@@ -306,6 +308,7 @@ class EditBoard extends PureComponent {
                         tDashboard={this.state.tDashboard}
                         dataSetList={this.state.dataSetList}
                         idColumns={this.state.idColumns}
+                        tableIdColumns={this.state.tableIdColumns}
                         onSave={this.saveConfig}
                     />
                 </div>

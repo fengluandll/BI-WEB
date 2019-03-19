@@ -9,6 +9,7 @@ export default {
     mChartsList: {}, // m_charts对象
     tDashboard: {}, // tDashboard对象
     dataSetList: {}, // 数据集对象
+    tableIdColumns: {}, // 数据集字段对象
   },
   // 以 key/value 格式定义 effect。用于处理异步操作和业务逻辑，不直接修改 state。由 action 触发，可以触发 action，
   // 可以和服务器交互，可以获取全局 state 的数据等等。
@@ -29,8 +30,8 @@ export default {
     },
     *getMchartsList({ payload: { t_dashboard_id, callback } }, { call, put }) {
       const response = yield call(getMchartsList, { t_dashboard_id });
-      const { mChartsList, idColumns, tDashboard, dataSetList } = response.data;
-      yield put({ type: 'save', payload: { mChartsList, idColumns, tDashboard, dataSetList } });
+      const { mChartsList, idColumns, tDashboard, dataSetList, tableIdColumns } = response.data;
+      yield put({ type: 'save', payload: { mChartsList, idColumns, tDashboard, dataSetList, tableIdColumns } });
       callback();
     },
     *saveConfig({ payload: { id, config, callback } }, { call, put }) {
