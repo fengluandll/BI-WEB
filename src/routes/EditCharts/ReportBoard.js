@@ -451,13 +451,7 @@ class ReportBoard extends PureComponent {
             <div className={cssName}
                 onClick={(ev) => {
                     //  讲展示右侧的变量参数放入 state 中
-                    const rightProps = {};
-                    rightProps.type = "chart";
-                    rightProps.mChart = mChart;
-                    rightProps.name = name;
-                    this.setState({
-                        rightProps,
-                    });
+                    this.changeEditRightProps("chart", mChart, name);
                 }}
             >
                 <Spin spinning={spinning}>
@@ -481,13 +475,7 @@ class ReportBoard extends PureComponent {
             <div className={cssName}
                 onClick={(ev) => {
                     //  讲展示右侧的变量参数放入 state 中
-                    const rightProps = {};
-                    rightProps.type = "chart";
-                    rightProps.mChart = mChart;
-                    rightProps.name = name;
-                    this.setState({
-                        rightProps,
-                    });
+                    this.changeEditRightProps("chart", mChart, name);
                 }}
             >
                 <Spin spinning={spinning}>
@@ -510,13 +498,7 @@ class ReportBoard extends PureComponent {
             <div className={cssName}
                 onClick={(ev) => {
                     //  讲展示右侧的变量参数放入 state 中
-                    const rightProps = {};
-                    rightProps.type = "chart";
-                    rightProps.mChart = mChart;
-                    rightProps.name = name;
-                    this.setState({
-                        rightProps,
-                    });
+                    this.changeEditRightProps("chart", mChart, name);
                 }}
             >
                 <Spin spinning={spinning}>
@@ -668,13 +650,7 @@ class ReportBoard extends PureComponent {
                 onClick={(ev) => {
                     if (ev.target.className.indexOf('query-container') >= 0 || ev.target.hasAttribute('data-reactroot')) {
                         //  讲展示右侧的变量参数放入 state 中
-                        const rightProps = {};
-                        rightProps.type = "search";
-                        rightProps.mChart = mChart;
-                        rightProps.name = name;
-                        this.setState({
-                            rightProps,
-                        });
+                        this.changeEditRightProps("search", mChart, name);
                     }
                 }}
             >
@@ -1260,6 +1236,18 @@ class ReportBoard extends PureComponent {
 
             pdf.save('report.pdf');
         })
+    }
+    // 编辑界面点击图表修改right
+    changeEditRightProps = (type, mChart, name) => {
+        if (this.state.editModel == "true") { //如果是编辑模式
+            const rightProps = {};
+            rightProps.type = type;
+            rightProps.mChart = mChart;
+            rightProps.name = name;
+            this.setState({
+                rightProps,
+            });
+        }
     }
 
     /*************************************************图表事件********************************************************/
