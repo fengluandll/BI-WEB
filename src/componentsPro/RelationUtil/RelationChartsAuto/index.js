@@ -10,6 +10,10 @@ const reportBoardUtils = new ReportBoardUtils();
 
 
 //  仪表板 右侧的  图表列表 组件  add by wangliu  20181102 新的 将之前选择每个具体的改为 选某个图表然后里面具体的字段自动关联
+/***
+ * 图表的配置关联关系
+ * 
+ * ***/
 export default class Index extends PureComponent {
     constructor(props) {
         super(props);

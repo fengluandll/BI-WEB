@@ -7,7 +7,6 @@ const Panel = Collapse.Panel;
 const CheckboxGroup = Checkbox.Group;
 
 
-//  仪表板 右侧的  图表列表 组件
 export default class Index extends PureComponent {
     constructor(props) {
         super(props);

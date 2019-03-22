@@ -2,6 +2,11 @@ import React, { PureComponent } from 'react';
 import ReactDom from 'react-dom';
 import { Form, Input, Collapse, Button } from 'antd';
 
+/***
+ * 编辑tabs的名称
+ * wangliu
+ * 
+ * ***/
 export default class Index extends PureComponent {
     constructor(props) {
         super(props);

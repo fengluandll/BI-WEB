@@ -10,6 +10,7 @@ export default {
     mCharts: {},  // m_charts 表
     idColumns: {},  //  每个 图表 的维度 度量 图例 和 搜索框子组件 的 字段 对应的 相应的 表数据
     tableIdColumns: {},  // 每个图表 所有拥有的 数据集 的  所有字段
+    tableConfig: {}, // 每个图表所拥有的所有数据集 的 table对象 key:数据集名称,value:table对象
     dataList: {},   //  查询后 每个图表的数据 (带着 参数查询  参数存放在 m_dashboard 表中)
 
     searchEnum: {}, // 查询组件枚举数据
@@ -27,8 +28,8 @@ export default {
     *fetchEdit({ payload: { boardId, callback } }, { call, put }) {
       const response = yield call(fetchEdit, { boardId });
       const data = response.data;
-      const { tableIdColumns } = data;
-      yield put({ type: 'save', payload: { tableIdColumns } });
+      const { tableIdColumns, tableConfig } = data;
+      yield put({ type: 'save', payload: { tableIdColumns, tableConfig } });
       callback();
     },
     *search({ payload: { params, callback } }, { call, put }) {

@@ -33,6 +33,7 @@ class ReportBoard extends PureComponent {
             dataList_one: {}, // 单个dataList
             idColumns: {},   // 每个图表所拥有的 维度 度量图例 和 搜索框的 子组件 所在 字段 的对应的表数据
             tableIdColumns: {},  // 每个图表 所拥有的 数据集 的 所有字段 的表数据
+            tableConfig: {}, // 每个图表所拥有的所有数据集 的 table对象 key:数据集名称,value:table对象
 
             activeName: "",    //  每个报表的uuid名称,也就是m_dashboard中style_config的name
             fatherActiveName: "",    //  父组件 名称  root  或者 tab_panel 名称
@@ -41,7 +42,7 @@ class ReportBoard extends PureComponent {
             tagNames: [], // 所有tag的名称
 
             refreshUI: 0,   //   state 用来刷新ui 
-            rightProps: [],      //   右侧选择框的参数
+            rightProps: {},      //   右侧选择框的参数 type mChart name(m_dashboard图表中的id)
             spinning: false,   // 是否显示加载中
             refreshType: "init",  // "init":初始化刷新图表显示fack数据,"search":搜索框查询开始填充真实数据,"plot"：plot点击查询开始填充真实数据,
 
@@ -96,6 +97,7 @@ class ReportBoard extends PureComponent {
         if (this.state.editModel == "true") {
             //  display  左侧的控件列表
             this.disPlayChartList();
+            this.disPlayRight(this.state.rightProps);
         }
         //  display  中间的图表
         this.disPlayCharts();
@@ -183,8 +185,24 @@ class ReportBoard extends PureComponent {
 
     /****************************************展示右侧仪表盘*****************************************************************/
 
-    // 搜索框关联 参数  chartid,  图表的uuuid
-    disPlayRight(chartId, name) {
+    // 展示右侧的编辑框
+    disPlayRight = (rightProps) => {
+        const { type, mChart, name } = rightProps;
+        if (type == "search") {
+            this.disPlaySearch(mChart, name);
+        } else if (type == "chart") {
+            this.disPlayRightCharts(mChart, name);
+        } else if (type == "tab") {
+            this.displayTabName();
+        }
+    }
+
+    /***
+     * 搜索框关联
+     * mChart
+     * chartId:m_dashboard的图表id
+     * ***/
+    disPlaySearch(mChart, name) {
         //  如果不是编辑模式 右侧不相应监听事件
         if (this.state.editModel == "false" || this.state.dragMoveChecked == false) {
             return;
@@ -212,27 +230,31 @@ class ReportBoard extends PureComponent {
             }
         });
 
-        mCharts.map((item, index) => {
-            if (item.id == chartId) {
-                ReactDom.render(
-                    <Relation mChart={item}
-                        relation={board_item}
-                        search_item={search_item}
-                        idColumns={this.props.model.idColumns}
-                        chart_children={chart_children}
-                        mCharts={this.props.model.mCharts}
-                        tableIdColumns={this.props.model.tableIdColumns}
-                        changeSearchItem={this.changeSearchItem}
-                        changeSearchRelation={this.changeSearchRelation}
-                        name={name}
-                    />, rightRelation);
-            }
-        });
-
+        ReactDom.render(
+            <Relation
+                name={name}
+                mChart={mChart}
+                mDashboard={this.state.mDashboard}
+                mDashboard_old={this.state.mDashboard_old}
+                tableConfig={this.state.tableConfig}
+                relation={board_item}
+                search_item={search_item}
+                idColumns={this.props.model.idColumns}
+                chart_children={chart_children}
+                mCharts={this.props.model.mCharts}
+                tableIdColumns={this.props.model.tableIdColumns}
+                changeSearchItem={this.changeSearchItem}
+                changeSearchRelation={this.changeSearchRelation}
+                changeSearchDataSetName={this.changeSearchDataSetName}
+            />, rightRelation);
     }
 
-    // 图表关联
-    disPlayRightCharts(chartId, name) {
+    /***
+     * 图表关联
+     * mChart
+     * chartId:m_dashboard中图表的id
+     * ***/
+    disPlayRightCharts(mChart, name) {
         //  如果不是编辑模式 右侧不相应监听事件
         if (this.state.editModel == "false") {
             return;
@@ -260,20 +282,17 @@ class ReportBoard extends PureComponent {
             }
         });
 
-        mCharts.map((item, index) => {
-            if (item.id == chartId) {
-                ReactDom.render(
-                    <RelationChartsAuto mChart={item}
-                        relation={board_item}
-                        chart_children={chart_children}
-                        mCharts={this.props.model.mCharts}
-                        tableIdColumns={this.props.model.tableIdColumns}
-                        idColumns={this.props.model.idColumns}
-                        changeCheckRelation={this.changeCheckRelation}
-                        name={name}
-                    />, rightRelation);
-            }
-        });
+        ReactDom.render(
+            <RelationChartsAuto
+                mChart={mChart}
+                relation={board_item}
+                chart_children={chart_children}
+                mCharts={this.props.model.mCharts}
+                tableIdColumns={this.props.model.tableIdColumns}
+                idColumns={this.props.model.idColumns}
+                changeCheckRelation={this.changeCheckRelation}
+                name={name}
+            />, rightRelation);
     }
 
     // 展示右侧tab的名称
@@ -431,12 +450,11 @@ class ReportBoard extends PureComponent {
         ReactDom.render(
             <div className={cssName}
                 onClick={(ev) => {
-                    //  显示右侧的图表关联
-                    this.disPlayRightCharts(mChart.id, name);
                     //  讲展示右侧的变量参数放入 state 中
-                    const rightProps = [];
-                    rightProps.push(mChart.id);
-                    rightProps.push(name);
+                    const rightProps = {};
+                    rightProps.type = "chart";
+                    rightProps.mChart = mChart;
+                    rightProps.name = name;
                     this.setState({
                         rightProps,
                     });
@@ -462,12 +480,11 @@ class ReportBoard extends PureComponent {
         ReactDom.render(
             <div className={cssName}
                 onClick={(ev) => {
-                    //  显示右侧的图表关联
-                    this.disPlayRightCharts(mChart.id, name);
                     //  讲展示右侧的变量参数放入 state 中
-                    const rightProps = [];
-                    rightProps.push(mChart.id);
-                    rightProps.push(name);
+                    const rightProps = {};
+                    rightProps.type = "chart";
+                    rightProps.mChart = mChart;
+                    rightProps.name = name;
                     this.setState({
                         rightProps,
                     });
@@ -492,12 +509,11 @@ class ReportBoard extends PureComponent {
         ReactDom.render(
             <div className={cssName}
                 onClick={(ev) => {
-                    //  显示右侧的图表关联
-                    this.disPlayRightCharts(mChart.id, name);
                     //  讲展示右侧的变量参数放入 state 中
-                    const rightProps = [];
-                    rightProps.push(mChart.id);
-                    rightProps.push(name);
+                    const rightProps = {};
+                    rightProps.type = "chart";
+                    rightProps.mChart = mChart;
+                    rightProps.name = name;
                     this.setState({
                         rightProps,
                     });
@@ -651,12 +667,11 @@ class ReportBoard extends PureComponent {
                 style={{ cursor: 'pointer' }}
                 onClick={(ev) => {
                     if (ev.target.className.indexOf('query-container') >= 0 || ev.target.hasAttribute('data-reactroot')) {
-                        //  搜索框的点击事件
-                        this.disPlayRight(chartId, name);
                         //  讲展示右侧的变量参数放入 state 中
-                        const rightProps = [];
-                        rightProps.push(chartId);
-                        rightProps.push(name);
+                        const rightProps = {};
+                        rightProps.type = "search";
+                        rightProps.mChart = mChart;
+                        rightProps.name = name;
                         this.setState({
                             rightProps,
                         });
@@ -731,9 +746,10 @@ class ReportBoard extends PureComponent {
                 payload: {
                     boardId,
                     callback: () => {
-                        const { tableIdColumns } = this.props.model;
+                        const { tableIdColumns, tableConfig } = this.props.model;
                         this.setState({
                             tableIdColumns,
+                            tableConfig,
                             editModel: editModel,
                         }, () => {
                             this.refreshDashboard();
@@ -909,6 +925,26 @@ class ReportBoard extends PureComponent {
         });
     }
 
+    // 修改搜索框的数据集
+    changeSearchDataSetName = (value) => {
+        const { mDashboard } = this.state;
+        const { style_config } = mDashboard;
+        const style_config_obj = JSON.parse(style_config);
+        const md_children = style_config_obj.children;
+        md_children.map((item, index) => {
+            if (item.type == "search") {
+                item.dataSetName = value;
+            }
+        });
+        // md_children转回string  然后刷新state
+        style_config_obj.children = md_children;
+        mDashboard.style_config = JSON.stringify(style_config_obj);
+        this.setState({
+            mDashboard: mDashboard,
+        });
+        this.refreshDashboard(); // 刷新页面，mDashboard修改state后页面没有刷新可能是因为它还是用的原来的对象。
+    }
+
     // 编辑界面点击保存
     saveDashBoard = () => {
         // 把单独的报表mDashboard拼成主题提交
@@ -999,9 +1035,6 @@ class ReportBoard extends PureComponent {
         this.setState({
             mDashboard: mDashboard,
         });
-        // 重新调用展示右侧
-        const rightProps = this.state.rightProps;
-        this.disPlayRight(rightProps[0], rightProps[1]);
         // 更新ui(主要是搜索框的子项个数)
         this.refreshDashboard();
     }
@@ -1053,9 +1086,6 @@ class ReportBoard extends PureComponent {
         this.setState({
             mDashboard: mDashboard,
         });
-        // 重新调用展示右侧
-        const rightProps = this.state.rightProps;
-        this.disPlayRight(rightProps[0], rightProps[1]);
         // 更新ui(主要是搜索框的子项个数)
         this.refreshDashboard();
     }

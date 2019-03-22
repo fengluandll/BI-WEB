@@ -16,6 +16,7 @@ class EditSearch extends PureComponent {
         this.state = {
             config, // config对象
             dataSetName_idColumns: "", //选择idcolumns时选择的数据集名称
+            columnUrl: false,
             refreshUI: 0, // 用来刷新页面的
         };
     }
@@ -52,6 +53,48 @@ class EditSearch extends PureComponent {
             dataSetName_idColumns: value,
             refreshUI: this.state.refreshUI + 1,
         });
+    }
+
+    // Checkbox
+    handleChangeCheckboxColumnUrl = (checkedList) => {
+        let str = "";
+        for (let key in checkedList) {
+            str = str + checkedList[key] + ",";
+        }
+        str = str.substring(0, str.length - 1);
+        this.setState({
+            columnUrlCheckbox: str,
+        });
+    }
+    // ref
+    onRefSelectColumnUrl = (ref) => {
+        this.selectColumnUrl = ref;
+    }
+    // 显示字段 弹出框
+    showColumnUrl = () => {
+        this.setState({
+            columnUrl: true,
+        });
+    }
+    // 显示字段回调函数
+    handleColumnUrlOk = () => {
+        const { config, columnUrlCheckbox } = this.state;
+        config.searchItem = columnUrlCheckbox;
+        this.setState({
+            columnUrl: false,
+            config,
+            refreshUI: this.state.refreshUI + 1,
+        });
+    }
+    // 取消
+    handleColumnUrlCancel = () => {
+        const { config } = this.state;
+        this.setState({
+            columnUrl: false,
+            columnUrlCheckbox: config.searchItem,
+            refreshUI: this.state.refreshUI + 1,
+        });
+        this.selectColumnUrl.refreshUI(); // 取消就调用子的方法刷新
     }
 
     /*************************************************************/
@@ -124,7 +167,7 @@ class EditSearch extends PureComponent {
                             {dataSetArr}
                         </Select>
                     </Form.Item>
-                    <Form.Item
+                    {/* <Form.Item
                         label="选择字段"
                         {...formItemLayout}
                     >
@@ -138,6 +181,29 @@ class EditSearch extends PureComponent {
                             idColumns_searchItem_arr={idColumns_searchItem_arr}
                             idColumns_arr={idColumns_arr}
                         />
+                    </Form.Item> */}
+                    <Form.Item
+                        label="选择字段"
+                        {...formItemLayout}
+                    >
+                        <Button type="primary" onClick={this.showColumnUrl}>
+                            选择字段
+                        </Button>
+                        <Modal
+                            title="选择字段"
+                            visible={this.state.columnUrl}
+                            onOk={this.handleColumnUrlOk}
+                            onCancel={this.handleColumnUrlCancel}
+                        >
+                            <SelectColumn
+                                type="searchItem"
+                                dataSetList={this.props.dataSetList}
+                                idColumns={this.props.idColumns}
+                                config={this.state.config}
+                                onChange={this.handleChangeCheckboxColumnUrl}
+                                ref={this.onRefSelectColumnUrl}
+                            />
+                        </Modal>
                     </Form.Item>
                 </Form>
             </div>

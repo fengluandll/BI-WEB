@@ -1,52 +1,29 @@
 import React, { PureComponent } from 'react';
 import ReactDom from 'react-dom';
-import { Collapse, Checkbox } from 'antd';
+import { Collapse, Checkbox, message } from 'antd';
 import styles from './index.less';
 import ReportBoardUtils from '../../../utils/reportBoardUtils';
+import { EditSearchDataSet } from '../';
 
 const Panel = Collapse.Panel;
 const CheckboxGroup = Checkbox.Group;
 const reportBoardUtils = new ReportBoardUtils();
 
 //  仪表板 右侧的  图表列表 组件
+/***
+ * 搜索框的配置关联关系
+ * 
+ * ***/
 export default class Index extends PureComponent {
     constructor(props) {
         super(props);
         // relation 关联关系中的 search  idColumns 所有搜索子项的  rs_column_config表   chart_children 和搜索框一起的其他图表
-        const { relation, mCharts, idColumns, chart_children, search_item } = this.props;
-        const keys = Object.keys(relation);
-        const chartId = search_item.chartId;
-        let mChart;
-        mCharts.map((item, index) => {
-            if (item.id == chartId) {
-                mChart = item;
-            }
-        });
-        // mchart 的config
-        const config = JSON.parse(mChart.config);
-        const searchItemIds = config.searchItem.split(",");
-        const len = searchItemIds.length;
-        const arr = [];
-        for (let j = 0; j < len; j += 1) {
-            const searchItem = idColumns[searchItemIds[j]];
-            arr.push({
-                "label": searchItem.rsc_display,
-                "value": searchItem.id.toString(),
-            });
-        }
-
-        this.state = {
-            searchItemIds: keys,   // 搜索框 子项的 id
-            searchItemsAll: arr,   // 所有搜索框 子项的数据
-        };
+        const { name, mChart, mDashboard, tableConfig, relation, search_item, idColumns, chart_children, mCharts, tableIdColumns } = this.props;
+        this.makeData(this.props);
     }
 
-    componentWillReceiveProps(props) {
-        const relation = props.relation;
-        const keys = Object.keys(relation);
-        this.setState({
-            searchItemIds: keys,
-        });
+    componentWillReceiveProps(props) { //刷新时候，把重新传进来的参数放入state
+        this.makeData(props);
     }
 
     componentDidMount() {
@@ -55,6 +32,52 @@ export default class Index extends PureComponent {
 
     componentDidUpdate() {
         this.renderRelationSearch();
+    }
+
+    // 制造数据
+    makeData = (props) => {
+        const { name, mChart, mDashboard, mDashboard_old, tableConfig, relation, search_item, idColumns, chart_children, mCharts, tableIdColumns } = props;
+        const keys = Object.keys(relation);
+        // mchart 的config
+        const config = JSON.parse(mChart.config);
+        const searchItem_obj = config.searchItem; // {"数据集名称:str"}
+        let searchItem_str = ""; // 所有ids的str
+        let search_dataSetName = search_item.dataSetName; // 从m_dashboard中的搜索框对象中找到数据集名称
+        if (null == search_dataSetName || search_dataSetName == "") { //如果没有值那就从mcharts表里取
+            search_dataSetName = config.dataSetName;
+        }
+        searchItem_str = searchItem_obj[search_dataSetName];
+        if (null == searchItem_str) {
+            message.success('该数据集字段没有再配置后台配置');
+        }
+        const searchItemIds = searchItem_str.split(",");
+
+        const len = searchItemIds.length;
+        const arr = [];
+        for (let j = 0; j < len; j += 1) {
+            const searchItem_id = searchItemIds[j]; // 每个字段的id
+            const searchItem = idColumns[searchItem_id];
+            arr.push({
+                "label": searchItem.rsc_display,
+                "value": searchItem.id.toString(),
+            });
+        }
+
+        this.state = {
+            name,
+            mChart,
+            mDashboard,
+            mDashboard_old,
+            tableConfig,
+            relation,
+            search_item,
+            idColumns,
+            chart_children,
+            mCharts,
+            tableIdColumns,
+            searchItemIds: keys,   // 搜索框 子项的 id
+            searchItemsAll: arr,   // 所有搜索框 子项的数据
+        };
     }
 
 
@@ -113,23 +136,30 @@ export default class Index extends PureComponent {
 
     //  搜索框的关联UI
     renderRelationSearch() {
-        const { mChart } = this.props;
+        const { changeSearchItem, changeSearchRelation, changeSearchDataSetName } = this.props;
+        const { name, mChart, mDashboard, mDashboard_old, tableConfig, relation, search_item, idColumns, chart_children, mCharts, tableIdColumns } = this.state;
         const mChart_config = JSON.parse(mChart.config);
-        const searchJson = mChart_config.searchJson;
+        const { searchJson, dataSetName } = mChart_config;
         const keys = Object.keys(searchJson);
         const len = keys.length;
 
-
         const node = this.node;
-        // 判断 是search  还是 chart
-
-        let relation;
+        let content;
         // search
         //  {[{ "label": "Name", "value": "5411" }, { "label": "Status", "value": "5412" }]}
-        relation = (
+        content = (
             <div>
-                <Collapse defaultActiveKey={['1']}>
-                    <Panel header={<div><span>配置关联关系</span></div>} key="1">
+                <Collapse defaultActiveKey={['1', '2']}>
+                    <Panel header={<div><span>修改搜索框数据集</span></div>} key="1">
+                        <EditSearchDataSet
+                            dataSetName={dataSetName}
+                            mDashboard={mDashboard}
+                            mDashboard_old={mDashboard_old}
+                            tableConfig={tableConfig}
+                            changeDataSetName={changeSearchDataSetName}
+                        />
+                    </Panel>
+                    <Panel header={<div><span>配置关联关系</span></div>} key="2">
 
                         <div className="search-config-selection">
                             <div className={styles['check-box-group-container']}>
@@ -191,7 +221,7 @@ export default class Index extends PureComponent {
                 </Collapse>
             </div>
         );
-        ReactDom.render(relation, node);
+        ReactDom.render(content, node);
     }
 
     render() {
