@@ -109,6 +109,16 @@ class AntdTable extends PureComponent {
     const tableDate = {}; // 拼接好的参数对象
     /***制造列***/
     const columns = [];
+    const first_col = {
+      title: () => '序号',
+      width: '50',
+      render: (text, record, index) => {
+        return (
+          <div style={{ textAlign: 'center', backgroundColor: '#f3f3f3', marginLeft: '-5px', marginRight: '-5px' }}>{`${index + 1}`}</div>
+        )
+      },
+    };
+    columns.push(first_col); // 放入第一行的序号列
     for (let key in header) {
       const value = header[key];
       const obj = { "title": value, "dataIndex": value, "key": value, "align": "center" };
@@ -231,12 +241,12 @@ class AntdTable extends PureComponent {
     const { columns, data } = tableDate;
     const height = this.getHeight();
     let scroll = {};
-    let pagination = false; 
+    let pagination = false;
     if (config.forceFit == "1") { // 如果是自适应的时候就用100%
       scroll = { x: '100%' };
     } else {
       scroll = { x: columns.length * 200, y: height - 117 };// x轴滚动是列个数乘200,y轴是根据dragact算出的高度减去图表控件额外的高度。
-      if(pagination == false){
+      if (pagination == false) {
         scroll = { x: columns.length * 200, y: height - 40 };
       }
     }

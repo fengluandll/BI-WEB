@@ -3,6 +3,7 @@ import RelationCharts from './RelationCharts';
 import RelationChartsAuto from './RelationChartsAuto';
 import TabName from './TabName';
 import EditSearchDataSet from './EditSearchDataSet';
+import RelationTable from './RelationTable';
 
 
 export {
@@ -11,4 +12,5 @@ export {
     RelationChartsAuto,
     TabName,
     EditSearchDataSet,
+    RelationTable,
 };

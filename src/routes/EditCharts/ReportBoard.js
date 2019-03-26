@@ -7,7 +7,7 @@ import ReportBoardmChartsUtils from '../../utils/reportBoardmChartsUtils';
 import TabUtils from '../../utils/tabUtils';
 import CssUtils from '../../utils/cssUtils';
 import { ChartList, TabList } from '../../componentsPro/ChartList';
-import { Relation, RelationChartsAuto, TabName } from '../../componentsPro/RelationUtil';
+import { Relation, RelationChartsAuto, TabName, RelationTable } from '../../componentsPro/RelationUtil';
 import { Bar, Pie, Line, Table, Pivottable, Perspective, Text, TableDiy, AntdTable, PivotDiy } from '../../componentsPro/Charts';
 import Print from '../../componentsPro/ReportMethod/print';
 import { Search } from '../../componentsPro/NewDashboard';
@@ -194,6 +194,8 @@ class ReportBoard extends PureComponent {
             this.disPlayRightCharts(mChart, name);
         } else if (type == "tab") {
             this.displayTabName();
+        } else if (type == "antdTable") {
+            this.displayRightTable(mChart, name);
         }
     }
 
@@ -290,6 +292,42 @@ class ReportBoard extends PureComponent {
                 mCharts={this.props.model.mCharts}
                 tableIdColumns={this.props.model.tableIdColumns}
                 idColumns={this.props.model.idColumns}
+                changeCheckRelation={this.changeCheckRelation}
+                name={name}
+            />, rightRelation);
+    }
+
+    // 展示table的关联
+    displayRightTable = (mChart, name) => {
+        //  如果不是编辑模式 右侧不相应监听事件
+        if (this.state.editModel == "false") {
+            return;
+        }
+        // 先清除右侧的样式
+        ReactDom.render(<div></div>, this.rightRelation);
+        const rightRelation = this.rightRelation;
+        const { mDashboard, mCharts } = this.state;
+        const { id, style_config } = mDashboard;
+        const md_children = JSON.parse(style_config).children;
+        // 找到和 图表一起的 图表
+        let chart_children = [];//  和图表一起的图表的 集合
+        let board_item;//  图表的 relation
+        md_children.map((item, index) => {
+            if (item.type != "tab" && item.type != "search" && item.name != name) {
+                chart_children.push(item);
+            }
+            if (item.name == name) {
+                board_item = item.relation;
+            }
+        });
+        ReactDom.render(
+            <RelationTable
+                mChart={mChart}
+                relation={board_item}
+                mCharts={this.props.model.mCharts}
+                tableIdColumns={this.props.model.tableIdColumns}
+                idColumns={this.props.model.idColumns}
+                chart_children={chart_children}
                 changeCheckRelation={this.changeCheckRelation}
                 name={name}
             />, rightRelation);
@@ -605,7 +643,12 @@ class ReportBoard extends PureComponent {
         let cssName = cssUtils.getBIContainer(mChart);
         const { dragactStyle } = JSON.parse(this.state.mDashboard.style_config);
         ReactDom.render(
-            <div className={cssName}>
+            <div className={cssName}
+                onClick={(ev) => {
+                    //  讲展示右侧的变量参数放入 state 中
+                    this.changeEditRightProps("antdTable", mChart, name);
+                }}
+            >
                 <Spin spinning={spinning}>
                     <AntdTable
                         dragactStyle={dragactStyle}

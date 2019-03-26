@@ -6,7 +6,11 @@ import styles from './index.less';
 const Panel = Collapse.Panel;
 const CheckboxGroup = Checkbox.Group;
 
-
+/***
+ * 该类被废弃使用了
+ * wangliu
+ * 
+ * ***/
 export default class Index extends PureComponent {
     constructor(props) {
         super(props);

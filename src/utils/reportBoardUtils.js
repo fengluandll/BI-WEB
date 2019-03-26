@@ -86,6 +86,13 @@ class ReportBoardUtils {
         } else if (type == "21") {
             // antdTable
             tmpType = "antdTable";
+            const item = {};
+            item.relationFields = {};
+            const { column } = config;
+            const column_arr = column.split(",");
+            for (let key in column_arr) { // 将所有字段转化为key
+                relation[column_arr[key]] = item;
+            }
             dragactW = 20;
             dragactH = 10;
         } else if (type == "22") {

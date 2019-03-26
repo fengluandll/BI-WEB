@@ -20,11 +20,9 @@ export default class Index extends PureComponent {
     }
 
     componentDidMount() {
-        this.renderRelationChart();
     }
 
     componentDidUpdate() {
-        this.renderRelationChart();
     }
 
 
@@ -57,8 +55,7 @@ export default class Index extends PureComponent {
 
 
     // 图表的关联UI
-    renderRelationChart() {
-        const node = this.node;// node 显示节点
+    renderRelationChart = () => {
         const { mChart } = this.props;
         const mChart_config = JSON.parse(mChart.config);
         const type = mChart_config.type;//  type:0折线图、1柱状图、2饼图、3交叉表、11搜索框
@@ -125,8 +122,7 @@ export default class Index extends PureComponent {
                 value.push(relationFields[key][0]);
             }
         }
-
-        let content = (
+        return (
             <div>
                 <Collapse defaultActiveKey={['1']}>
                     <Panel header={<div><span>配置关联关系</span></div>} key="1">
@@ -150,14 +146,12 @@ export default class Index extends PureComponent {
                 </Collapse>
             </div>
         );
-
-        ReactDom.render(content, node);
     }
 
     render() {
         return (
             <div>
-                <div ref={(instance) => { this.node = instance; }} />
+                {this.renderRelationChart()}
             </div>
         )
     }
