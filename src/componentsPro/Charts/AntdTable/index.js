@@ -16,6 +16,15 @@ class AntdTable extends PureComponent {
     return (<div className={styles.empty}><span>数据返回为空</span></div>);
   };
 
+  /***
+   * 点击关联查询事件
+   * 
+   * ***/
+  onPlotClickAntTable = (id, value) => {
+    const { onPlotClickAntTable, mChart } = this.props;
+    onPlotClickAntTable(id, value, mChart.id);
+  }
+
   /***导出excel***/
   onExport = () => {
     const { mChart, dateSetList, editModel, dragactStyle, onExport } = this.props;
@@ -23,7 +32,7 @@ class AntdTable extends PureComponent {
   }
   /***制造参数和列***/
   getTableData = () => {
-    const { mChart, dateSetList, editModel, dragactStyle, idColumns } = this.props;
+    const { mChart, dateSetList, editModel, dragactStyle, idColumns, item } = this.props;
     const config = JSON.parse(mChart.config);
     const { header, body } = dateSetList;
 
@@ -105,6 +114,27 @@ class AntdTable extends PureComponent {
       }
       col_value_count_arr.push(col_value_count);
     }
+    // f4关联的字段要显示特殊样式-鼠标滑过背景色改变并且箭头变成手
+    const { type, name, chartId, styleConfig, relation } = item;
+    const { column } = config;
+    const column_arr = column.split(","); //mChart中的字段id数组
+    const column_arr_index = []; //被关联字段的下标位数组
+    const column_id_set = new Set(); // 被关联的字段id
+    for (let key in relation) {
+      const relationFields = relation[key].relationFields;
+      const relationFields_keys = Object.keys(relationFields); // 获取 relationFields的 key数组
+      if (null != relationFields_keys && relationFields_keys.length > 0) {
+        column_id_set.add(key); // 把被关联的字段放入
+      }
+    }
+    for (let id_set of column_id_set) { // 找到被关联的字段在数据中的下标位 组成数组
+      for (let key in column_arr) {
+        const id = column_arr[key];
+        if (id_set == id) {
+          column_arr_index.push(key);
+        }
+      }
+    }
 
     const tableDate = {}; // 拼接好的参数对象
     /***制造列***/
@@ -159,6 +189,16 @@ class AntdTable extends PureComponent {
       // f3 设置最大宽度
       if (col_value_count_arr[key] && config.forceFit != "1" && key != header.length - 1) {  // 如果不是自适应的情况下要显固定头部那么除了最后一列不舍宽度，其他都要设置宽度
         obj.width = 200;
+      }
+      // f4 被关联字段要加特殊样式 和 点击事件
+      for (let k in column_arr_index) {
+        if (key == column_arr_index[k]) {
+          obj.render = (text, record, index) => {
+            return (
+              <div style={{ backgroundColor: 'black' }} onClick={this.onPlotClickAntTable.bind(this, column_id_set[key], text)}>{text}</div>
+            );
+          }
+        }
       }
       columns.push(obj);
     }

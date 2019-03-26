@@ -1,0 +1,145 @@
+{ // t_dashboard中的json
+	"name":"",//名称
+	"currentTag":"", //当前第一个tab
+	"dataSet":[], // 数据集id数组
+	"dataSetRelation":[], //数据集字段关联组成的数组
+	"children":{ // 每一个tab
+		"125e20f1-d7a3-4e1e-8729-4f13a6324e3e":{ // 每个tab的uuuid做key
+			"name":"", // 每个tab的名称，比如：页签1
+			"type":"root", // 暂时没用到
+			"order":2, // 页签排序
+			"dragactStyle":[
+				{"w":40,"GridY":0,"GridX":0,"type":"search","key":"36b32ceb13f9f8506ef1a66341f37c43","h":2}, //dragact布局用，"type":"search":用来标注搜索框，"key":是图表的uuuid。
+				{"w":40,"GridY":2,"GridX":0,"key":"4633e73d252972636f1ad03737a625bb","h":20}
+			], 
+			"dataSet":["f22f584e3740dcaaca26e47fd382bc51","5abcbf8799ee3123a5168c3348590b79"], // 数据集table的id
+			"dataSetRelation":[],  // 关联关系，dataSet和dataSetRelation都是从外层的对象复制过来的。
+			"children":[  // 这里放的是每个图表
+				{
+				"name":"", // 图表名称 如：4633e73d252972636f1ad03737a625bb
+				"chartId":"", // 不如意外和图表名称是一样的。
+				"type":"", // 图表类型 有：line,bar,pie,table,pivottable,perspective,text,tableDiy,search
+				"fatherName":"root", // 貌似暂时没用
+				"styleConfig":"", // 貌似暂时没用
+				"relation":{}, // relation 用来做关联的，根据search,chart,table内容不用。
+				"dataSetName":{}, // 数据集名称--这是暂时只是给搜索框用的
+			}
+		],
+		}
+	},
+}
+}
+
+
+{// search relation 搜索框的时候
+	"relation":{
+		"8d6cf967a24c5547f38e998ff1a26d80":{ // key是搜索框查询条件的uuuid
+			"label":"", // 搜索框item显示名称
+			"order":3,  // 排序
+			"relationFields":{  // 关联的字段
+				"fda36162403286a640e3dfe915b9e8e5":["a69ba473724749cb6490b30e75b8680e"],  // key为图表的id,value是图表字段的id.
+			},
+			"props":["2018-12-31T16:00:00.000Z","2018-12-31T16:00:00.000Z"], // 参数
+		},
+	}
+}
+
+{// chart relation  图表的时候
+	"relation":{
+		"bec833ac41d07e44084c0888e227bb99":{ // key是搜索框查询条件的uuuid
+			"relationFields":{
+				"a75505bbe0b0d121c4b63c9d950548d8":["a75505bbe0b0d121c4b63c9d950548d8:184754009d976baf6cad6f57618e2024"], // 图表之间的关联key为图表关联字段的id,value是被关联图表的被关联字段的id
+			}
+		},
+	}
+}
+
+{// table relation  交叉表的时候
+	"relation":{
+		"column":"bcc448ae7d5d7301cbebf1499f59c586,93522f00f694ead590cf5751c3f4e7ce",  // 交叉表的是列的column_id
+	}
+}
+
+
+{ // 查询所需要的查询json
+	"report_id":"", //report_id
+	"name":"",  // 名称
+	"dataSet":[], // 数据集
+	"dataSetRelation":[], // 数据集关联
+	"children":[  // 每个查询子项图表
+		"chart_id":"",  // 图表id
+		"name":"",  // 图表名称
+		"params_search":{ // 搜索框参数
+			"key":"value",   // key是字段id,value是参数的值
+		}, 
+		"params_plot":{  // 点击plot查询的参数
+			"key":"value", // key是字段id,value是参数的值
+		},
+	],
+}
+
+
+
+
+
+/***mCharts图表***/
+
+{ // antdTable
+	"name":"antdTable",  // 图表名称，这个在表的字段里也有
+	"type":"21",  // 图表类型
+	"dataSetName":"",  // 图表数据集名称
+	"head":"1",  // 是否显示头部 1:显示
+	"title":"1", // 是否显示标题 1:显示
+	"forceFit":"1", // 自适应
+	"column":"342cacb586eb00cf620166138b9d60fb,df2af930a7171176df6cc231502d7b1a",   // 显示的字段，为column表的id
+	"border":"1",  // 是否显示边框, 1:显示
+	"columnUrl":"", // 显示为url跳转的字段，格式为数组
+	"columnUrlStr":"", //跳转的url地址
+	"fixed_left":"",  // 在左侧固定的字段
+	"fixed_right":"", // 在右侧固定的字段
+	"columnUrlParam":"", // url的参数字段
+	"pagination":"", // 分页
+}
+
+
+{  // pivotDiy
+   "name":"pivotDiy",  // 图表名称，这个在表的字段里也有
+   "type":"22",  // 图表类型
+   "dataSetName":"",  // 图表数据集名称
+   "head":"1",  // 是否显示头部 1:显示
+   "title":"1", // 是否显示标题 1:显示
+   "border":"1",  // 是否显示边框, 1:显示
+   "forceFit":"1", // 自适应
+   "column":"342cacb586eb00cf620166138b9d60fb,df2af930a7171176df6cc231502d7b1a",   // 显示的字段，为column表的id
+   "base_column":"",  // 行组，显示在头部的固定列
+   "col_column":"", // 列组,显示在右侧的头部大标题
+   "cal_column":"", // 指标组，用来计算的组
+   "formula":[{"name":"","value":"","decimal":"","format":""},{"name":"","value":"","decimal":"","format":""}], // 计算公式,用str数组来存放
+   "sum_col":"", // 全局列汇总,Y是汇总，N是不汇总
+   "sum_row":"", // 全局行汇总,Y是汇总，N是不会总
+}
+
+{ // bar line pie
+	"name":"line",
+	"type":"0",
+	"dataSetName":"",
+	"padding":"",
+	"forceFit":"0",
+	"head":"1",
+	"title":"1",
+	"legend":"0", // 显示图例
+	"tooltip":"0", // 显示提示
+	"border":"1", // 显示边框
+	"scrollX":"0", // X轴滚动
+	"dimension":"", // 维度
+	"measure":"", // 度量
+	"color":"", // 图例
+}
+
+{ // search
+	"name":"搜索框",
+	"type":"11",
+	"dataSetName":[""], // 数据集名称
+	"searchItem":"", // 搜索框子项数据Id
+	"searchJson":{"8ed337a23444b40578bbd6bc6872db12":{"id":"8ed337a23444b40578bbd6bc6872db12","type":"21","name":"集团","str_type":"2"}}, //字段配置项
+}

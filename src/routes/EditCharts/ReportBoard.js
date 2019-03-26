@@ -475,7 +475,7 @@ class ReportBoard extends PureComponent {
         } else if (type == "tableDiy") {
             this.renderTableDiy(name, dateSetList, mChart, spinning);
         } else if (type == "antdTable") {
-            this.renderAntdTable(name, dateSetList, mChart, spinning);
+            this.renderAntdTable(item, dateSetList, mChart, spinning);
         } else if (type == "pivotDiy") {
             this.renderPivotDiy(name, dateSetList, mChart, spinning);
         }
@@ -639,9 +639,10 @@ class ReportBoard extends PureComponent {
             document.getElementById(name));
     }
     // antd table
-    renderAntdTable(name, dateSetList, mChart, spinning) {
+    renderAntdTable(item, dateSetList, mChart, spinning) {
         let cssName = cssUtils.getBIContainer(mChart);
         const { dragactStyle } = JSON.parse(this.state.mDashboard.style_config);
+        const { type, name, chartId, styleConfig, relation } = item;
         ReactDom.render(
             <div className={cssName}
                 onClick={(ev) => {
@@ -656,7 +657,9 @@ class ReportBoard extends PureComponent {
                         mChart={mChart}
                         dateSetList={dateSetList}
                         idColumns={this.props.model.idColumns}
+                        item={item}
                         onExport={this.onTableExport}
+                        onPlotClickAntTable={this.onPlotClickAntTable}
                     />
                 </Spin>
             </div>,
@@ -1226,6 +1229,15 @@ class ReportBoard extends PureComponent {
         if (this.plotChartId.length > 0) {
             this.searchData(value);
         }
+    }
+
+    /***
+     * antTable的点击事件
+     * param: { id:字段id,value:参数的值,chartId:被点击的图表id }
+     * 
+     * ***/
+    onPlotClickAntTable = (id, value, chartId) => {
+
     }
 
     // 更新状态通用方法
