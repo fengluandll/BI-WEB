@@ -118,7 +118,7 @@ class AntdTable extends PureComponent {
     const { type, name, chartId, styleConfig, relation } = item;
     const { column } = config;
     const column_arr = column.split(","); //mChart中的字段id数组
-    const column_arr_index = []; //被关联字段的下标位数组
+    const column_arr_index = {}; //被关联字段的下标位对象
     const column_id_set = new Set(); // 被关联的字段id
     for (let key in relation) {
       const relationFields = relation[key].relationFields;
@@ -131,7 +131,7 @@ class AntdTable extends PureComponent {
       for (let key in column_arr) {
         const id = column_arr[key];
         if (id_set == id) {
-          column_arr_index.push(key);
+          column_arr_index[key] = id_set;
         }
       }
     }
@@ -192,10 +192,10 @@ class AntdTable extends PureComponent {
       }
       // f4 被关联字段要加特殊样式 和 点击事件
       for (let k in column_arr_index) {
-        if (key == column_arr_index[k]) {
+        if (key == k) {
           obj.render = (text, record, index) => {
             return (
-              <div style={{ backgroundColor: 'black' }} onClick={this.onPlotClickAntTable.bind(this, column_id_set[key], text)}>{text}</div>
+              <div style={{ backgroundColor: 'black' }} onClick={this.onPlotClickAntTable.bind(this, column_arr_index[k], text)}>{text}</div>
             );
           }
         }

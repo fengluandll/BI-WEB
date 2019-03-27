@@ -8,6 +8,7 @@ import Text from './Text';
 import TableDiy from './TableDiy';
 import AntdTable from './AntdTable';
 import PivotDiy from './PivotDiy';
+import TextStandard from './TextStandard';
 
 export {
   Bar,
@@ -20,4 +21,5 @@ export {
   TableDiy,
   AntdTable,
   PivotDiy,
+  TextStandard,
 };

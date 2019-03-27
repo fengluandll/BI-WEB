@@ -8,7 +8,7 @@ import TabUtils from '../../utils/tabUtils';
 import CssUtils from '../../utils/cssUtils';
 import { ChartList, TabList } from '../../componentsPro/ChartList';
 import { Relation, RelationChartsAuto, TabName, RelationTable } from '../../componentsPro/RelationUtil';
-import { Bar, Pie, Line, Table, Pivottable, Perspective, Text, TableDiy, AntdTable, PivotDiy } from '../../componentsPro/Charts';
+import { Bar, Pie, Line, Table, Pivottable, Perspective, Text, TextStandard, TableDiy, AntdTable, PivotDiy } from '../../componentsPro/Charts';
 import Print from '../../componentsPro/ReportMethod/print';
 import { Search } from '../../componentsPro/NewDashboard';
 import { Dragact } from 'dragact';
@@ -472,6 +472,8 @@ class ReportBoard extends PureComponent {
             this.renderPerspective(name, dateSetList, mChart, spinning);
         } else if (type == "text") {
             this.renderText(item, dateSetList, mChart, spinning);
+        } else if (type == "textStandard") {
+            this.renderTextStandard(item, dateSetList, mChart, spinning);
         } else if (type == "tableDiy") {
             this.renderTableDiy(name, dateSetList, mChart, spinning);
         } else if (type == "antdTable") {
@@ -619,6 +621,23 @@ class ReportBoard extends PureComponent {
                     item={item}
                     onSave={this.saveText}
                 // editModel={editModel}  
+                />
+            </div>,
+            document.getElementById(name));
+    }
+    // 展示 标准文本控件
+    renderTextStandard(item, dateSetList, mChart) {
+        let cssName = cssUtils.getBIContainer(mChart);
+        const { dragactStyle } = JSON.parse(this.state.mDashboard.style_config);
+        const { name, chartId, value } = item;
+        ReactDom.render(
+            <div className={cssName}>
+                <TextStandard
+                    dragactStyle={dragactStyle}
+                    editModel={this.state.editModel}
+                    mChart={mChart}
+                    dateSetList={dateSetList}
+                    item={item}
                 />
             </div>,
             document.getElementById(name));

@@ -78,6 +78,11 @@ class ReportBoardUtils {
             tmpType = "text";
             dragactW = 20;
             dragactH = 10;
+        } else if (type == "61") {
+            // text文本控件
+            tmpType = "textStandard";
+            dragactW = 20;
+            dragactH = 10;
         } else if (type == "7") {
             // 自定义table
             tmpType = "tableDiy";
@@ -332,6 +337,17 @@ class ReportBoardUtils {
                     [10, 11, 12, 13],
                 ],
             };
+        } else if (type == "textStandard") {
+            fakeData = {
+                header: ['列一', '列二', '列三', '列四', '列五', '列六'],
+                body: [
+                    [10, 11, 12, 13, 15, 16],
+                    [10, 11, 12, 13, 15, 16],
+                    [10, 11, 12, 13, 15, 16],
+                    [10, 11, 12, 13, 15, 16],
+                    [10, 11, 12, 13, 15, 16],
+                ],
+            };
         }
         return fakeData;
     }
@@ -355,6 +371,8 @@ class ReportBoardUtils {
             type_str = "perspective";
         } else if (type_num == 6) {
             type_str = "text";
+        } else if (type_num == 61) {
+            type_str = "textStandard";
         } else if (type_num == 7) {
             type_str = "tableDiy";
         } else if (type_num == 21) {
