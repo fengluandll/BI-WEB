@@ -20,6 +20,7 @@ export default class Index extends PureComponent {
             chartIdArrayPivottable: [],
             chartIdArrayPerspective: [],
             chartIdArrayText: [],
+            chartIdArrayTextStandard: [],
             chartIdArrayTableDiy: [],
             chartIdArrayAntdTable: [],
             chartIdArrayPivotDiy: [],
@@ -35,7 +36,7 @@ export default class Index extends PureComponent {
         let operateType;// 增加或者减少类型
         let chartId; // 图表Id
         let arr = [];
-        const { chartIdArrayLine, chartIdArrayBar, chartIdArrayPie, chartIdArrayTable, chartIdArrayPivottable, chartIdArrayPerspective, chartIdArrayText, chartIdArrayTableDiy, chartIdArrayAntdTable, chartIdArrayPivotDiy } = this.state;
+        const { chartIdArrayLine, chartIdArrayBar, chartIdArrayPie, chartIdArrayTable, chartIdArrayPivottable, chartIdArrayPerspective, chartIdArrayText, chartIdArrayTextStandard, chartIdArrayTableDiy, chartIdArrayAntdTable, chartIdArrayPivotDiy } = this.state;
         if (type == "0") {
             arr = chartIdArrayLine;
         } else if (type == "1") {
@@ -50,6 +51,8 @@ export default class Index extends PureComponent {
             arr = chartIdArrayPerspective;
         } else if (type == "6") {
             arr = chartIdArrayText;
+        } else if (type == "61") {
+            arr = chartIdArrayTextStandard;
         } else if (type == "7") {
             arr = chartIdArrayTableDiy;
         } else if (type == "21") {
@@ -115,6 +118,7 @@ export default class Index extends PureComponent {
         const arrPivottable = [];
         const arrPerspective = [];
         const arrText = [];
+        const arrTextStandard = [];
         const arrTableDiy = [];
         const arrAntdTable = [];
         const arrPivotDiy = [];
@@ -156,6 +160,11 @@ export default class Index extends PureComponent {
                     "label": item.name,
                     "value": item.id.toString(),
                 });
+            } else if (type == "61") {
+                arrTextStandard.push({
+                    "label": item.name,
+                    "value": item.id.toString(),
+                });
             } else if (type == "7") {
                 arrTableDiy.push({
                     "label": item.name,
@@ -181,6 +190,7 @@ export default class Index extends PureComponent {
         const chartIdArrayPivottable = [];
         const chartIdArrayPerspective = [];
         const chartIdArrayText = [];
+        const chartIdArrayTextStandard = [];
         const chartIdArrayTableDiy = [];
         const chartIdArrayAntdTable = [];
         const chartIdArrayPivotDiy = [];
@@ -201,6 +211,8 @@ export default class Index extends PureComponent {
                 chartIdArrayPerspective.push(item.chartId);
             } else if (type == "6") {
                 chartIdArrayText.push(item.chartId);
+            } else if (type == "61") {
+                chartIdArrayTextStandard.push(item.chartId);
             } else if (type == "7") {
                 chartIdArrayTableDiy.push(item.chartId);
             } else if (type == "21") {
@@ -218,6 +230,7 @@ export default class Index extends PureComponent {
             chartIdArrayPivottable,
             chartIdArrayPerspective,
             chartIdArrayText,
+            chartIdArrayTextStandard,
             chartIdArrayTableDiy,
             chartIdArrayAntdTable,
             chartIdArrayPivotDiy,
@@ -302,6 +315,17 @@ export default class Index extends PureComponent {
                                     defaultValue={chartIdArrayText}
                                     style={{ display: 'block' }}
                                     onChange={this.addOrRemoveChart.bind(this, "6")}
+                                />
+                            </div>
+                            <div className={styles['field-name']} title="标准文本控件">
+                                <i className="anticon anticon-up" onClick={this.toogle.bind(this, 'textStandard')} style={{ cursor: 'pointer' }} />标准文本控件
+                            </div>
+                            <div className={styles['field-content']} ref={this.handleFieldContent.bind(this, 'textStandard')}>
+                                <CheckboxGroup
+                                    options={arrTextStandard}
+                                    defaultValue={chartIdArrayTextStandard}
+                                    style={{ display: 'block' }}
+                                    onChange={this.addOrRemoveChart.bind(this, "61")}
                                 />
                             </div>
                             <div className={styles['field-name']} title="自定义table">

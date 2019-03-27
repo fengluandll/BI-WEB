@@ -638,6 +638,7 @@ class ReportBoard extends PureComponent {
                     mChart={mChart}
                     dateSetList={dateSetList}
                     item={item}
+                    idColumns={this.state.idColumns}
                 />
             </div>,
             document.getElementById(name));
