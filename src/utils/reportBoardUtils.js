@@ -174,7 +174,7 @@ class ReportBoardUtils {
         const relation = searchChart.relation;// search图表的关联json
         // 循环relation
         for (let key in relation) {
-            //  "1794":{"relationFields":{"68":[11342]}}
+            //  "1794":{"relationFields":{"68":[1794]}} modify by wangliu key和后面的字段是同一个id，都放搜索框item的字段id
             const relationFields = relation[key].relationFields;
             const mChartId = mChart.id;  //  example "68"
             const config = mChart.config;
@@ -187,14 +187,14 @@ class ReportBoardUtils {
                 if (rsColumn.rsc_name == rsColumnConfSearch.rsc_name) {
                     // 拼接relationFields json
                     const idColumnValue = [];
-                    idColumnValue.push(rsColumn.id);
+                    idColumnValue.push(rsColumnConfSearch.id);
                     relationFields[mChartId.toString()] = idColumnValue;
                 } else {
                     //  根据 dataSetRelation 添加关联关系
                     if (this.getColumnYNrelationed(rsColumnConfSearch.id, rsColumn.id, dataSetRelation)) {
                         // 如果 两个字段有关联关系 拼接relationFields json
                         const idColumnValue = [];
-                        idColumnValue.push(rsColumn.id);
+                        idColumnValue.push(rsColumnConfSearch.id);
                         relationFields[mChartId.toString()] = idColumnValue;
                     }
                 }
@@ -746,7 +746,7 @@ class ReportBoardUtils {
                             json_chart.params_search[relationFields[key_child]] = props;
                         }
                         // 如果是初始化的时候,有时间参数的,要自己重新赋值自己拼的时间参数。
-                        if (null != search_time_param && search_time_param.length > 0) {
+                        if (null != search_time_param && search_time_param.length > 0 && search_time_param.indexOf(key) > 0) {
                             const isDateSetsRelationed = this.getSearchChartsColumnYNrelationed(key, relationFields[key_child], idColumns);
                             // 如果搜索框中时间的参数字段id和被关联图表中的字段Id相同或者他们的rsc_name相同就是放入新的时间参数
                             if (key == relationFields[key_child] || isDateSetsRelationed) {

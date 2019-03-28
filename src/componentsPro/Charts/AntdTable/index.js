@@ -195,7 +195,7 @@ class AntdTable extends PureComponent {
         if (key == k) {
           obj.render = (text, record, index) => {
             return (
-              <div style={{ backgroundColor: 'black' }} onClick={this.onPlotClickAntTable.bind(this, column_arr_index[k], text)}>{text}</div>
+              <div style={{ backgroundColor: '#F4F4F4' }} onClick={this.onPlotClickAntTable.bind(this, column_arr_index[k], text)}>{text}</div>
             );
           }
         }

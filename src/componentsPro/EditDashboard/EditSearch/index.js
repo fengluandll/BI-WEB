@@ -55,12 +55,13 @@ class EditSearch extends PureComponent {
     /*******************************************************************/
 
     render() {
-        const { config, dataSetName_idColumns } = this.state;
-        const { dataSetList, idColumns, tableIdColumns } = this.props; // 数据集 ds_name-obj数组; ds_name - id_columns list对象
-        const dataSetArr = []; // 所有的数据集选择对象
-        for (let key in dataSetList) {
-            dataSetArr.push(<Select.Option key={key}>{dataSetList[key].ds_display}</Select.Option>);
-        }
+        const { config } = this.state;
+        const { mChart, tDashboard, dataSetList, idColumns, tableIdColumns, tableConfig, onSave } = this.props;
+
+        // 取出所有数据集 从tableConfig取出所有的数据集
+        const dataSetArr = Object.keys(tableConfig);
+
+
         const { dataSetName, searchItem } = this.state.config;
         const children_item = []; // 选择字段时候先选数据集需要的参数对象
         for (let key in dataSetName) {
@@ -98,7 +99,26 @@ class EditSearch extends PureComponent {
                     >
                         <Input placeholder="输入名称" value={config.name} onChange={this.handleChangeInput.bind(this, "name")} />
                     </Form.Item>
-
+                    <Form.Item
+                        label="数据集名称"
+                        {...formItemLayout}
+                    >
+                        <Select
+                            showSearch
+                            style={{ width: 200 }}
+                            placeholder="选择一个数据集"
+                            optionFilterProp="children"
+                            filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                            value={config.dataSetName}
+                            onChange={this.handleChangeInput.bind(this, "dataSetName")}
+                        >
+                            {dataSetArr.map((item, index) => {
+                                return (
+                                    <Select.Option key={index} value={item.ds_name}>{item.ds_display}</Select.Option>
+                                );
+                            })}
+                        </Select>
+                    </Form.Item>
                 </Form>
             </div>
         );

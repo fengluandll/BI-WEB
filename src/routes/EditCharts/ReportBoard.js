@@ -1253,11 +1253,24 @@ class ReportBoard extends PureComponent {
 
     /***
      * antTable的点击事件
-     * param: { id:字段id,value:参数的值,chartId:被点击的图表id }
+     * param: { id:字段id,value_param:参数的值,chartId:被点击的图表id }
      * 
      * ***/
-    onPlotClickAntTable = (id, value, chartId) => {
-
+    onPlotClickAntTable = (id, value_param, chartId) => {
+        // 编辑模式返回
+        if (this.state.editModel == "true") {
+            return;
+        }
+        const value = [];
+        value.push(id);  // 被点击的字段Id
+        value.push(value_param);  // 值
+        value.push(chartId);  // 图表的名称(mchart表id)
+        const plotChartId = this.plotChartId;
+        // 修改plot查询图表id
+        this.plotChartId = reportBoardUtils.changePlotChartId(plotChartId, chartId, this.state.mDashboard);
+        if (this.plotChartId.length > 0) {
+            this.searchData(value);
+        }
     }
 
     // 更新状态通用方法
