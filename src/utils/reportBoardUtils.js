@@ -658,7 +658,7 @@ class ReportBoardUtils {
         const json = { report_id: report_id, name: style_config.name, children: [], dataSet: style_config_old.dataSet, dataSetRelation: style_config_old.dataSetRelation }; // 总的json
         const { children } = style_config;
         // 先循环每个chart找到搜索框的chart中的relation
-        let relation_search;
+        let relation_search; // m_dashboard中的relation
         let search_time_param = []; // 搜索框时间item的column_id,因为可以一个数据集有多个时间的字段所有这个变量为数组
         let search_time_value = {}; // 搜索框时间item的值,{key为search_time_param数组中的column_id}
         for (let i = 0; i < children.length; i++) {
@@ -745,14 +745,12 @@ class ReportBoardUtils {
                         if (null != props && null != props[0]) {
                             json_chart.params_search[relationFields[key_child]] = props;
                         }
-                        // 如果是初始化的时候,有时间参数的,要自己重新赋值自己拼的时间参数。拼接的时间可以是多个所以要循环search_time_param数组
+                        // 如果是初始化的时候,有时间参数的,要自己重新赋值自己拼的时间参数。
                         if (null != search_time_param && search_time_param.length > 0) {
-                            for (let search_time_param_id in search_time_param) {
-                                const isDateSetsRelationed = this.getSearchChartsColumnYNrelationed(search_time_param[search_time_param_id], relationFields[key_child], idColumns);
-                                // 如果搜索框中时间的参数column_id和图表中的column_id相同或者他们的display_name相同就是放入新的时间参数
-                                if (search_time_param[search_time_param_id] == relationFields[key_child] || isDateSetsRelationed) {
-                                    json_chart.params_search[relationFields[key_child]] = search_time_value[search_time_param[search_time_param_id]];
-                                }
+                            const isDateSetsRelationed = this.getSearchChartsColumnYNrelationed(key, relationFields[key_child], idColumns);
+                            // 如果搜索框中时间的参数字段id和被关联图表中的字段Id相同或者他们的rsc_name相同就是放入新的时间参数
+                            if (key == relationFields[key_child] || isDateSetsRelationed) {
+                                json_chart.params_search[relationFields[key_child]] = search_time_value[key];
                             }
                         }
                     }

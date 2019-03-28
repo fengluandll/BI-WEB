@@ -134,6 +134,7 @@
 	"dimension":"", // 维度
 	"measure":"", // 度量
 	"color":"", // 图例
+	"order":"Y", // 按xy轴排序默认是y轴
 }
 
 { // search

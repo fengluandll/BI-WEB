@@ -15,19 +15,30 @@ class ChartHelper {
     dv.rows = ObjectUtils.quickDeepClone(data);
     //this.initTransform(dv, mCharts, chartType);
     //this.fill(dv, data, mCharts);
+    const config = JSON.parse(mCharts.config);
+    const { order, dimension, measure } = config;
     const x = mCharts.config.dimension ? mCharts.config.dimension : '维度';
     const y = mCharts.config.measure ? mCharts.config.measure : '度量';
     const color = mCharts.config.color ? mCharts.config.color : '图例';
-    // 按字段排序
-    dv.transform({
-      type: 'sort-by',
-      fields: ['y'], // 根据指定的字段集进行排序，与lodash的sortBy行为一致
-      order: 'DESC',        // 默认为 ASC，DESC 则为逆序
-    });
+    // 按字段排序 modify by wangliu 20190328 将默认排序改为 后台控制 按 X 或者 Y 排序
+    if (null == order || order == "Y") {
+      dv.transform({
+        type: 'sort-by',
+        fields: ['y'], // 根据指定的字段集进行排序，与lodash的sortBy行为一致
+        order: 'DESC',        // 默认为 ASC，DESC 则为逆序
+      });
+    } else { // 按x轴正序排列
+      dv.transform({
+        type: 'sort-by',
+        fields: ['x'],
+        order: 'ASC',
+      });
+    }
+
     dv.transform({    // addby wangliu 20181116永远按图例排序
       type: 'sort-by',
-      fields: ['color'], 
-      order: 'ASC',        
+      fields: ['color'],
+      order: 'ASC',
     });
     // 字段重命名
     dv.transform({
