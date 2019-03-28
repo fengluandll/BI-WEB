@@ -230,14 +230,14 @@ class ReportBoardUtils {
                 if (rsColumn.rsc_name == itemIdColumn.rsc_name) {
                     // 拼接relationFields json
                     const idColumnValue = [];
-                    idColumnValue.push(rsColumn.id);
+                    idColumnValue.push(itemIdColumn.id);
                     relationItem.relationFields[mChart.id.toString()] = idColumnValue;
                 } else {
                     //  根据 dataSetRelation 添加关联关系
                     if (this.getColumnYNrelationed(itemIdColumn.id, rsColumn.id, dataSetRelation)) {
                         // 如果 两个字段有关联关系 拼接relationFields json
                         const idColumnValue = [];
-                        idColumnValue.push(rsColumn.id);
+                        idColumnValue.push(itemIdColumn.id);
                         relationItem.relationFields[mChart.id.toString()] = idColumnValue;
                     }
                 }
@@ -258,11 +258,11 @@ class ReportBoardUtils {
         tableDataSet.map((rsColumn, index) => {
             if (rsColumn.rsc_name == relation_key_column.rsc_name) {
                 // 如果有相同名称的字段就赋值item
-                item.push(rsColumn.id);
+                item.push(relation_key_column.id);
             } else {
                 // 根据 dataSetRelation 添加关联关系
                 if (this.getColumnYNrelationed(relation_key_column.id, rsColumn.id, dataSetRelation)) {
-                    item.push(rsColumn.id);
+                    item.push(relation_key_column.id);
                 }
             }
         });
