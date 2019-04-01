@@ -434,6 +434,7 @@ class ReportBoard extends PureComponent {
                     type={type}
                     onEdit={this.onTabsEdit}
                     size="small"
+                    style={{left:(this.state.editModel == "true") ? "200px" : "0", right:(this.state.editModel == "true") ? "200px" : "0"}}
                 >
                     {panes.map(pane => <TabPane tab={pane.title} key={pane.key} closable={pane.closable}></TabPane>)}
                 </Tabs>
@@ -1442,8 +1443,8 @@ class ReportBoard extends PureComponent {
             <div style={this.state.spinning == true ? { pointerEvents: 'none' } : {}}>{/*如果有图表在加载中那么就设置样式为不可点击状态*/}
                 {/* 添加返回按钮的父级,根据权限参数控制是否显示 */}
                 {this.state.user_auth == "1" ?
-                    <div style={{ marginRight: (this.state.editModel == "true") ? "200px" : "0", width: (this.state.editModel == "true") ? "40px" : "80px", height: 40, opacity: '1', border: '2px solid #ccc', borderLeft: '1px solid #ccc', borderBottom: '1px solid #ccc', borderTop: '1px solid #ccc', background: '#eee', color: '#000', position: 'absolute', top: 0, right: '-5px', zIndex: 1000, fontSize: 22, textAlign: 'center', cursor: 'pointer' }} >
-                        {this.state.editModel == "true" ? <Icon onClick={this.changeEditeMode} type="unlock" /> : <Icon onClick={this.changeEditeMode} style={{ marginRight: '5px' }} type="lock" />}
+                    <div style={{ width: (this.state.editModel == "true") ? "40px" : "80px", borderRadius: (this.state.editModel == "true") ? "0" : "6px", height: (this.state.editModel == "true") ? "40px" : "35px", marginTop: (this.state.editModel == "true") ? "0" : "2px", marginRight: (this.state.editModel == "true") ? "204px" : "10px", opacity: '1', border: '2px solid #ccc', borderLeft: '1px solid #ccc', borderBottom: '1px solid #ccc', borderTop: '1px solid #ccc', background: '#eee', color: '#000', position: 'fixed', top: 0, right: '-5px', zIndex: 1000, fontSize: 22, textAlign: 'center', cursor: 'pointer' }} >
+                        {this.state.editModel == "true" ? <Icon onClick={this.changeEditeMode} type="unlock" /> : <Icon onClick={this.changeEditeMode} style={{ marginRight: '5px',marginLeft: (this.state.editModel == "true") ? "0" : "5px" }} type="lock" />}
                         {this.state.editModel == "true" ? '' : <i className={styles['fileLock']}></i>}
                         {this.state.editModel == "true" ? '' : <Icon onClick={this.onPrint} type="printer" style={{ marginRight: '6px', height: 'auto', fontSize: '21px' }} />}
                     </div>
