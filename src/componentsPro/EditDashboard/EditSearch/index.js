@@ -3,6 +3,9 @@ import ReactDom from 'react-dom';
 import { Form, Input, Button, Modal, Select, Switch, Checkbox, Row, Col } from 'antd';
 import SelectColumn from '../SelectColumn';
 import ReactDnd from './reactDnd';
+import Example from './example'
+import { DragDropContextProvider } from 'react-dnd'
+import HTML5Backend from 'react-dnd-html5-backend'
 
 /***
  * 搜索框配置
@@ -31,6 +34,12 @@ class EditSearch extends PureComponent {
     /************************input框回调函数*****************************/
     // input
     handleChangeInput = (key, event) => {
+        const { config } = this.state;
+        if (key == "name") {
+            config.name = event.target.value;
+        } else if (key == "dataSetName") {
+            config.dataSetName = event;
+        }
         this.setState({
             config,
             refreshUI: this.state.refreshUI + 1,
@@ -59,8 +68,10 @@ class EditSearch extends PureComponent {
         const { mChart, tDashboard, dataSetList, idColumns, tableIdColumns, tableConfig, onSave } = this.props;
 
         // 取出所有数据集 从tableConfig取出所有的数据集
-        const dataSetArr = Object.keys(tableConfig);
-
+        const dataSetArr = [];
+        for (let key in tableConfig) {
+            dataSetArr.push(tableConfig[key]);
+        }
 
         const { dataSetName, searchItem } = this.state.config;
         const children_item = []; // 选择字段时候先选数据集需要的参数对象
@@ -68,17 +79,17 @@ class EditSearch extends PureComponent {
             children_item.push(<Option key={key} value={dataSetName[key]}>{dataSetName[key]}</Option>);
         }
 
-        // const searchItem_arr = searchItem.split(","); // 搜索框子项id数组
-        // let idColumns_searchItem_arr = []; // 搜索框子项Id的对象 key:id,value:obj
-        // for (let key in searchItem_arr) {
-        //     const value = searchItem_arr[key];
-        //     idColumns_searchItem_arr.push(idColumns[value]);
-        // }
-
-
-        let idColumns_arr = []; // 当前数据集所有的字段数组
-        if (null != dataSetName_idColumns && dataSetName_idColumns != "") {
-            idColumns_arr = tableIdColumns[dataSetName_idColumns];
+        let idColumns_id_arr = []; // 搜索框子项id数组
+        for (let key in searchItem) { // searchItem是key:数据集名称,value：id组成的str
+            const arr = searchItem[key].split(",");
+            idColumns_id_arr = idColumns_id_arr.concat(arr);
+        }
+        let idColumns_arr = []; // 搜索框子项对象数组
+        let idColumns_searchItem_arr = []; // 搜索框子项Id的对象 key:id,value:obj
+        for (let key in idColumns_id_arr) {
+            const value = idColumns_id_arr[key];
+            idColumns_arr.push(idColumns[value]);
+            idColumns_searchItem_arr.push(idColumns[value]);
         }
 
 
@@ -118,6 +129,20 @@ class EditSearch extends PureComponent {
                                 );
                             })}
                         </Select>
+                    </Form.Item>
+                    {/* <Form.Item>
+                        <ReactDnd
+                            idColumns_arr={idColumns_arr}
+                            idColumns_searchItem_arr={idColumns_searchItem_arr}
+                        />
+                    </Form.Item> */}
+                    <Form.Item>
+                        <DragDropContextProvider backend={HTML5Backend}>
+                            <Example
+                                idColumns_arr={idColumns_arr}
+                                idColumns_searchItem_arr={idColumns_searchItem_arr}
+                            />
+                        </DragDropContextProvider>
                     </Form.Item>
                 </Form>
             </div>

@@ -115,33 +115,38 @@ class AntdTable extends PureComponent {
       col_value_count_arr.push(col_value_count);
     }
     // f4关联的字段要显示特殊样式-鼠标滑过背景色改变并且箭头变成手
-    const { type, name, chartId, styleConfig, relation } = item;
-    const { column } = config;
-    const column_arr = column.split(","); //mChart中的字段id数组
     const column_arr_index = {}; //被关联字段的下标位对象
-    const column_id_set = new Set(); // 被关联的字段id
-    for (let key in relation) {
-      const relationFields = relation[key].relationFields;
-      const relationFields_keys = Object.keys(relationFields); // 获取 relationFields的 key数组
-      if (null != relationFields_keys && relationFields_keys.length > 0) {
-        column_id_set.add(key); // 把被关联的字段放入
+    if (null != item && item != "") {
+      const { type, name, chartId, styleConfig, relation } = item;
+      const { column } = config;
+      const column_arr = column.split(","); //mChart中的字段id数组
+      const column_id_set = new Set(); // 被关联的字段id
+      for (let key in relation) {
+        const relationFields = relation[key].relationFields;
+        const relationFields_keys = Object.keys(relationFields); // 获取 relationFields的 key数组
+        if (null != relationFields_keys && relationFields_keys.length > 0) {
+          column_id_set.add(key); // 把被关联的字段放入
+        }
       }
-    }
-    for (let id_set of column_id_set) { // 找到被关联的字段在数据中的下标位 组成数组
-      for (let key in column_arr) {
-        const id = column_arr[key];
-        if (id_set == id) {
-          column_arr_index[key] = id_set;
+      for (let id_set of column_id_set) { // 找到被关联的字段在数据中的下标位 组成数组
+        for (let key in column_arr) {
+          const id = column_arr[key];
+          if (id_set == id) {
+            column_arr_index[key] = id_set;
+          }
         }
       }
     }
+    // f5 行或者列的数据根据公式判断后显示不同的颜色
 
     const tableDate = {}; // 拼接好的参数对象
     /***制造列***/
     const columns = [];
     const first_col = {
       title: () => '序号',
-      width: '50',
+      width: '50px',
+      dataIndex: '序号',
+      key: '序号',
       render: (text, record, index) => {
         return (
           <div style={{ textAlign: 'center', backgroundColor: '#f3f3f3', marginLeft: '-5px', marginRight: '-5px' }}>{`${index + 1}`}</div>
