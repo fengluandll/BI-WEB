@@ -218,7 +218,7 @@ class EditBoard extends PureComponent {
                 <div>
 
                 </div>;
-        } else if (type == "21") {
+        } else if (type == "21111") {
             content =
                 <div>
                     <AntdTable

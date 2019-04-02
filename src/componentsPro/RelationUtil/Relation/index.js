@@ -56,6 +56,9 @@ export default class Index extends PureComponent {
         const arr = [];
         for (let j = 0; j < len; j += 1) {
             const searchItem_id = searchItemIds[j]; // 每个字段的id
+            if (null == searchItem_id || searchItem_id == "") { // add by wangliu 搜索框多数据源后可能有的数据源没有选字段，导致split成数组后id为"".
+                continue;
+            }
             const searchItem = idColumns[searchItem_id];
             arr.push({
                 "label": searchItem.rsc_display,
