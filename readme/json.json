@@ -93,7 +93,7 @@
 	"forceFit":"1", // 自适应
 	"column":"342cacb586eb00cf620166138b9d60fb,df2af930a7171176df6cc231502d7b1a",   // 显示的字段，为column表的id
 	"border":"1",  // 是否显示边框, 1:显示
-	"columnUrl":"", // 显示为url跳转的字段，格式为数组
+	"columnUrl":[], // 显示为url跳转的字段，格式为数组
 	"columnUrlStr":"", //跳转的url地址
 	"fixed_left":"",  // 在左侧固定的字段
 	"fixed_right":"", // 在右侧固定的字段
@@ -143,4 +143,41 @@
 	"dataSetName":[""], // 数据集名称
 	"searchItem":"", // 搜索框子项数据Id
 	"searchJson":{"8ed337a23444b40578bbd6bc6872db12":{"id":"8ed337a23444b40578bbd6bc6872db12","type":"21","name":"集团","str_type":"2"}}, //字段配置项
+}
+
+
+
+/***数据展示-数据中间层***/
+// table-原始数据
+{
+	"header":["集团","公司","年龄","人数"],
+	"body":[["上海智思信息科技有限公司","上海智思信息科技有限公司",0,1],["上海智思信息科技有限公司","上海智思信息科技有限公司",0,1]],
+	"head":[
+		{}, // RsColumnConf对象
+	],
+}
+// table-转换后数据
+{
+	"head":[
+		{
+			"...RsColumnConf", // RsColumnConf的所有属性字段都放进来,后面的属性是后面在拼接加上去的
+			"url":{  // 是否是url跳转字段,有值就是url跳转。值{}
+				"param":"", // 跳转参数列的id,目前是一个id以后可以是数组id
+				"url":"", // 跳转的url
+			},  
+			"fixed":"left", // 是否固定列, left,right,none
+			"width":"", // 每列宽度
+			"style":{}, // 样式：背景色-被关联字段显示特殊背景色并且点击要跳转
+			"plotParam":"id", // 是否有点击关联查询
+		},
+	],
+	"body":[
+		[
+			{
+				"value":"", // 字段值
+				"style":{}, // 每个数据的样式
+				"tooltip":"", // 弹出框显示的值
+			},
+		],
+	],
 }

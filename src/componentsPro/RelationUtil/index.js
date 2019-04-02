@@ -4,6 +4,7 @@ import RelationChartsAuto from './RelationChartsAuto';
 import TabName from './TabName';
 import EditSearchDataSet from './EditSearchDataSet';
 import RelationTable from './RelationTable';
+import TabsUI from './TabsUI';
 
 
 export {
@@ -13,4 +14,5 @@ export {
     TabName,
     EditSearchDataSet,
     RelationTable,
+    TabsUI,
 };

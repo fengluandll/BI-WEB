@@ -7,7 +7,7 @@ import ReportBoardmChartsUtils from '../../utils/reportBoardmChartsUtils';
 import TabUtils from '../../utils/tabUtils';
 import CssUtils from '../../utils/cssUtils';
 import { ChartList, TabList } from '../../componentsPro/ChartList';
-import { Relation, RelationChartsAuto, TabName, RelationTable } from '../../componentsPro/RelationUtil';
+import { Relation, RelationChartsAuto, TabName, RelationTable, TabsUI } from '../../componentsPro/RelationUtil';
 import { Bar, Pie, Line, Table, Pivottable, Perspective, Text, TextStandard, TableDiy, AntdTable, PivotDiy } from '../../componentsPro/Charts';
 import Print from '../../componentsPro/ReportMethod/print';
 import { Search } from '../../componentsPro/NewDashboard';
@@ -427,6 +427,45 @@ class ReportBoard extends PureComponent {
                 onClick={(ev) => {
                     this.displayTabName();
                 }}
+
+
+                // onDoubleClick={(e) => {
+                //     this.displayTabName();
+                //     if (this.state.editModel == 'true') {
+                //         e.target.innerHTML += `<input type="text" autofocus="autofocus" name="input" placeholder="请输入"/>`;
+                //         var box = document.getElementsByClassName('ant-tabs-tab-active ant-tabs-tab')[0].childNodes[0];
+                //         var inp = box.childNodes[2];
+                //         if (!inp) {
+                //             return;
+                //         }
+                //         inp.onblur = (e) => {
+                //             var box = document.getElementsByClassName('ant-tabs-tab-active ant-tabs-tab')[0].childNodes[0];
+                //             var inp = box.childNodes[2];
+                //             if (!inp.value) {
+                //                 box.removeChild(box.childNodes[2]);
+                //                 return;
+                //             }
+                //             const { mDashboard_old, mDashboard, tagName, tagNames } = this.state;
+                //             tabUtils.changeTabName(mDashboard_old, mDashboard, tagName, tagNames, activeKey, inp.value);
+                //             this.setState({
+                //                 mDashboard_old: mDashboard_old,
+                //                 mDashboard: mDashboard,
+                //                 editModel: editModel,
+                //                 tagName: tagName,
+                //                 tagNames: tagNames,
+                //             }, () => {
+                //                 // 刷新页面
+                //                 const text = box.childNodes[0];
+                //                 const txt = document.createTextNode(inp.value);
+                //                 box.replaceChild(txt, text);
+                //                 box.removeChild(box.childNodes[2]);
+                //             });
+
+                //         }
+                //     }
+                // }}
+
+
             >
                 <Tabs
                     onChange={this.tabOnChange}
