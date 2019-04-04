@@ -39,14 +39,16 @@ export default class CalData {
             const fixed_right_arr = fixed_right.split(",");
             if (fixed_left_arr.indexOf(id) > 0) { // 该列是固定到左侧的列
                 obj.fixed = "left";
+                obj.width = 300;
             } else if (fixed_right_arr.indexOf(id) > 0) { // 该列是固定到右侧的列
                 obj.fixed = "right";
+                obj.width = 300;
             } else {
                 obj.fixed = "none";
             }
             // f3 设置每列的宽度
             if (forceFit != "1" && key != header.length - 1) { // 如果不是自适应的情况下要显固定头部那么除了最后一列不舍宽度，其他都要设置宽度
-                obj.width = 200;
+                obj.width = 200;  // 后期改成根据每列的最大字符数来控制
             }
             // f4 被关联字段要加特殊样式 和 点击事件
             const { type, name, chartId, styleConfig, relation } = item;
@@ -75,5 +77,93 @@ export default class CalData {
             }
             body_ret.push(line_obj); // 返回的行数据放入返回的总数据里面
         }
+        const data = { head: head_ret, body: body_ret };
+        return data;
+    }
+
+    /***
+     * 
+     * 拼接antdtable需要的json
+     * 
+     * 
+     * ***/
+    getTableData = (dataParam) => {
+        const { head, body } = dataParam;
+        const tableDate = {}; // 拼接好的参数对象
+        /***制造列***/
+        const columns = [];
+        const first_col = {
+            title: () => '序号',
+            width: '50px',
+            dataIndex: '序号',
+            key: '序号',
+            render: (text, record, index) => {
+                return (
+                    <div style={{ textAlign: 'center', backgroundColor: '#f3f3f3', marginLeft: '-5px', marginRight: '-5px' }}>{`${index + 1}`}</div>
+                )
+            },
+        };
+        columns.push(first_col); // 放入第一行的序号列
+        for (let key in head) {
+            const obj_head = head[key];
+            const { url, fixed, width, plotParam, style } = obj_head;
+            const obj = { "title": obj_head.title, "dataIndex": obj_head.dataIndex, "key": obj_head.key, "align": obj_head.align };
+            // f1 判断跳转
+            if (null != url) {
+                const { param, url } = url;
+                obj.render = (text, record, index) => {
+                    const src = url + "/" + record[param];
+                    return (
+                        <a target="_blank" href={src}>{text}</a>
+                    );
+                }
+            }
+            // f2 固定单元格
+            if (null != fixed && fixed != "none") {
+                obj.fixed = fixed;
+            }
+            // f3 宽度
+            if (null != width) {
+                obj.width = width;
+            }
+            // f4 被关联字段要加特殊样式 和 点击事件
+            if (null != plotParam) {
+                obj.render = (text, record, index) => {
+                    return (
+                        <div style={style} onClick={this.onPlotClickAntTable.bind(this, id, text)}>{text}</div>
+                    );
+                }
+            }
+        }
+        /***制造数据***/
+        const data = [];
+        for (let key in body) {
+            const obj = { "key": key }; // antd需要的每行json
+            const body_line = body[key]; // 每行的中间数据
+            for (let k in body_line) {
+                const { title } = head[k]; // 每列数据取出列标题中文
+                const line_obj = body_line[k]; // 每个中间数据
+                let { value, style, tooltip } = line_obj;
+                if (null != style) { // 加样式--可能是值预警的样式
+                    value = (
+                        <span style={style}>
+                            {value}
+                        </span>
+                    );
+                }
+                if (null != tooltip) { // 显示tooltip
+                    value = (
+                        <Tooltip title={value} placement="top">
+                            <span>{tooltip}</span>
+                        </Tooltip>
+                    );
+                }
+                obj[title] = value; // 最终没什么特殊情况就是普通的显示值就行了
+            }
+            data.push(obj);
+        }
+        tableDate["columns"] = columns;
+        tableDate["data"] = data;
+        return tableDate;
     }
 }

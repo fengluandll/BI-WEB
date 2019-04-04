@@ -347,7 +347,7 @@ export default class Index extends PureComponent {
                                     options={arrAntdTable}
                                     defaultValue={chartIdArrayAntdTable}
                                     style={{ display: 'block' }}
-                                    onChange={this.addOrRemoveChart.bind(this, "7")}
+                                    onChange={this.addOrRemoveChart.bind(this, "21")}
                                 />
                             </div>
                             <div className={styles['field-name']} title="pivotDiy">
@@ -358,7 +358,7 @@ export default class Index extends PureComponent {
                                     options={arrPivotDiy}
                                     defaultValue={chartIdArrayPivotDiy}
                                     style={{ display: 'block' }}
-                                    onChange={this.addOrRemoveChart.bind(this, "7")}
+                                    onChange={this.addOrRemoveChart.bind(this, "22")}
                                 />
                             </div>
                         </div>

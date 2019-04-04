@@ -95,9 +95,10 @@
 	"border":"1",  // 是否显示边框, 1:显示
 	"columnUrl":[], // 显示为url跳转的字段，格式为数组
 	"columnUrlStr":"", //跳转的url地址
+	"columnUrlParam":"", // url的参数字段
+	"columnUrlParamType":"id", // url的参数类型,决定是id还是name
 	"fixed_left":"",  // 在左侧固定的字段
 	"fixed_right":"", // 在右侧固定的字段
-	"columnUrlParam":"", // url的参数字段
 	"pagination":"", // 分页
 }
 

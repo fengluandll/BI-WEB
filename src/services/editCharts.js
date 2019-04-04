@@ -35,16 +35,24 @@ export async function getMchartsList(params) {
 
 // 保存config
 export async function saveConfig(params) {
-  return request(`http://localhost:8088/api/edit/update?${stringify(params)}`, {
+  const formData = new FormData();
+  formData.append('id', params.id);
+  formData.append('config', params.config);
+  return request('http://localhost:8088/api/edit/update', {
     method: 'POST',
     mode: 'cors',
+    body: formData,
   });
 }
 
 // 新建图表
 export async function newCharts(params) {
-  return request(`http://localhost:8088/api/edit/newCharts?${stringify(params)}`, {
+  const formData = new FormData();
+  formData.append('id', params.id);
+  formData.append('config', params.config);
+  return request('http://localhost:8088/api/edit/newCharts', {
     method: 'POST',
     mode: 'cors',
+    body: formData,
   });
 }

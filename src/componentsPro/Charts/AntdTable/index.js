@@ -1,8 +1,11 @@
 import React, { PureComponent } from 'react';
 import ReactDom from 'react-dom';
 import { Table, Divider, Icon, Tooltip } from 'antd';
+import CalData from './calData'
 
 import styles from '../index.less';
+
+const calData = new CalData();
 
 class AntdTable extends PureComponent {
 
@@ -147,6 +150,7 @@ class AntdTable extends PureComponent {
       width: '50px',
       dataIndex: '序号',
       key: '序号',
+      fixed: 'left',
       render: (text, record, index) => {
         return (
           <div style={{ textAlign: 'center', backgroundColor: '#f3f3f3', marginLeft: '-5px', marginRight: '-5px' }}>{`${index + 1}`}</div>
@@ -162,7 +166,11 @@ class AntdTable extends PureComponent {
         for (let key in columnUrl_name) {
           if (value == columnUrl_name[key]) {
             obj.render = (text, record, index) => {
-              const src = columnUrlStr + "/" + record[columnUrlParam_name];
+              let value_param = record[columnUrlParam_name]; // 参数的值
+              if (null != value_param.key) { // 看是不是截取了字符拼成的div
+                value_param = value_param.key;
+              }
+              const src = columnUrlStr + value_param;
               return (
                 <a target="_blank" href={src}>{text}</a>
               );
@@ -217,12 +225,14 @@ class AntdTable extends PureComponent {
         if (null == value) {
           value = "";
         }
+        value = value.toString().replace('\n', ' '); // 替换换行符
         if (value.length > 12 && config.forceFit != "1") { // 如果字符大于12个的时候那就隐藏用Tooltip提示
-          value = (
-            <Tooltip title={value} placement="top">
-              <span>{value.substring(0, 12) + "..."}</span>
-            </Tooltip>
-          );
+          value =
+            <div key={value}>
+              <Tooltip title={value} placement="top">
+                <span>{value.substring(0, 12) + "..."}</span>
+              </Tooltip>
+            </div>;
         }
         obj[header[body_line_key]] = value;
       }

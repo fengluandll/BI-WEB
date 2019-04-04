@@ -1,0 +1,38 @@
+
+
+---------------------------前端BI-WEB打包--------------------------------
+
+1.文件.roadhogrc 
+正式环境  "publicPath":"https://www-cache.zhisiyun.com/smart_report/",
+minibi    "publicPath":"/",
+
+2.service文件夹
+正式路径   /smart_report/server/BI-manager
+minibi     /reportBoard/BI-manager
+
+
+
+
+
+
+--------------------------后端BI-manager打包----------------------------
+1.配置文件   application.properties
+
+正式环境
+数据库地址   spring.datasource.url
+报表地址     report.url :https://www.zhisiyun.com/smart_report/reportBoard/
+编辑地址     edit.url :https://www.zhisiyun.com/smart_report/editCharts/
+新版编辑     editBoard.url :https://www.zhisiyun.com/smart_report/editBoard/
+
+minibi
+数据库地址   spring.datasource.url
+报表地址     report.url :https://www.minibi.cn/smart_report/reportBoard/
+编辑地址     edit.url :https://www.minibi.cn/smart_report/editCharts/
+新版编辑     editBoard.url :https://www.minibi.cn/smart_report/editBoard/
+
+
+--------------------------HR系统配置url-----------------------------------------
+正式环境       https://www.zhisiyun.com/smart_report/server/BI-manager/api/reportBoard/report&&2
+minibi         https://www.minibi.cn/reportboard/BI-manager/api/reportBoard/report&&2
+
+
