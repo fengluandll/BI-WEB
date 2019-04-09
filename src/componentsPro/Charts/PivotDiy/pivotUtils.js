@@ -10,6 +10,16 @@ class PivotUtils {
         const { mChart, dateSetList, editModel, dragactStyle, idColumns } = props;
         const config = JSON.parse(mChart.config);
         const { header, body } = dateSetList;
+        // 处理null
+        // for (let key in body) {
+        //     let line = body[key];
+        //     for (let k in line) {
+        //         const value = line[k];
+        //         if (null == value) {
+        //             line[k] = " ";
+        //         }
+        //     }
+        // }
         // 字段列，基础列，大标题，指标列，全局列汇总，全局行汇总，计算字段
         const { column, base_column, col_column, cal_column, sum_col, sum_row, formula } = config;
 
@@ -308,14 +318,15 @@ class PivotUtils {
             for (let k in head_cal_name) {
                 const va = head_cal_name[k] + key;
                 const child = { "title": head_cal_name[k], "dataIndex": va, "key": va, "align": "center" };
-                if (k < head_cal_name.length - 1) { //非固定列最后一个列不能加宽度不然会出现重叠列
-                    child.width = 100;
-                }
+                child.width = 150;
                 obj.children.push(child);
                 head_for_data.push(va);
             }
             columns.push(obj);
         }
+        // 后面加一列没用的因为实在是对不齐没办法
+        const obj = { "title": "", "dataIndex": "", "key": "", "align": "center" };
+        columns.push(obj);
 
         /*****拼接数据********
          * 

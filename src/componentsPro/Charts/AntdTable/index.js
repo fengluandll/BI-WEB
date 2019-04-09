@@ -37,7 +37,18 @@ class AntdTable extends PureComponent {
   getTableData = () => {
     const { mChart, dateSetList, editModel, dragactStyle, idColumns, item } = this.props;
     const config = JSON.parse(mChart.config);
-    const { header, body } = dateSetList;
+    let { header, body } = dateSetList;
+
+    // 处理null
+    for (let key in body) {
+      let line = body[key];
+      for (let k in line) {
+        const value = line[k];
+        if (null == value) {
+          line[k] = " ";
+        }
+      }
+    }
 
     // f1 url跳转功能
     const columnUrl = config.columnUrl.split(",");
