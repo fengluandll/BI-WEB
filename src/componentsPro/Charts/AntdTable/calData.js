@@ -1,3 +1,5 @@
+import { Tooltip } from 'antd';
+
 
 /***
  * 数据中间层
@@ -47,7 +49,7 @@ export default class CalData {
                 obj.fixed = "none";
             }
             // f3 设置每列的宽度
-            if (forceFit != "1" && key != header.length - 1) { // 如果不是自适应的情况下要显固定头部那么除了最后一列不舍宽度，其他都要设置宽度
+            if (forceFit != "1" && key != head.length - 1) { // 如果不是自适应的情况下要显固定头部那么除了最后一列不舍宽度，其他都要设置宽度
                 obj.width = 200;  // 后期改成根据每列的最大字符数来控制
             }
             // f4 被关联字段要加特殊样式 和 点击事件
@@ -87,7 +89,8 @@ export default class CalData {
      * 
      * 
      * ***/
-    getTableData = (dataParam) => {
+    getTableData = (dataParam, props) => {
+        const { onPlotClickAntTable, mChart } = props;
         const { head, body } = dataParam;
         const tableDate = {}; // 拼接好的参数对象
         /***制造列***/
@@ -130,10 +133,11 @@ export default class CalData {
             if (null != plotParam) {
                 obj.render = (text, record, index) => {
                     return (
-                        <div style={style} onClick={this.onPlotClickAntTable.bind(this, id, text)}>{text}</div>
+                        <div style={style} onClick={onPlotClickAntTable.bind(this, key, text, mChart.id)}>{text}</div>
                     );
                 }
             }
+            columns.push(obj);
         }
         /***制造数据***/
         const data = [];

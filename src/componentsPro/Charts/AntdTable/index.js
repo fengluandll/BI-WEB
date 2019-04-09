@@ -34,7 +34,7 @@ class AntdTable extends PureComponent {
     onExport(mChart.id);
   }
   /***制造参数和列***/
-  getTableData = () => {
+  getTableData2 = () => {
     const { mChart, dateSetList, editModel, dragactStyle, idColumns, item } = this.props;
     const config = JSON.parse(mChart.config);
     let { header, body } = dateSetList;
@@ -251,6 +251,13 @@ class AntdTable extends PureComponent {
     }
     tableDate["columns"] = columns;
     tableDate["data"] = data;
+    return tableDate;
+  }
+
+
+  getTableData = () => {
+    const data = calData.cal(this.props);
+    const tableDate = calData.getTableData(data, this.props);
     return tableDate;
   }
 

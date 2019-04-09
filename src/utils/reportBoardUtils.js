@@ -306,6 +306,7 @@ class ReportBoardUtils {
         } else if (type == "table" || type == "antdTable" || type == "pivotDiy") {
             fakeData = {
                 header: ['列一', '列二', '列三', '列四', '列五', '列六'],
+                head: [{}, {}, {}, {}, {}, {}],
                 body: [
                     [10, 11, 12, 13, 15, 16],
                     [10, 11, 12, 13, 15, 16],
