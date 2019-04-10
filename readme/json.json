@@ -46,9 +46,9 @@
 
 {// chart relation  图表的时候
 	"relation":{
-		"bec833ac41d07e44084c0888e227bb99":{ // key是搜索框查询条件的uuuid
+		"2b9fa9714a48d5063c2bb830f770edf2":{ // key被关联图表的关联uuuid
 			"relationFields":{
-				"a75505bbe0b0d121c4b63c9d950548d8":["a75505bbe0b0d121c4b63c9d950548d8:184754009d976baf6cad6f57618e2024"], // 图表之间的关联key为图表关联字段的id,value是被关联图表的被关联字段的id
+				"f06c12f6313686845d24e51099446682":["f06c12f6313686845d24e51099446682:2b9fa9714a48d5063c2bb830f770edf2"], // 图表之间的关联key为图表关联字段的id,value是被关联图表的被关联字段的id
 			}
 		},
 	}
