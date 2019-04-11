@@ -163,8 +163,8 @@
 		{
 			"...RsColumnConf", // RsColumnConf的所有属性字段都放进来,后面的属性是后面在拼接加上去的
 			"url":{  // 是否是url跳转字段,有值就是url跳转。值{}
-				"param":"", // 跳转参数列的id,目前是一个id以后可以是数组id
-				"url":"", // 跳转的url
+				"param_id":"", // 跳转参数列的id,目前是一个id以后可以是数组id
+				"param_url":"", // 跳转的url
 			},  
 			"fixed":"left", // 是否固定列, left,right,none
 			"width":"", // 每列宽度

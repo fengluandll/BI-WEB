@@ -33,8 +33,8 @@ export default class CalData {
             const obj = { "rsColumnConf": rsColumnConf, "align": "center" };
             // f1 判断是否url跳转列
             const columnUrl_arr = columnUrl.split(",");
-            if (columnUrl_arr.indexOf(id) > 0) { // 该列是跳转url列
-                const obj_url = { param: columnUrlParam, url: columnUrlStr }; // url的json
+            if (columnUrl_arr.indexOf(id) >= 0) { // 该列是跳转url列
+                const obj_url = { param_id: columnUrlParam, param_url: columnUrlStr }; // url的json
                 obj.url = obj_url;
             }
             // f2 固定列
@@ -98,7 +98,7 @@ export default class CalData {
      * 
      * ***/
     getTableData = (dataParam, props) => {
-        const { onPlotClickAntTable, mChart } = props;
+        const { onPlotClickAntTable, mChart, idColumns } = props;
         const { head, body } = dataParam;
         const tableDate = {}; // 拼接好的参数对象
         /***制造列***/
@@ -123,9 +123,10 @@ export default class CalData {
             const obj = { "title": rsc_display, "dataIndex": rsc_display, "key": rsc_display, "align": obj_head.align };
             // f1 判断跳转
             if (null != url) {
-                const { param, url } = url;
+                const { param_id, param_url } = url;
                 obj.render = (text, record, index) => {
-                    const src = url + "/" + record[param];
+                    const value = record[idColumns[param_id].rsc_display]; // 拿出参数列的参数
+                    const src = param_url + value.key; // tootip外层套了div取它的key
                     return (
                         <a target="_blank" href={src}>{text}</a>
                     );
@@ -158,21 +159,23 @@ export default class CalData {
                 const { rsColumnConf } = head[k]; // 每列数据取出列标题中文
                 const line_obj = body_line[k]; // 每个中间数据
                 let { value, style, tooltip } = line_obj;
+                let content = value; // tootip显示的样式
                 if (null != style) { // 加样式--可能是值预警的样式
-                    value = (
+                    content = (
                         <span style={style}>
                             {value}
                         </span>
                     );
                 }
                 if (null != tooltip) { // 显示tooltip
-                    value = (
-                        <Tooltip title={value} placement="top">
-                            <span>{tooltip}</span>
-                        </Tooltip>
-                    );
+                    content =
+                        <div key={value}>
+                            <Tooltip title={value} placement="top">
+                                <span>{tooltip}</span>
+                            </Tooltip>
+                        </div>;
                 }
-                obj[rsColumnConf.rsc_display] = value; // 最终没什么特殊情况就是普通的显示值就行了
+                obj[rsColumnConf.rsc_display] = content; // 最终没什么特殊情况就是普通的显示值就行了
             }
             data.push(obj);
         }
