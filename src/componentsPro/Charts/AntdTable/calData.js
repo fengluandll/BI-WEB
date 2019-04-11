@@ -144,7 +144,7 @@ export default class CalData {
             if (null != plotParam) {
                 obj.render = (text, record, index) => {
                     return (
-                        <div style={style} onClick={onPlotClickAntTable.bind(this, plotParam, text.value, mChart.id)}>{text}</div>
+                        <div style={style} onClick={onPlotClickAntTable.bind(this, plotParam, text.key, mChart.id)}>{text}</div>
                     );
                 }
             }
@@ -159,13 +159,14 @@ export default class CalData {
                 const { rsColumnConf } = head[k]; // 每列数据取出列标题中文
                 const line_obj = body_line[k]; // 每个中间数据
                 let { value, style, tooltip } = line_obj;
-                let content = value; // tootip显示的样式
+                let content = <div key={value}>{value}</div>; // 默认值
                 if (null != style) { // 加样式--可能是值预警的样式
-                    content = (
-                        <span style={style}>
-                            {value}
-                        </span>
-                    );
+                    content =
+                        <div key={value}>
+                            <span style={style}>
+                                {value}
+                            </span>
+                        </div>;
                 }
                 if (null != tooltip) { // 显示tooltip
                     content =
