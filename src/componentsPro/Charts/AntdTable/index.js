@@ -318,9 +318,9 @@ class AntdTable extends PureComponent {
     if (config.forceFit == "1") { // 如果是自适应的时候就用100%
       scroll = { x: '100%' };
     } else {
-      scroll = { x: columns.length * 200, y: height - 117 };// x轴滚动是列个数乘200,y轴是根据dragact算出的高度减去图表控件额外的高度。
+      scroll = { x: columns.length * 200 - 140, y: height - 117 };// x轴滚动是列个数乘200,y轴是根据dragact算出的高度减去图表控件额外的高度。
       if (pagination == false) {
-        scroll = { x: columns.length * 200, y: height - 40 };
+        scroll = { x: columns.length * 200 - 140, y: height - 40 }; // x:长度乘以200(这个column拼上了第一列序号,序号宽是20,所以减去150正好,减140是为了x轴长度比较长而已。)
       }
     }
     return scroll;
