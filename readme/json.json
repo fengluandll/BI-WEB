@@ -153,6 +153,10 @@
 	"dataSetName":[""], // 数据集名称
 	"searchItem":"", // 搜索框子项数据Id
 	"searchJson":{"8ed337a23444b40578bbd6bc6872db12":{"id":"8ed337a23444b40578bbd6bc6872db12","type":"21","name":"集团","str_type":"2"}}, //字段配置项
+	// searchJson 
+	//数字:{id, type, name,cal(0:大于,1:大于等于,2:小于,3:小于等于,4:等于,5:不等于)}
+	// 字符串: {id, type, name,str_type(0:精确匹配,1:单选,2:复选) }
+	// 时间 { id, type, name, date_type(日期类型:0:日,1:周,2:月,3:年,4:季,), time_type(相对时间:0:相对时间,1:绝对时间), from_type(0:日期区间,1:日期), time_from(偏移时间1), time_to(偏移时间2) }
 }
 
 

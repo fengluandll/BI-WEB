@@ -1,4 +1,5 @@
 import moment from 'moment';
+import objectUtils from './objectUtils';
 
 class ReportBoardUtils {
 
@@ -476,11 +477,12 @@ class ReportBoardUtils {
     }
 
     // m_dashboard取第一次进来时候,order最小值的
-    getStyle_configByOrder = (mDashboard_old, tagName, tagNames) => {
+    getStyle_configByOrder = (mDashboard_old, mCharts, tagName, tagNames) => {
+        this.handleMdashboard_oldTimePorps(mDashboard_old, mCharts); // 处理参数时间
         let style_config = JSON.parse(mDashboard_old.style_config);
         let children = style_config.children;//m_dashboard中的children
         const keys = [];
-        for (let key in children) {// 循环每个图表
+        for (let key in children) {// 循环每个标签
             keys.push(key);
         }
         // js数组排序
@@ -516,6 +518,71 @@ class ReportBoardUtils {
         mDashboard.group_id = mDashboard_old.group_id;
         mDashboard.privilege = mDashboard_old.privilege;
         return mDashboard;
+    }
+    // mDashboard_old中所有时间参数处理为组件可以直接使用的
+    handleMdashboard_oldTimePorps = (mDashboard_old, mCharts) => {
+        let style_config = JSON.parse(mDashboard_old.style_config);
+        let children = style_config.children; // 每一个tab
+        for (let key in children) {
+            const tab_obj = children[key];
+            const child = tab_obj.children; //每个tab的图表
+            for (let k in child) {
+                const { chartId, type, relation } = child[k]; // 每个图表
+                if (type == "search") {
+                    for (let key_relation in relation) { // 循环每个relation {key:column_id,value:{}}
+                        let { props } = relation[key_relation]; // 找到props
+                        const mChart = this.getMChartByChartId(mCharts, chartId);
+                        const { searchJson } = JSON.parse(mChart.config);
+                        const search_value = searchJson[key_relation]; // mchart中对象的json配置
+                        const { id, type, name, date_type, time_type, from_type, time_from, time_to } = search_value; // 配置
+                        let startTime; //开始时间
+                        let endTime; //结束时间
+                        let date_type_str = ''; // 时间类型
+                        switch (date_type) {
+                            case '0':
+                                date_type_str = 'days';
+                                break;
+                            case '1':
+                                date_type_str = 'weeks';
+                                break;
+                            case '2':
+                                date_type_str = 'months';
+                                break;
+                            case '4':
+                                date_type_str = 'months';
+                                break;
+                            default:
+                                date_type_str = 'years';
+                        }
+                        if (time_type == "0") { //相对时间
+                            if (date_type != "4") { //一般时间
+                                startTime = objectUtils.isNumber(time_from) ? moment().subtract(time_from, date_type_str) : moment();
+                                endTime = objectUtils.isNumber(time_to) ? moment().subtract(time_to, date_type_str) : moment();
+                            } else if (date_type == "4") { // 季度时间
+                                let time_start = moment(); // 当前时间开始
+                                let time_end = moment(); // 当前时间结束
+                                if (objectUtils.isNumber(time_from)) {
+                                    time_start = moment().subtract(time_from * 3, type); // 时间偏移,季度要乘3
+                                }
+                                if (objectUtils.isNumber(time_to)) {
+                                    time_end = moment().subtract(time_to * 3, type);
+                                }
+                                let currentQuarter_start = time_start.quarter(); // 当前是第几季度
+                                let currentYear_start = time_start.year(); // 当前年
+                                let currentQuarter_end = time_end.quarter(); // 当前是第几季度
+                                let currentYear_end = time_end.year(); // 当前年
+                                startTime = moment(moment(currentYear_start + '-01-01').toDate()).quarter(currentQuarter_start); // 本季度第一天
+                                endTime = moment(moment(currentYear_end + '-01-01').toDate()).quarter(currentQuarter_end); // 本季度第一天
+                            }
+                            props = [startTime, endTime];
+                        } else if (time_type == "0") { // 绝对时间不用处理
+
+                        }
+                    }
+                }
+            }
+        }
+        mDashboard_old.style_config = JSON.stringify(style_config); // 转化mDashboard_old
     }
 
     // mDashboard_old加上当前的mDashboard

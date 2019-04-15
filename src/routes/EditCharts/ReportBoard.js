@@ -71,7 +71,7 @@ class ReportBoard extends PureComponent {
                     const { mDashboard_old, tDashboard, mCharts, idColumns, user_type, user_auth } = this.props.model;
                     reportBoardUtils.addMfromT(mDashboard_old, tDashboard, user_type); //首先就将t_dashboard合进m_dashboard里面
                     const { tagName, tagNames } = this.state;
-                    const mDashboard = reportBoardUtils.getStyle_configByOrder(mDashboard_old, tagName, tagNames);
+                    const mDashboard = reportBoardUtils.getStyle_configByOrder(mDashboard_old, mCharts, tagName, tagNames); //1.选出mDashboard,2.数据处理(把所有的props时间处理好)
                     this.setState({
                         mDashboard_old,
                         mDashboard,
