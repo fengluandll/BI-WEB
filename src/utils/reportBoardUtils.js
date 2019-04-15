@@ -613,9 +613,12 @@ class ReportBoardUtils {
     addDataListForPageLoadAntdTable = (data, dataList) => {
         let data_mid = data; // 数据返回
         for (let key in data) {
-            const { head, header, body } = data[key];
+            const { head, header, body, searchAntdTable } = data[key];
+            const { start, end, total } = searchAntdTable;
             const dataList_one = dataList[key];
-            data_mid[key].body = dataList_one.head.concat(body); // 只要叠加body数据,head不用叠加
+            if (start == dataList_one.body.length) {
+                data_mid[key].body = dataList_one.body.concat(body); // 只要叠加body数据,head不用叠加
+            }
         }
         return data_mid;
     }
@@ -790,7 +793,7 @@ class ReportBoardUtils {
             }
             // 放入antdtable的分页参数
             if (type == "antdTable") {
-                const searchAntdTable = { start: 0, end: 49 }; // pageLoade_param为空说明:这是antdTable第一次查询
+                const searchAntdTable = { start: 0, end: 50 }; // pageLoade_param为空说明:这是antdTable第一次查询
                 if (null != pageLoade_param) {  // antdTable的分页查询
                     searchAntdTable.start = pageLoade_param.start;
                     searchAntdTable.end = pageLoade_param.end;

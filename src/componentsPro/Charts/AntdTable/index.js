@@ -273,14 +273,14 @@ class AntdTable extends PureComponent {
       if (total > 50 && pageLoadeFlag == true) {
         pageLoadeFlag = false; // 防止重复点击flag设置为false
         const searchAntdTable = {}; // antdTable参数对象
-        if (end < total - 1 && end + 50 <= total) { // 下个end比total小
-          searchAntdTable.start = end + 1;
+        if (end < total - 1 && end + 50 <= total) { // end比total小
+          searchAntdTable.start = end;
           searchAntdTable.end = end + 50;
           searchAntdTable.chartId = mChart.id;
           searchData(null, searchAntdTable); // 调用查询接口
         } else if (end < total - 1 && end + 50 > total) { // 下个end比total大,一次就能查完
-          searchAntdTable.start = end + 1;
-          searchAntdTable.end = total - 1;
+          searchAntdTable.start = end;
+          searchAntdTable.end = total;
           searchAntdTable.chartId = mChart.id;
           searchData(null, searchAntdTable); // 调用查询接口
         }
