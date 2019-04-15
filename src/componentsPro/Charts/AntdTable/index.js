@@ -7,7 +7,13 @@ import styles from '../index.less';
 
 const calData = new CalData();
 
+let pageLoadeFlag = true; // 防止重复提交flag
+
 class AntdTable extends PureComponent {
+  constructor(props) {
+    super(props);
+
+  }
 
   componentDidMount() {
   }
@@ -254,7 +260,41 @@ class AntdTable extends PureComponent {
     return tableDate;
   }
 
+  /***
+   * antdtable瀑布加载事件
+   * 
+   * ***/
+  onScrollLoad = (index, value) => {
+    const { mChart, dateSetList, editModel, dragactStyle, idColumns, searchData } = this.props;
+    const { start, end, total } = dateSetList.searchAntdTable; // 分页参数(start:分页开始,end:分页结束,total:总计)
+    if (total > 50 && parseInt(index) > parseInt(end - 7)) { // 如果鼠标移动到 比所有的少 比当前最后数据-6多 那就出发查询加载
+      console.log(index);
+      // 下面开始拼接参数调用查询回调函数
+      if (total > 50 && pageLoadeFlag == true) {
+        pageLoadeFlag = false; // 防止重复点击flag设置为false
+        const searchAntdTable = {}; // antdTable参数对象
+        if (end < total - 1 && end + 50 <= total) { // 下个end比total小
+          searchAntdTable.start = end + 1;
+          searchAntdTable.end = end + 50;
+          searchAntdTable.chartId = mChart.id;
+          searchData(null, searchAntdTable); // 调用查询接口
+        } else if (end < total - 1 && end + 50 > total) { // 下个end比total大,一次就能查完
+          searchAntdTable.start = end + 1;
+          searchAntdTable.end = total - 1;
+          searchAntdTable.chartId = mChart.id;
+          searchData(null, searchAntdTable); // 调用查询接口
+        }
+        setTimeout(() => {
+          pageLoadeFlag = true;
+        }, 5000); // 等待五秒
+      }
+    }
+  }
 
+  /***
+   * 获取数据
+   * 
+   * ***/
   getTableData = () => {
     const data = calData.cal(this.props);
     const tableDate = calData.getTableData(data, this.props);
@@ -344,13 +384,22 @@ class AntdTable extends PureComponent {
           {/***head***/}
           {this.getHeadDiv()}
         </div>
-        <div style={{ overflow: 'auto', height: height }}>
+        <div style={{ overflow: 'auto', height: height }} >
           <Table
             columns={columns}
             dataSource={data}
             scroll={scroll}
             pagination={pagination}
             size={"middle"}
+            onRow={(record, rowkey) => {
+              return {
+                onClick: (event) => { },       // 点击行
+                onDoubleClick: (event) => { }, // 双点击行
+                onContextMenu: (event) => { },
+                onMouseEnter: (event) => { this.onScrollLoad(rowkey, record) },  // 鼠标移入行
+                onMouseLeave: (event) => { } // 鼠标离开
+              };
+            }}
           />
         </div>
       </div>

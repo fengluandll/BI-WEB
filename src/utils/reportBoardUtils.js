@@ -605,6 +605,20 @@ class ReportBoardUtils {
 
         }
     }
+    /***
+     * 分页加载数据,合并数据操作
+     * 
+     * 参数: data:查询返回参数;dataList:总的数据
+     * ***/
+    addDataListForPageLoadAntdTable = (data, dataList) => {
+        let data_mid = data; // 数据返回
+        for (let key in data) {
+            const { head, header, body } = data[key];
+            const dataList_one = dataList[key];
+            data_mid[key].body = dataList_one.head.concat(body); // 只要叠加body数据,head不用叠加
+        }
+        return data_mid;
+    }
 
     /***************************plot***************************************/
     // 将点击plot后要查询的图表id放入plotChartId
@@ -647,13 +661,15 @@ class ReportBoardUtils {
     /*****************************search_start*****************************************/
     /***
      * 拼接查询所需要的json
-     * param: search_type{ "search":初始化和搜索框查询,"plot":"点击plot查询"}
+     * param: search_type{ "init":初始化和搜索框查询,"plot":"点击plot查询"}
      * value_plot{ 被点击的chart的参数[字段id,值,mchartid],没点击就是空}
+     * plotChartId{ 放入plot点击时候被查询的参数 }
+     * pageLoade_param { 分页查询用到的参数 searchAntdTable:start,end,total}
      * report_id { 请求的reportId }
      * search_id { 搜索框图表的id }
      * mDashboard { 你懂的 }
      * **/
-    getSearchJson = (search_type, value_plot, plotChartId, report_id, mDashboard, mDashboard_old, mCharts, idColumns) => {
+    getSearchJson = (search_type, value_plot, plotChartId, pageLoade_param, report_id, mDashboard, mDashboard_old, mCharts, idColumns) => {
         const style_config = JSON.parse(mDashboard.style_config);
         const style_config_old = JSON.parse(mDashboard_old.style_config);
         const json = { report_id: report_id, name: style_config.name, children: [], dataSet: style_config_old.dataSet, dataSetRelation: style_config_old.dataSetRelation }; // 总的json
@@ -719,8 +735,9 @@ class ReportBoardUtils {
         // 开始循环每个chart图表
         for (let i = 0; i < children.length; i++) {
             const { chartId, name, relation, type } = children[i];
-            // 排除搜索框和 点击plot的时候没有被关联的图表
-            if (type == "search" || type == "text" || (search_type == "plot" && null != value_plot && plotChartId.indexOf(chartId) < 0)) {
+            // 排除 搜索框 文本控件 点击plot的时候没有被关联的图表 pageLoade_param不为空的时候只有当前antdtable
+            if (type == "search" || type == "text" || (search_type == "plot" && null != value_plot && plotChartId.indexOf(chartId) < 0)
+                || (null != pageLoade_param && chartId != pageLoade_param.chartId)) {
                 continue;
             }
             const json_chart = { chart_id: chartId, name: name, params_search: {}, params_plot: {} }; // 每个chart图表的json
@@ -770,6 +787,15 @@ class ReportBoardUtils {
                         }
                     }
                 }
+            }
+            // 放入antdtable的分页参数
+            if (type == "antdTable") {
+                const searchAntdTable = { start: 0, end: 49 }; // pageLoade_param为空说明:这是antdTable第一次查询
+                if (null != pageLoade_param) {  // antdTable的分页查询
+                    searchAntdTable.start = pageLoade_param.start;
+                    searchAntdTable.end = pageLoade_param.end;
+                }
+                json_chart.searchAntdTable = searchAntdTable;
             }
             // 最后把chart放入总json
             json.children.push(json_chart);

@@ -368,12 +368,12 @@ class EditAntdTable extends PureComponent {
                     >
                         <Switch checked={config.border == "1" ? true : false} onChange={this.handleChangeInput.bind(this, "border")} />
                     </Form.Item>
-                    <Form.Item
+                    {/* <Form.Item
                         label="自适应"
                         {...formItemLayout}
                     >
                         <Switch checked={config.forceFit == "1" ? true : false} onChange={this.handleChangeInput.bind(this, "forceFit")} />
-                    </Form.Item>
+                    </Form.Item> */}
                     <Form.Item
                         label="显示头部"
                         {...formItemLayout}

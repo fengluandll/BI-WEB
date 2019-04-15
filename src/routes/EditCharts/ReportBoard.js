@@ -43,8 +43,8 @@ class ReportBoard extends PureComponent {
 
             refreshUI: 0,   //   state 用来刷新ui 
             rightProps: {},      //   右侧选择框的参数 type mChart name(m_dashboard图表中的id)
-            spinning: false,   // 是否显示加载中
-            refreshType: "init",  // "init":初始化刷新图表显示fack数据,"search":搜索框查询开始填充真实数据,"plot"：plot点击查询开始填充真实数据,
+            spinning: false,   // 是否显示加载中,这个state中的spinning用来控制全局是否可点击,图表的加载中spinning用的是局部变量spinning(有两个spinnng不一样)
+            refreshType: "init",  // "init":初始化刷新图表显示fack数据,"search":搜索框查询开始填充真实数据,"plot"：plot点击查询开始填充真实数据,pageLoade是分页查询(鼠标下滑触发的查询),
 
             editModel: "false",   // 是否编辑模式
             dragMoveChecked: false,  // 是否静止dragact移动，移动就点击无法显示右侧的编辑界面。
@@ -106,12 +106,17 @@ class ReportBoard extends PureComponent {
     componentWillUnmount() {
 
     }
+    /***
+     * 初始化和切换tab时候请求数据
+     * 
+     * 
+     * ***/
     fetchData = (boardId, mDashboard, mDashboard_old, mCharts, idColumns) => {
         // 请求回结构数据后再请求图表数据 数据先请求可以快0.5秒 add by wangliu 20190111 然而出现了bug 加载后数据要是快的话spinning消除不了
         // 初始化查询清除plot
         this.plotChartId = [];
         // 拼接查询参数
-        const params = reportBoardUtils.getSearchJson("init", "", this.plotChartId, boardId, mDashboard, mDashboard_old, mCharts, idColumns);
+        const params = reportBoardUtils.getSearchJson("init", "", this.plotChartId, null, boardId, mDashboard, mDashboard_old, mCharts, idColumns);
         const { children } = params;
         this.dataListCount = children.length; // 把要查询的图表的个数赋值
         for (let key in children) {
@@ -353,7 +358,14 @@ class ReportBoard extends PureComponent {
 
 
     /****************************************展示中间仪表盘*****************************************************************/
-    //  展示中间的图表
+    /***
+     * 所有图表的展示入口
+     * 
+     * spinning:是否显示加载中的转圈;refreshType页面刷新类型;
+     * 接口设计原理:当页面初次加载、要刷新、查询数据时候,设置不同的refreshType走不同的路径,这里需要注意的时候 所有的if else控制都是为了
+     * 让需要加载数据的图表出现转圈样式,最后数据经过 查询 返回的时候 refreshType设置为 search 最后一定会走 search那个分支。
+     * 
+     * ***/
     disPlayCharts() {
         const children = JSON.parse(this.state.mDashboard.style_config).children;
         if (children && children.length > 0) {
@@ -372,7 +384,7 @@ class ReportBoard extends PureComponent {
                 } else if (this.state.refreshType == "init") { // 用来全部显示加载中的
                     spinning = true;
                     this.renderContent(item, spinning);
-                } else if (this.state.refreshType == "search") { //只有查询返回数据的图表才会走这个
+                } else if (this.state.refreshType == "search") { //只有查询返回数据的图表才会走这个(最终数据返回刷新一定会走这个)
                     const { dataList_one } = this.state;
                     let flag = false;
                     for (let key in dataList_one) {
@@ -391,6 +403,9 @@ class ReportBoard extends PureComponent {
                         });
                     }
                 } else if (this.state.refreshType == "plot" && this.plotChartId.indexOf(chartId) > -1) { // 用来plot关联的显示加载中的
+                    spinning = true;
+                    this.renderContent(item, spinning);
+                } else if (this.state.refreshType == "pageLoade" && this.plotChartId.indexOf(chartId) > -1) { // 分页加载数据,分页图表id暂时放在plptChartId中
                     spinning = true;
                     this.renderContent(item, spinning);
                 }
@@ -429,41 +444,41 @@ class ReportBoard extends PureComponent {
                 }}
 
 
-                // onDoubleClick={(e) => {
-                //     this.displayTabName();
-                //     if (this.state.editModel == 'true') {
-                //         e.target.innerHTML += `<input type="text" autofocus="autofocus" name="input" placeholder="请输入"/>`;
-                //         var box = document.getElementsByClassName('ant-tabs-tab-active ant-tabs-tab')[0].childNodes[0];
-                //         var inp = box.childNodes[2];
-                //         if (!inp) {
-                //             return;
-                //         }
-                //         inp.onblur = (e) => {
-                //             var box = document.getElementsByClassName('ant-tabs-tab-active ant-tabs-tab')[0].childNodes[0];
-                //             var inp = box.childNodes[2];
-                //             if (!inp.value) {
-                //                 box.removeChild(box.childNodes[2]);
-                //                 return;
-                //             }
-                //             const { mDashboard_old, mDashboard, tagName, tagNames } = this.state;
-                //             tabUtils.changeTabName(mDashboard_old, mDashboard, tagName, tagNames, activeKey, inp.value);
-                //             this.setState({
-                //                 mDashboard_old: mDashboard_old,
-                //                 mDashboard: mDashboard,
-                //                 editModel: editModel,
-                //                 tagName: tagName,
-                //                 tagNames: tagNames,
-                //             }, () => {
-                //                 // 刷新页面
-                //                 const text = box.childNodes[0];
-                //                 const txt = document.createTextNode(inp.value);
-                //                 box.replaceChild(txt, text);
-                //                 box.removeChild(box.childNodes[2]);
-                //             });
+            // onDoubleClick={(e) => {
+            //     this.displayTabName();
+            //     if (this.state.editModel == 'true') {
+            //         e.target.innerHTML += `<input type="text" autofocus="autofocus" name="input" placeholder="请输入"/>`;
+            //         var box = document.getElementsByClassName('ant-tabs-tab-active ant-tabs-tab')[0].childNodes[0];
+            //         var inp = box.childNodes[2];
+            //         if (!inp) {
+            //             return;
+            //         }
+            //         inp.onblur = (e) => {
+            //             var box = document.getElementsByClassName('ant-tabs-tab-active ant-tabs-tab')[0].childNodes[0];
+            //             var inp = box.childNodes[2];
+            //             if (!inp.value) {
+            //                 box.removeChild(box.childNodes[2]);
+            //                 return;
+            //             }
+            //             const { mDashboard_old, mDashboard, tagName, tagNames } = this.state;
+            //             tabUtils.changeTabName(mDashboard_old, mDashboard, tagName, tagNames, activeKey, inp.value);
+            //             this.setState({
+            //                 mDashboard_old: mDashboard_old,
+            //                 mDashboard: mDashboard,
+            //                 editModel: editModel,
+            //                 tagName: tagName,
+            //                 tagNames: tagNames,
+            //             }, () => {
+            //                 // 刷新页面
+            //                 const text = box.childNodes[0];
+            //                 const txt = document.createTextNode(inp.value);
+            //                 box.replaceChild(txt, text);
+            //                 box.removeChild(box.childNodes[2]);
+            //             });
 
-                //         }
-                //     }
-                // }}
+            //         }
+            //     }
+            // }}
 
 
             >
@@ -720,6 +735,7 @@ class ReportBoard extends PureComponent {
                         item={item}
                         onExport={this.onTableExport}
                         onPlotClickAntTable={this.onPlotClickAntTable}
+                        searchData={this.searchData}
                     />
                 </Spin>
             </div>,
@@ -922,14 +938,24 @@ class ReportBoard extends PureComponent {
         });
     }
 
-    //  点击搜索查询
-    searchData = (value) => {
+    /***
+     * 搜索查询 plot查询 分页查询 接口
+     * param:{
+     * value:plot的值,
+     * searchAntdTable:分页查询参数,
+     * }
+     * 
+     * ***/
+    searchData = (value, searchAntdTable) => {
         let refreshType = "init"; // 刷新类型
-        if (null == value) { // value为null说明是搜索框搜索
-            this.plotChartId = []; // 搜索框查询清除plot
-            refreshType = "init"; // 搜索开始设置为加载中
-        } else {
+        if (null != searchAntdTable) { // antdtable分页查询
+            this.plotChartId = [];
+            this.plotChartId = searchAntdTable.chartId; // 分页图表id暂时先放在plotChartId里面
+            refreshType = "pageLoade";
+        } else if (null != value) { // plot点击查询
             refreshType = "plot";
+        } else { // 搜索框查询
+            this.plotChartId = []; // 搜索框查询清除plot
         }
         // 跟新refreshType状态
         this.setState({
@@ -937,7 +963,7 @@ class ReportBoard extends PureComponent {
             spinning: true, // 设置不能点击
         });
         // 拼接查询参数
-        const params = reportBoardUtils.getSearchJson("plot", value, this.plotChartId, this.boardId, this.state.mDashboard, this.state.mDashboard_old, this.state.mCharts, this.state.idColumns);
+        const params = reportBoardUtils.getSearchJson("plot", value, this.plotChartId, searchAntdTable, this.boardId, this.state.mDashboard, this.state.mDashboard_old, this.state.mCharts, this.state.idColumns);
         const { children } = params;
         this.dataListCount = children.length; // 把要查询的图表的个数赋值
         for (let key in children) {
@@ -956,9 +982,13 @@ class ReportBoard extends PureComponent {
                 payload: {
                     params: params_one,
                     callback: (data) => {
-                        const dataList = reportBoardUtils.addDataList(this.state.dataList, data);
+                        let data_mid = data; //中间处理数据
+                        if (this.state.refreshType == "pageLoade") { // 如果是分页查询类型,就把数据拼接到原来的数据上面去
+                            data_mid = reportBoardUtils.addDataListForPageLoadAntdTable(data, this.state.dataList);
+                        }
+                        const dataList = reportBoardUtils.addDataList(this.state.dataList, data_mid); // 查询的单个数据合并到总的数据里面去
                         this.setState({
-                            dataList_one: data,
+                            dataList_one: data_mid,
                             refreshType: "search", // 修改刷新类型
                             dataList, // 所有图表的数据
                         });
@@ -1287,7 +1317,7 @@ class ReportBoard extends PureComponent {
         // 修改plot查询图表id
         this.plotChartId = reportBoardUtils.changePlotChartId(plotChartId, chartId, this.state.mDashboard);
         if (this.plotChartId.length > 0) {
-            this.searchData(value);
+            this.searchData(value, null);
         }
     }
 
@@ -1309,7 +1339,7 @@ class ReportBoard extends PureComponent {
         // 修改plot查询图表id
         this.plotChartId = reportBoardUtils.changePlotChartId(plotChartId, chartId, this.state.mDashboard);
         if (this.plotChartId.length > 0) {
-            this.searchData(value);
+            this.searchData(value, null);
         }
     }
 
@@ -1360,7 +1390,7 @@ class ReportBoard extends PureComponent {
         });
         this.plotChartId.push(chart_id);
         // 拼接查询参数
-        const params = reportBoardUtils.getSearchJson("plot", null, [], this.boardId, this.state.mDashboard, this.state.mDashboard_old, this.state.mCharts, this.state.idColumns);
+        const params = reportBoardUtils.getSearchJson("plot", null, [], this.boardId, null, this.state.mDashboard, this.state.mDashboard_old, this.state.mCharts, this.state.idColumns);
         const { children } = params;
         const params_one = {};
         params_one.report_id = params.report_id;

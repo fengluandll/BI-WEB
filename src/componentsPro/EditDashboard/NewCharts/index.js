@@ -97,7 +97,7 @@ class NewCharts extends PureComponent {
         } else if (type == "7") {// 自定义table
 
         } else if (type == "21") {// antdTable
-            config.forceFit = "1";
+            config.forceFit = "0"; // 默认不要自适应
             config.column = ""; // 显示的字段，为column表的id
             config.border = "1"; // 是否显示边框, 1:显示
             config.columnUrl = ""; // 显示为url跳转的字段，格式为数组

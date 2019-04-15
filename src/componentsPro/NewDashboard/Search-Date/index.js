@@ -18,19 +18,33 @@ export default class Index extends PureComponent {
   constructor(props) {
     super(props);
     const { rela, relaJson, onChange } = this.props;
-    const arr = this.calcDate(rela.props, relaJson);
-    // 判断是否是季度
-    const startTimeDemo = relaJson.date_type == 4 ? this.startTiemAndEndTime(moment(arr[0]).format()) : arr[0];
-    const endTimeDemo = relaJson.date_type == 4 ? this.startTiemAndEndTime(moment(arr[1]).format()) : arr[1];
+    let arr = "";
+    let startTimeDemo = "";
+    let endTimeDemo = "";
+    let quarter_flag = "quarter";
+    if (relaJson.date_type == 4) { // 季度的情况
+      arr = this.calcDate(rela.props, relaJson, quarter_flag);
+      startTimeDemo = this.startTiemAndEndTime(moment(arr[0]).format());
+      endTimeDemo = this.startTiemAndEndTime(moment(arr[1]).format());
+    } else {
+      quarter_flag = "";
+      arr = this.calcDate(rela.props, relaJson, quarter_flag);
+      startTimeDemo = arr[0];
+      endTimeDemo = arr[1];
+    }
     // 参数先放到state里
     this.state = {
       startTime: startTimeDemo,
       endTime: endTimeDemo,
     };
     // 将计算好的时候同步到父组件中
-    onChange([startTimeDemo, endTimeDemo]);
+    onChange([moment(arr[0]).format(), moment(arr[1]).format()]);
   }
-  // 返回季度方法
+
+  /***
+   * 返回季度方法,这个返回的值是直接给控件用的,传递给查询参数的不能用这个。
+   * 
+   * ***/
   startTiemAndEndTime(date) {
     let time = null;
     if (date) {
@@ -65,7 +79,7 @@ export default class Index extends PureComponent {
   /***
    * 初始化的时候计算时间
    * ***/
-  calcDate = (val, relaJson) => {
+  calcDate = (val, relaJson, quarter_flag) => {
     const { from_type, time_from, time_to, date_type, time_type } = relaJson;
     let startTime = null;
     let endTime = null;
@@ -96,6 +110,22 @@ export default class Index extends PureComponent {
       endTime = objectUtils.isNumber(time_to)
         ? moment().subtract(time_to, type)
         : moment();
+      if (quarter_flag == "quarter") {
+        let time_start = moment(); // 当前时间开始
+        let time_end = moment(); // 当前时间结束
+        if (objectUtils.isNumber(time_from)) {
+          time_start = moment().subtract(time_from * 3, type); // 时间偏移,季度要乘3
+        }
+        if (objectUtils.isNumber(time_to)) {
+          time_end = moment().subtract(time_to * 3, type);
+        }
+        let currentQuarter_start = time_start.quarter(); // 当前是第几季度
+        let currentYear_start = time_start.year(); // 当前年
+        let currentQuarter_end = time_end.quarter(); // 当前是第几季度
+        let currentYear_end = time_end.year(); // 当前年
+        startTime = moment(moment(currentYear_start + '-01-01').toDate()).quarter(currentQuarter_start); // 本季度第一天
+        endTime = moment(moment(currentYear_end + '-01-01').toDate()).quarter(currentQuarter_end); // 本季度第一天
+      }
     } else {// 绝对时间
       startTime = val[0] ? moment(val[0]) : moment();
       endTime = val[1] ? moment(val[1]) : moment();
@@ -103,7 +133,10 @@ export default class Index extends PureComponent {
     return [startTime, endTime];
   };
 
-  // 计算传参进来的时间
+  /***
+   * 组件传参进来的时候,计算时间
+   * 
+   * ***/
   calcDateProps = (val, relaJson) => {
     let startTime = null;
     let endTime = null;
@@ -112,7 +145,10 @@ export default class Index extends PureComponent {
     return [startTime, endTime];
   }
 
-  // 其他时间组件change
+  /***
+   * 点击切换时间
+   * 
+   * ***/
   changeDate = (index, date) => {
     const { rela, relaJson } = this.props;
     //  时间的参数为 数组
@@ -128,7 +164,10 @@ export default class Index extends PureComponent {
     }
     this.props.onChange(rela.props);
   };
-  // 时间季度 startend
+  /***
+   * 点击切换时间(季度)
+   * 
+   * ***/
   onChangeQuarter = (index, date, dateString) => {
     const { rela, relaJson } = this.props;
     //  时间的参数为 数组
