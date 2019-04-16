@@ -44,7 +44,7 @@ class ReportBoard extends PureComponent {
             refreshUI: 0,   //   state 用来刷新ui 
             rightProps: {},      //   右侧选择框的参数 type mChart name(m_dashboard图表中的id)
             spinning: false,   // 是否显示加载中,这个state中的spinning用来控制全局是否可点击,图表的加载中spinning用的是局部变量spinning(有两个spinnng不一样)
-            refreshType: "init",  // "init":初始化刷新图表显示fack数据,"search":搜索框查询开始填充真实数据,"plot"：plot点击查询开始填充真实数据,pageLoade是分页查询(鼠标下滑触发的查询),
+            refreshType: "init",  // "init":初始化刷新图表显示fack数据,"search":搜索框查询开始填充真实数据,"plot"：plot点击查询,"pageLoade"是分页查询(鼠标下滑触发的查询),"export":excel导出
 
             editModel: "false",   // 是否编辑模式
             dragMoveChecked: false,  // 是否静止dragact移动，移动就点击无法显示右侧的编辑界面。
@@ -1385,12 +1385,12 @@ class ReportBoard extends PureComponent {
     onTableExport = (chart_id) => {
         // 跟新refreshType状态
         this.setState({
-            refreshType: "plot", // 修改刷新类型
+            refreshType: "plot", // 修改刷新类型,走plot类型,用this.plotChartId过滤图表
             spinning: true, // 设置不能点击
         });
         this.plotChartId.push(chart_id);
         // 拼接查询参数
-        const params = reportBoardUtils.getSearchJson("plot", null, [], this.boardId, null, this.state.mDashboard, this.state.mDashboard_old, this.state.mCharts, this.state.idColumns);
+        const params = reportBoardUtils.getSearchJson("export", null, [], null, this.boardId, this.state.mDashboard, this.state.mDashboard_old, this.state.mCharts, this.state.idColumns);
         const { children } = params;
         const params_one = {};
         params_one.report_id = params.report_id;

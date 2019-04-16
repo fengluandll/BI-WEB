@@ -574,7 +574,7 @@ class ReportBoardUtils {
                                 startTime = moment(moment(currentYear_start + '-01-01').toDate()).quarter(currentQuarter_start); // 本季度第一天
                                 endTime = moment(moment(currentYear_end + '-01-01').toDate()).quarter(currentQuarter_end); // 本季度第一天
                             }
-                            props = [startTime, endTime];
+                            relation[key_relation].props = [startTime, endTime]; //修改props
                         } else if (time_type == "0") { // 绝对时间不用处理
 
                         }
@@ -791,7 +791,7 @@ class ReportBoardUtils {
         }
         // 再循环每个chart找到点击plot的relation
         let relation_plot;
-        if (search_type == "plot" && null != value_plot) {
+        if ((search_type == "plot" || search_type == "export") && null != value_plot) {
             const column_id = value_plot[0];
             const value = value_plot[1];
             const chart_id_plot = value_plot[2];
@@ -806,7 +806,7 @@ class ReportBoardUtils {
         for (let i = 0; i < children.length; i++) {
             const { chartId, name, relation, type } = children[i];
             // 排除 搜索框 文本控件 点击plot的时候没有被关联的图表 pageLoade_param不为空的时候只有当前antdtable
-            if (type == "search" || type == "text" || (search_type == "plot" && null != value_plot && plotChartId.indexOf(chartId) < 0)
+            if (type == "search" || type == "text" || ((search_type == "plot" || search_type == "export") && null != value_plot && plotChartId.indexOf(chartId) < 0)
                 || (null != pageLoade_param && chartId != pageLoade_param.chartId)) {
                 continue;
             }
@@ -826,7 +826,7 @@ class ReportBoardUtils {
             for (let key in relation_search) { // 每个key是每个搜索框子项
                 const { label, order, relationFields, props } = relation_search[key];
                 for (let key_child in relationFields) { // 每个key_child是搜索框子项关联的chart的id
-                    if (key_child == chartId && null != props && null != props[0] && search_type == "plot") { // 如果搜索框的子项有关联这个chart
+                    if (key_child == chartId && null != props && null != props[0] && (search_type == "plot" || search_type == "export")) { // 如果搜索框的子项有关联这个chart
                         json_chart.params_search[relationFields[key_child]] = props;  // 放入搜索框参数{key:value}:{"字段id":"参数值"}
                     } else if (key_child == chartId && null != search_time_param && search_type == "init") {// 如果是初始化的时候
                         // 默认先用props里的默认参数赋值
@@ -845,7 +845,7 @@ class ReportBoardUtils {
                 }
             }
             // 再放plot点击的参数
-            if (search_type == "plot" && null != value_plot) {
+            if ((search_type == "plot" || search_type == "export") && null != value_plot) {
                 const column_id = value_plot[0];// 关联字段id
                 const value = value_plot[1]; // 参数值
                 const chart_id_plot = value_plot[2]; // 被点击图表chart id
@@ -859,7 +859,7 @@ class ReportBoardUtils {
                 }
             }
             // 放入antdtable的分页参数
-            if (type == "antdTable") {
+            if (type == "antdTable" && search_type != "export") { // 分页参数是靠这边json控制,导出excel的时候不分页
                 const searchAntdTable = { start: 0, end: 50 }; // pageLoade_param为空说明:这是antdTable第一次查询
                 if (null != pageLoade_param) {  // antdTable的分页查询
                     searchAntdTable.start = pageLoade_param.start;
