@@ -267,7 +267,9 @@ class AntdTable extends PureComponent {
   onScrollLoad = (index, value) => {
     const { mChart, dateSetList, editModel, dragactStyle, idColumns, searchData } = this.props;
     const { start, end, total } = dateSetList.searchAntdTable; // 分页参数(start:分页开始,end:分页结束,total:总计)
-    if (total > 50 && parseInt(index) > parseInt(end - 7)) { // 如果鼠标移动到 比所有的少 比当前最后数据-6多 那就出发查询加载
+    const height = this.getHeight();
+    const minus = height / 26; // 一页展示的行数(滑动到最后一页的时触发加载) 按照一页二十行的标准算的
+    if (total > 50 && parseInt(index) > parseInt(end - minus)) { // 如果鼠标移动到 比所有的少 比当前最后数据-一页数据多 那就出发查询加载
       console.log(index);
       // 下面开始拼接参数调用查询回调函数
       if (total > 50 && pageLoadeFlag == true) {
@@ -397,7 +399,7 @@ class AntdTable extends PureComponent {
                 onDoubleClick: (event) => { }, // 双点击行
                 onContextMenu: (event) => { },
                 onMouseEnter: (event) => { this.onScrollLoad(rowkey, record) },  // 鼠标移入行
-                onMouseLeave: (event) => { } // 鼠标离开
+                onMouseLeave: (event) => { this.onScrollLoad(rowkey, record) } // 鼠标离开
               };
             }}
           />
