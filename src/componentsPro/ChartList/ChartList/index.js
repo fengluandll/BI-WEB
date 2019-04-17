@@ -57,7 +57,7 @@ export default class Index extends PureComponent {
             arr = chartIdArrayTableDiy;
         } else if (type == "21") {
             arr = chartIdArrayAntdTable;
-        } else if (type == "21") {
+        } else if (type == "22") {
             arr = chartIdArrayPivotDiy;
         }
         //增加

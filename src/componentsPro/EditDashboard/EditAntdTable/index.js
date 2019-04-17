@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import ReactDom from 'react-dom';
-import { Form, Input, Button, Modal, Select, Switch, Checkbox, Row, Col } from 'antd';
+import { Form, Input, Button, Modal, Select, Switch, List, Checkbox, Row, Col } from 'antd';
 import SelectColumn from '../SelectColumn';
 
 class EditAntdTable extends PureComponent {
@@ -16,11 +16,17 @@ class EditAntdTable extends PureComponent {
             columnUrlParam: false,
             fixed_left: false,
             fixed_right: false,
+            warning_row: false, // 值预警-行
+            warning_col: false, // 值预警-列
             columnCheckbox: config.column, // checkbox弹出框的临时值
             columnUrlCheckbox: config.columnUrl, // checkbox弹出框的临时值
             columnUrlParamCheckbox: config.columnUrlParam, // checkbox弹出框的临时值
-            fixed_leftCheckbox: config.fixed_left,
-            fixed_rightCheckbox: config.fixed_right,
+            fixed_leftCheckbox: config.fixed_left, // checkbox弹出框的临时值
+            fixed_rightCheckbox: config.fixed_right, // checkbox弹出框的临时值
+            warning_rowData: config.warning_row == null ? [] : config.warning_row, // warning_row的临时值
+            warning_row_row: "", // warning_row row临时值
+            warning_row_formula: "", // formula 临时值
+            warning_colData: config.warning_col, // warning_col的临时值
             refreshUI: 0, // 用来刷新页面的
         };
     }
@@ -81,6 +87,14 @@ class EditAntdTable extends PureComponent {
             }
         } else if (key == "columnUrlStr") {
             config.columnUrlStr = event.target.value;
+        } else if (key == "warning_row_row") {
+            this.setState({
+                warning_row_row: event.target.value,
+            });
+        } else if (key == "warning_row_formula") {
+            this.setState({
+                warning_row_formula: event.target.value,
+            });
         }
         this.setState({
             config,
@@ -307,13 +321,61 @@ class EditAntdTable extends PureComponent {
         });
         this.selectFixed_right.refreshUI(); // 取消就调用子的方法刷新
     }
+
+    /*****************************warning_row********************************/
+
+    // 显示字段 弹出框
+    showWarning_row = () => {
+        this.setState({
+            warning_row: true,
+        });
+    }
+    // 显示字段回调函数
+    handleWarning_rowOk = () => {
+        const { warning_row_row, warning_row_formula, warning_rowData } = this.state;
+        const obj = { "row": warning_row_row, "formula": warning_row_formula };
+        warning_rowData.push(obj);
+        this.setState({
+            warning_row: false,
+            warning_rowData,
+            warning_row_row: "",
+            warning_row_formula: "",
+            refreshUI: this.state.refreshUI + 1,
+        });
+    }
+    // 取消
+    handleWarning_rowCancel = () => {
+        this.setState({
+            warning_row: false,
+            warning_row_row: "",
+            warning_row_formula: "",
+            refreshUI: this.state.refreshUI + 1,
+        });
+    }
+    // 删除计算字段
+    deleteWarning_row = (row) => {
+        let { warning_rowData } = this.state;
+        let index = 0; //要删除的下标
+        for (let key in warning_rowData) {
+            if (warning_rowData[key].row == row) {
+                index = key;
+            }
+        }
+        warning_rowData.splice(index, 1); //删除
+        this.setState({
+            warning_row: false,
+            warning_rowData,
+            refreshUI: this.state.refreshUI + 1,
+        });
+    }
     /*************************************************************/
 
 
     /***保存***/
     onSave = () => {
         const { mChart, onSave } = this.props;
-        const { config } = this.state;
+        const { config, warning_rowData } = this.state;
+        config.warning_row = warning_rowData; // 如果config里没有warning_row需要手动配置,如果有,因为warning_row是config里取出来的,所有引用类型改变原来config里的值
         onSave(JSON.stringify(config), mChart.id);
     }
 
@@ -511,6 +573,47 @@ class EditAntdTable extends PureComponent {
                                 onChange={this.handleChangeCheckboxFixed_right}
                                 ref={this.onRefSelectFixed_right}
                             />
+                        </Modal>
+                    </Form.Item>
+                    <Form.Item
+                        label="值预警"
+                        {...formItemLayout}
+                    >
+                        <Button type="primary" onClick={this.showWarning_row}>
+                            值预警-行
+                        </Button>
+                        <div>
+                            <List
+                                itemLayout="horizontal"
+                                dataSource={this.state.warning_rowData}
+                                renderItem={item => (
+                                    <List.Item actions={[<a href="javascript:void(0);" onClick={this.deleteWarning_row.bind(this, item.row)}>delete</a>]}>
+                                        <List.Item.Meta
+                                            title={item.row}
+                                            description={`行数:${item.row}-公式:${item.formula}`}
+                                        />
+                                    </List.Item>
+                                )}
+                            />
+                        </div>
+                        <Modal
+                            title="值预警-行"
+                            visible={this.state.warning_row}
+                            onOk={this.handleWarning_rowOk}
+                            onCancel={this.handleWarning_rowCancel}
+                        >
+                            <Form.Item
+                                label="行数"
+                                {...formItemLayout}
+                            >
+                                <Input placeholder="输入行数" value={this.state.warning_row_row} onChange={this.handleChangeInput.bind(this, "warning_row_row")} />
+                            </Form.Item>
+                            <Form.Item
+                                label="公式"
+                                {...formItemLayout}
+                            >
+                                <Input placeholder="输入公式内容" value={this.state.warning_row_formula} onChange={this.handleChangeInput.bind(this, "warning_row_formula")} />
+                            </Form.Item>
                         </Modal>
                     </Form.Item>
 

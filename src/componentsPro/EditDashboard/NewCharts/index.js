@@ -106,6 +106,8 @@ class NewCharts extends PureComponent {
             config.fixed_right = ""; // 在右侧固定的字段
             config.columnUrlParam = ""; // url的参数字段
             config.pagination = "0"; // 分页
+            config.warning_row = []; // 值预警-行
+            config.warning_col = []; // 值预警-列
         } else if (type == "22") {// pivotDiy
             config.border = "1";
             config.forceFit = "0";

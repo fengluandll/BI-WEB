@@ -21,7 +21,7 @@ export default class CalData {
     cal = (props) => {
         const { mChart, dateSetList, editModel, dragactStyle, idColumns, item } = props;
         const config = JSON.parse(mChart.config);
-        const { columnUrl, columnUrlStr, columnUrlParam, fixed_left, fixed_right, column, forceFit } = config;
+        const { columnUrl, columnUrlStr, columnUrlParam, fixed_left, fixed_right, column, forceFit, warning_row } = config;
         const { head, body } = dateSetList;
         const head_ret = []; // 返回值head
         const body_ret = []; // 返回值body
@@ -83,6 +83,17 @@ export default class CalData {
                     obj.tooltip = tooltip;
                 }
                 // f6 值预警,公式比较符合的就要不同颜色显示
+                const formula = this.warningRow(key, warning_row); // 获取判断公式
+                try {
+                    let value_cal = value.replace(/%/g, ""); // 计算value, 先去掉%
+                    const ret = /^[0-9]+.?[0-9]*$/; // 正则表达式判断是否是数字
+                    if (null != formula && "" != formula && ret.test(value_cal) && eval(value_cal + formula)) { // 如果满足判断公式 value+公式 执行了为true
+                        const style = { color: "red" };
+                        obj.style = style;
+                    }
+                } catch (e) { // 打印异常信息
+                    console.log(" antdTable f6 eval error, and messege is : " + e);
+                }
                 line_obj.push(obj);
             }
             body_ret.push(line_obj); // 返回的行数据放入返回的总数据里面
@@ -200,6 +211,21 @@ export default class CalData {
             const { id } = rsColumnConf;
             if (fixed_left_arr.indexOf(id) < 0 && fixed_right_arr.indexOf(id) < 0) { // 不是固定列
                 ret = key; // 不是固定列的最后一个字段
+            }
+        }
+        return ret;
+    }
+    /***
+     * 判断这行是否要行预警
+     * 
+     * ***/
+    warningRow = (key, warning_row) => {
+        let ret = ""; // 返回值
+        for (let index in warning_row) {
+            const obj = warning_row[index];
+            const { row, formula } = obj;
+            if (key == parseInt(row)) { // 如果行的下标等于row的值
+                ret = formula;
             }
         }
         return ret;
