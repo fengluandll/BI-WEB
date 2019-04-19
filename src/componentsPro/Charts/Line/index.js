@@ -19,7 +19,7 @@ class Line extends PureComponent {
     this.node = n;
   };
   renderEmpty = (height) => {
-    return (<div style={{height:height+4}} className={styles.empty}><span>No data</span></div>);
+    return (<div style={{ height: height + 4 }} className={styles.empty}><span>No data</span></div>);
   };
 
   renderChart() {
@@ -96,6 +96,15 @@ class Line extends PureComponent {
       point.color(color);
     }
 
+    // 在线的最后加上图例名称备注
+    if (null != config.line_legend && config.line_legend == "1") {
+      const x_first = dateSetList[dateSetList.length - 1].x;
+      line.label(`${x}*${y}*${color}`, (x, y, color) => {
+        if (x == x_first) {
+          return color; // something
+        }
+      });
+    }
     chart.render();
 
     // plot点击事件

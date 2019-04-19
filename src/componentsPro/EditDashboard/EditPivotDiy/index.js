@@ -39,9 +39,23 @@ class EditPivotDiy extends PureComponent {
         const { mChart } = nextProps;
         const config = JSON.parse(mChart.config);
         this.state = {
-            mChart,
-            config,
+            mChart, // mChart对象
+            config, // config对象
+            column: false, // 显示字段的弹出框是否开启
+            base_column: false, // 行组，显示在头部的固定列
+            col_column: false, // 列组,显示在右侧的头部大标题
+            cal_column: false, // 指标组，用来计算的组
+            formula: false, // 计算公式
+            columnCheckbox: config.column, // checkbox弹出框的临时值
+            base_columnCheckbox: config.base_column,
+            col_columnCheckbox: config.col_column,
+            cal_columnCheckbox: config.cal_column,
             refreshUI: 0, // 用来刷新页面的
+            formula_name: "", // 计算公式新增的临时值
+            formula_value: "", // 计算公式新增的临时值
+            decimal: "", // 计算公式新增的临时值小数位
+            format: "", // 计算公式新增的临时值格式化
+            formulaData: config.formula, //计算公式临时值
         };
     }
 

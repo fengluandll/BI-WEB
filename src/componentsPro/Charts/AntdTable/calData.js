@@ -115,10 +115,10 @@ export default class CalData {
         /***制造列***/
         const columns = [];
         const first_col = {
-            title: () => '序号',
+            title: () => '序号不重复', // 这么写不会有其他字段中文重复,哈哈
             width: '50px',
-            dataIndex: '序号',
-            key: '序号',
+            dataIndex: '序号不重复',
+            key: '序号不重复',
             fixed: 'left',
             render: (text, record, index) => {
                 return (

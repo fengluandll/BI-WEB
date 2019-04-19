@@ -111,7 +111,7 @@
 	"pageLoade":false, // 是否分页加载
 	"warning_row":[{"row":0,"formula":""}, // 值预警行数, 数组放多个行 每行{row:行数,formula:公式}
 	"warning_col":[{"col":0,"formula":""}, // 值预警列数
-}
+	}
 
 
 {  // pivotDiy
@@ -147,6 +147,7 @@
 	"measure":"", // 度量
 	"color":"", // 图例
 	"order":"Y", // 按xy轴排序默认是y轴
+	"line_legend": // 折线图是否在最后一个节点显示图例信息
 }
 
 { // search

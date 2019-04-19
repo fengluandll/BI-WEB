@@ -41,8 +41,24 @@ class EditAntdTable extends PureComponent {
         const { mChart } = nextProps;
         const config = JSON.parse(mChart.config);
         this.state = {
-            mChart,
-            config,
+            mChart, // mChart对象
+            config, // config对象
+            column: false, // 显示字段的弹出框是否开启
+            columnUrl: false, // 跳转地址
+            columnUrlParam: false,
+            fixed_left: false,
+            fixed_right: false,
+            warning_row: false, // 值预警-行
+            warning_col: false, // 值预警-列
+            columnCheckbox: config.column, // checkbox弹出框的临时值
+            columnUrlCheckbox: config.columnUrl, // checkbox弹出框的临时值
+            columnUrlParamCheckbox: config.columnUrlParam, // checkbox弹出框的临时值
+            fixed_leftCheckbox: config.fixed_left, // checkbox弹出框的临时值
+            fixed_rightCheckbox: config.fixed_right, // checkbox弹出框的临时值
+            warning_rowData: config.warning_row == null ? [] : config.warning_row, // warning_row的临时值
+            warning_row_row: "", // warning_row row临时值
+            warning_row_formula: "", // formula 临时值
+            warning_colData: config.warning_col, // warning_col的临时值
             refreshUI: 0, // 用来刷新页面的
         };
     }
