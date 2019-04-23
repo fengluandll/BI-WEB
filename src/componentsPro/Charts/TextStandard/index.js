@@ -3,7 +3,9 @@ import ReactDom from 'react-dom';
 import { Card, Row, Col, Icon } from 'antd';
 
 /***
+ * 标准文本控件,自己手写的0.0
  * 
+ * @author:wangliu
  * 
  * ***/
 class TextStandard extends PureComponent {

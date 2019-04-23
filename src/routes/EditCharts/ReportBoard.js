@@ -22,6 +22,13 @@ const tabUtils = new TabUtils();
 const cssUtils = new CssUtils();
 const print = new Print();
 
+/***
+ * 
+ * 报表展示主入口
+ * 
+ * @author:wangliu
+ * 
+ * ***/
 class ReportBoard extends PureComponent {
     constructor(props) {
         super(props);

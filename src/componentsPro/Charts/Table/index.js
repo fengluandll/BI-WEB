@@ -7,6 +7,12 @@ import { Icon } from 'antd';
 
 import styles from '../index.less';
 
+/****
+ * handson table
+ * 
+ * 以后准备停用
+ * 
+ * ***/
 class Table extends PureComponent {
 
   componentDidMount() {

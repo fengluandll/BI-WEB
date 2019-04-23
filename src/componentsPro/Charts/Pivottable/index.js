@@ -5,6 +5,12 @@ import 'react-pivottable/pivottable.css';
 
 import styles from '../index.less';
 
+/***
+ * pivot透视表,使用的是一个控件
+ * 
+ * @author:wangliu
+ * 
+ * ***/
 class Pivottable extends PureComponent {
 
   componentDidMount() {

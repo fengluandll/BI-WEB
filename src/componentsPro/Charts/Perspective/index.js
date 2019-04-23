@@ -7,6 +7,11 @@ import MathUtils from '../../../utils/MathUtils';
 
 import styles from '../index.less';
 
+/****
+ * 我都忘了干嘛用得了,目前没用
+ * 
+ * 这个引用的包有点大后期要把这个删了
+ * ***/
 class Perspective extends Component {
   componentDidMount() {
     this.renderDate();

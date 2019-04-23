@@ -6,6 +6,12 @@ import styles from '../index.less';
 
 const pivotUtils = new PivotUtils();
 
+/***
+ * 透视表
+ * 
+ * @author:wangliu
+ * 
+ * ***/
 class PivotDiy extends PureComponent {
 
   componentDidMount() {

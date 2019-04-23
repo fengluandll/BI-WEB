@@ -9,6 +9,12 @@ const calData = new CalData();
 
 let pageLoadeFlag = true; // 防止重复提交flag
 
+/***
+ * antdTable目前当做普通表格用
+ * 
+ * @author:wangliu
+ * 
+ * ***/
 class AntdTable extends PureComponent {
   constructor(props) {
     super(props);
