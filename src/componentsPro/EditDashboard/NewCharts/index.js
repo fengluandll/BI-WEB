@@ -118,6 +118,8 @@ class NewCharts extends PureComponent {
             config.sum_col = ""; // 全局列汇总,Y是汇总，N是不汇总
             config.sum_row = ""; // 全局行汇总,Y是汇总，N是不会总
             config.formula = []; // 计算公式
+        } else if (type == "23") {// tableDiy1
+            config.column = []; // table的字段数组
         } else if (type == "11") {//  搜索框
 
         }
@@ -171,6 +173,7 @@ class NewCharts extends PureComponent {
                                 <Select.Option key={7} value={"7"}>自定义table</Select.Option>
                                 <Select.Option key={21} value={"21"}>antdTable</Select.Option>
                                 <Select.Option key={22} value={"22"}>pivotDiy</Select.Option>
+                                <Select.Option key={23} value={"23"}>tableDiy1</Select.Option>
                                 <Select.Option key={11} value={"11"}>搜索框</Select.Option>
                             </Select>
                         </Form.Item>

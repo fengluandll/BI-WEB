@@ -131,6 +131,24 @@
    "sum_row":"", // 全局行汇总,Y是汇总，N是不会总
 }
 
+{ // tableDiy1 自定义表格
+	"name":"", // 图表名称
+	"type":"23", // 图表类型
+	"dataSetName":"",  // 图表数据集名称
+	"column":[ // 显示字段的配置字段
+		{
+			"uuuid":"", // 唯一键id
+			"id":"", // 字段id
+			"type":"", // 显示字段类型 normal:普通字段,type:分类字段
+			"type_value":"", // 如果type为type的时候,type_value就是根据type分类的值
+			"type_id":"", // 如果type为type的时候,分类字段id
+			"merge":"", // 如果type是type的时候,选择聚合方式。 种类: sum count none
+			"order":"", // 字段的排序
+		},
+	],
+}
+}
+
 { // bar line pie
 	"name":"line",
 	"type":"0",

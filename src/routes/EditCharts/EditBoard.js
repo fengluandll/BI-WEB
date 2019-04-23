@@ -7,6 +7,7 @@ import MchartsList from '../../componentsPro/EditDashboard/MchartsList';
 import EditAntdTable from '../../componentsPro/EditDashboard/EditAntdTable';
 import EditPivotDiy from '../../componentsPro/EditDashboard/EditPivotDiy';
 import EditSearch from '../../componentsPro/EditDashboard/EditSearch';
+import EditTableDiy1 from '../../componentsPro/EditDashboard/EditTableDiy1';
 import NewCharts from '../../componentsPro/EditDashboard/NewCharts';
 import { Bar, Pie, Line, Table, Pivottable, AntdTable, PivotDiy } from '../../componentsPro/Charts';
 import ReportBoardUtils from '../../utils/reportBoardUtils';
@@ -293,6 +294,19 @@ class EditBoard extends PureComponent {
             return (
                 <div>
                     <EditPivotDiy
+                        mChart={mCharts}
+                        tDashboard={this.state.tDashboard}
+                        dataSetList={this.state.dataSetList}
+                        idColumns={this.state.idColumns}
+                        onSave={this.saveConfig}
+                    />
+                </div>
+            );
+        } else if (type == "23") {
+            // tableDiy1 自定义table
+            return (
+                <div>
+                    <EditTableDiy1
                         mChart={mCharts}
                         tDashboard={this.state.tDashboard}
                         dataSetList={this.state.dataSetList}
