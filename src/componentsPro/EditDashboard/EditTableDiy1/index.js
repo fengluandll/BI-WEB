@@ -87,6 +87,24 @@ class EditTableDiy1 extends PureComponent {
     onSave = () => {
         const { onSave } = this.props;
         const { mChart, config } = this.state;
+
+        /** 保存前先制作column字段 **/
+        const { column_obj } = config;
+        let column = ""; // 先清空column
+        for (let item of column_obj) {
+            const { type, id, type_id } = item;
+            if (type == "normal") {
+                column = column + id + ",";
+            } else if (type == "type") {
+                column = column + type_id + ",";
+            }
+        }
+        if (column.length > 0) {
+            column = column.split(0, column.length - 1);
+        }
+        config.column = column;
+        /*********************************/
+
         onSave(JSON.stringify(config), mChart.id);
     }
 
@@ -110,14 +128,14 @@ class EditTableDiy1 extends PureComponent {
     // 弹窗ok回调
     handleColumnOk = () => {
         const { uuuid, id, type, type_value, type_id, merge, order, model_type, config } = this.state;
-        const { column } = config;
+        const { column_obj } = config;
         if (model_type == "new") { // 新建
             const uuuid = reportBoardUtils.getUUUID();
             // 制造json
             const obj = { uuuid: uuuid, id: id, type: type, type_value: type_value, type_id: type_id, merge: merge, order: order };
-            column.push(obj); // 放入column
+            column_obj.push(obj); // 放入column_obj
         } else if (model_type == "edite") { // 编辑
-            for (let item of column) {
+            for (let item of column_obj) {
                 if (item.uuuid == uuuid) {
                     item.id = id;
                     item.type = type;
@@ -145,9 +163,9 @@ class EditTableDiy1 extends PureComponent {
     // 编辑单个字段
     editeColumn = (uuuid) => {
         const { id, type, type_value, type_id, merge, order, config } = this.state;
-        const { column } = config;
+        const { column_obj } = config;
         let obj = {};
-        for (let item of column) {
+        for (let item of column_obj) {
             if (item.uuuid == uuuid) {
                 obj = item;
             }
@@ -169,10 +187,10 @@ class EditTableDiy1 extends PureComponent {
     // 删除单个字段
     deleteColumn = (uuuid) => {
         const { id, type, type_value, type_id, merge, order, config } = this.state;
-        const { column } = config;
-        for (let key in column) {
-            if (column[key].uuuid == uuuid) {
-                column.splice(key, 1); // 删除
+        const { column_obj } = config;
+        for (let key in column_obj) {
+            if (column_obj[key].uuuid == uuuid) {
+                column_obj.splice(key, 1); // 删除
             }
         }
         this.setState({
@@ -194,10 +212,10 @@ class EditTableDiy1 extends PureComponent {
         const id_arr = []; // id显示数组
         const type_id_arr = []; // 分类id显示数组
         for (let key in idColumns) {
-            const column = idColumns[key];  // 每个字段的对象
-            if (column.rs_t_id == dataSet.id) { // 字段的table_id 等于 数据集id
-                id_arr.push(<Option key={key} value={column.id}>{column.rsc_display}</Option>);
-                type_id_arr.push(<Option key={key} value={column.id}>{column.rsc_display}</Option>);
+            const column_obj = idColumns[key];  // 每个字段的对象
+            if (column_obj.rs_t_id == dataSet.id) { // 字段的table_id 等于 数据集id
+                id_arr.push(<Option key={key} value={column_obj.id}>{column_obj.rsc_display}</Option>);
+                type_id_arr.push(<Option key={key} value={column_obj.id}>{column_obj.rsc_display}</Option>);
             }
         }
 
@@ -302,7 +320,7 @@ class EditTableDiy1 extends PureComponent {
                         <div>
                             <List
                                 itemLayout="horizontal"
-                                dataSource={this.state.config.column}
+                                dataSource={this.state.config.column_obj}
                                 renderItem={item => (
                                     <List.Item actions={[
                                         <a href="javascript:void(0);" onClick={this.editeColumn.bind(this, item.uuuid)}>edite</a>,
