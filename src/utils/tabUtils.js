@@ -26,7 +26,7 @@ class TabUtils {
         if (user_type == "customer" && parseInt(order) < 100) { // 用户编辑的时候新建的tab最小值是100
             order = 100;
         }
-        style_config.order = 100;
+        style_config.order = order;
         const children = [];//children
         const searchObj = {};//搜索框
         searchObj.name = mChart.id.toString();
@@ -127,7 +127,7 @@ class TabUtils {
         // 取最大id
         let maxId = orders[0] || 0;
         for (let i = 0; i < orders.length; i++) {
-            if (orders[i] > maxId) {
+            if (orders[i] > maxId && orders[i] < 100) { // 100是用户建的,一般建要小于100
                 maxId = orders[i];
             } else if (orders.length > maxId) {
                 maxId = orders.length;

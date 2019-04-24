@@ -106,6 +106,11 @@ class ReportBoardUtils {
             tmpType = "pivotDiy";
             dragactW = 20;
             dragactH = 10;
+        } else if (type == "23") {
+            // tableDiy1
+            tmpType = "tableDiy1";
+            dragactW = 20;
+            dragactH = 10;
         } else if (type == "11") {
             //  搜索框
             tmpType = "search";
@@ -304,7 +309,7 @@ class ReportBoardUtils {
                 { x: '事例三', y: 17 },
                 { x: '事例四', y: 13 },
                 { x: '事例五', y: 9 },];
-        } else if (type == "table" || type == "antdTable" || type == "pivotDiy") {
+        } else if (type == "table" || type == "antdTable" || type == "pivotDiy" || type == "tableDiy1") {
             fakeData = {
                 header: ['列一', '列二', '列三', '列四', '列五', '列六'],
                 head: [{}, {}, {}, {}, {}, {}],
@@ -381,6 +386,8 @@ class ReportBoardUtils {
             type_str = "antdTable";
         } else if (type_num == 22) {
             type_str = "pivotDiy";
+        } else if (type_num == 23) {
+            type_str = "tableDiy1";
         } else if (type_num == 11) {
             type_str = "search";
         }

@@ -8,7 +8,7 @@ import TabUtils from '../../utils/tabUtils';
 import CssUtils from '../../utils/cssUtils';
 import { ChartList, TabList } from '../../componentsPro/ChartList';
 import { Relation, RelationChartsAuto, TabName, RelationTable, TabsUI } from '../../componentsPro/RelationUtil';
-import { Bar, Pie, Line, Table, Pivottable, Perspective, Text, TextStandard, TableDiy, AntdTable, PivotDiy } from '../../componentsPro/Charts';
+import { Bar, Pie, Line, Table, Pivottable, Perspective, Text, TextStandard, TableDiy, AntdTable, PivotDiy, TableDiy1 } from '../../componentsPro/Charts';
 import Print from '../../componentsPro/ReportMethod/print';
 import { Search } from '../../componentsPro/NewDashboard';
 import { Dragact } from 'dragact';
@@ -542,6 +542,8 @@ class ReportBoard extends PureComponent {
             this.renderAntdTable(item, dateSetList, mChart, spinning);
         } else if (type == "pivotDiy") {
             this.renderPivotDiy(name, dateSetList, mChart, spinning);
+        } else if (type == "tableDiy1") {
+            this.renderTableDiy1(name, dateSetList, mChart, spinning);
         }
     }
     /****************************************图形展示*****************************************************************/
@@ -756,6 +758,25 @@ class ReportBoard extends PureComponent {
             <div className={cssName}>
                 <Spin spinning={spinning}>
                     <PivotDiy
+                        dragactStyle={dragactStyle}
+                        editModel={this.state.editModel}
+                        mChart={mChart}
+                        dateSetList={dateSetList}
+                        idColumns={this.props.model.idColumns}
+                        onExport={this.onTableExport}
+                    />
+                </Spin>
+            </div>,
+            document.getElementById(name));
+    }
+    // tableDiy1
+    renderTableDiy1 = (name, dateSetList, mChart, spinning) => {
+        let cssName = cssUtils.getBIContainer(mChart);
+        const { dragactStyle } = JSON.parse(this.state.mDashboard.style_config);
+        ReactDom.render(
+            <div className={cssName}>
+                <Spin spinning={spinning}>
+                    <TableDiy1
                         dragactStyle={dragactStyle}
                         editModel={this.state.editModel}
                         mChart={mChart}
