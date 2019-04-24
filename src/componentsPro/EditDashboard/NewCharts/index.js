@@ -119,7 +119,8 @@ class NewCharts extends PureComponent {
             config.sum_row = ""; // 全局行汇总,Y是汇总，N是不会总
             config.formula = []; // 计算公式
         } else if (type == "23") {// tableDiy1
-            config.column = []; // table的字段数组
+            config.column_obj = []; // table的字段数组
+            config.column = ""; // 显示的字段，为column表的id
         } else if (type == "11") {//  搜索框
 
         }

@@ -24,6 +24,7 @@ export default class Index extends PureComponent {
             chartIdArrayTableDiy: [],
             chartIdArrayAntdTable: [],
             chartIdArrayPivotDiy: [],
+            chartIdArrayTableDiy1: [],
         };
     }
 
@@ -36,7 +37,7 @@ export default class Index extends PureComponent {
         let operateType;// 增加或者减少类型
         let chartId; // 图表Id
         let arr = [];
-        const { chartIdArrayLine, chartIdArrayBar, chartIdArrayPie, chartIdArrayTable, chartIdArrayPivottable, chartIdArrayPerspective, chartIdArrayText, chartIdArrayTextStandard, chartIdArrayTableDiy, chartIdArrayAntdTable, chartIdArrayPivotDiy } = this.state;
+        const { chartIdArrayLine, chartIdArrayBar, chartIdArrayPie, chartIdArrayTable, chartIdArrayPivottable, chartIdArrayPerspective, chartIdArrayText, chartIdArrayTextStandard, chartIdArrayTableDiy, chartIdArrayAntdTable, chartIdArrayPivotDiy, chartIdArrayTableDiy1 } = this.state;
         if (type == "0") {
             arr = chartIdArrayLine;
         } else if (type == "1") {
@@ -59,6 +60,8 @@ export default class Index extends PureComponent {
             arr = chartIdArrayAntdTable;
         } else if (type == "22") {
             arr = chartIdArrayPivotDiy;
+        } else if (type == "23") {
+            arr = chartIdArrayTableDiy1;
         }
         //增加
         if (checkValue.length > arr.length) {
@@ -122,6 +125,7 @@ export default class Index extends PureComponent {
         const arrTableDiy = [];
         const arrAntdTable = [];
         const arrPivotDiy = [];
+        const arrTableDiy1 = [];
         //  列表全部数据  mCharts 表中的
         mCharts.map((item, index) => {
             const type = reportBoardUtils.getTypeByChartId(mCharts, item.id.toString());// 获取图表类型
@@ -180,6 +184,11 @@ export default class Index extends PureComponent {
                     "label": item.name,
                     "value": item.id.toString(),
                 });
+            } else if (type == "23") {
+                arrTableDiy1.push({
+                    "label": item.name,
+                    "value": item.id.toString(),
+                });
             }
         });
         //  列表选中数据  mDashboard 表中的
@@ -194,6 +203,7 @@ export default class Index extends PureComponent {
         const chartIdArrayTableDiy = [];
         const chartIdArrayAntdTable = [];
         const chartIdArrayPivotDiy = [];
+        const chartIdArrayTableDiy1 = [];
         const children = JSON.parse(mDashboard.style_config).children;
         children.map((item, index) => {
             const type = reportBoardUtils.getTypeByChartId(mCharts, item.chartId);// 获取图表类型
@@ -219,6 +229,8 @@ export default class Index extends PureComponent {
                 chartIdArrayAntdTable.push(item.chartId);
             } else if (type == "22") {
                 chartIdArrayPivotDiy.push(item.chartId);
+            } else if (type == "23") {
+                chartIdArrayTableDiy1.push(item.chartId);
             }
         });
         // 放入state中让点击后可以有比较对象
@@ -234,6 +246,7 @@ export default class Index extends PureComponent {
             chartIdArrayTableDiy,
             chartIdArrayAntdTable,
             chartIdArrayPivotDiy,
+            chartIdArrayTableDiy1,
         });
         const content = (
             <div>
@@ -359,6 +372,17 @@ export default class Index extends PureComponent {
                                     defaultValue={chartIdArrayPivotDiy}
                                     style={{ display: 'block' }}
                                     onChange={this.addOrRemoveChart.bind(this, "22")}
+                                />
+                            </div>
+                            <div className={styles['field-name']} title="tableDiy1">
+                                <i className="anticon anticon-up" onClick={this.toogle.bind(this, 'tableDiy1')} style={{ cursor: 'pointer' }} />tableDiy1
+                            </div>
+                            <div className={styles['field-content']} ref={this.handleFieldContent.bind(this, 'tableDiy1')}>
+                                <CheckboxGroup
+                                    options={arrTableDiy1}
+                                    defaultValue={chartIdArrayTableDiy1}
+                                    style={{ display: 'block' }}
+                                    onChange={this.addOrRemoveChart.bind(this, "23")}
                                 />
                             </div>
                         </div>

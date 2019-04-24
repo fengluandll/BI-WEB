@@ -9,6 +9,7 @@ import TableDiy from './TableDiy';
 import AntdTable from './AntdTable';
 import PivotDiy from './PivotDiy';
 import TextStandard from './TextStandard';
+import TableDiy1 from './TableDiy1';
 
 export {
   Bar,
@@ -22,4 +23,5 @@ export {
   AntdTable,
   PivotDiy,
   TextStandard,
+  TableDiy1,
 };

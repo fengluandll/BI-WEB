@@ -100,7 +100,7 @@ class EditTableDiy1 extends PureComponent {
             }
         }
         if (column.length > 0) {
-            column = column.split(0, column.length - 1);
+            column = column.substring(0, column.length - 1);
         }
         config.column = column;
         /*********************************/
@@ -208,6 +208,9 @@ class EditTableDiy1 extends PureComponent {
         const { dataSetList, idColumns } = this.props;
         const { dataSetName } = config;
         const dataSet = dataSetList[dataSetName]; // 当前数据集的对象
+        if (null == dataSet) {
+            return;
+        }
 
         const id_arr = []; // id显示数组
         const type_id_arr = []; // 分类id显示数组
