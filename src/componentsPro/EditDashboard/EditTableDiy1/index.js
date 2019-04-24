@@ -32,6 +32,7 @@ class EditTableDiy1 extends PureComponent {
             type: "normal", // 字段弹出框-类型
             type_value: "", // 字段弹出框-分类值
             merge: "none", // 字段弹出框-聚合方式
+            show_id: "", // 展示字段
             order: 0, // 字段弹出框-排序
             model_type: "new", // 弹出框类型, new edite
 
@@ -76,6 +77,10 @@ class EditTableDiy1 extends PureComponent {
             this.setState({
                 order: event.target.value,
             });
+        } else if (key == "show_id") { // 展示字段
+            this.setState({
+                show_id: event,
+            });
         }
         this.setState({
             config,
@@ -92,11 +97,13 @@ class EditTableDiy1 extends PureComponent {
         const { column_obj } = config;
         let column = ""; // 先清空column
         for (let item of column_obj) {
-            const { type, id, type_id } = item;
+            const { type, id, type_id, show_id } = item;
             if (type == "normal") {
                 column = column + id + ",";
             } else if (type == "type") {
                 column = column + type_id + ",";
+            } else if (type == "show") {
+                column = column + show_id + ",";
             }
         }
         if (column.length > 0) {
@@ -127,12 +134,12 @@ class EditTableDiy1 extends PureComponent {
     }
     // 弹窗ok回调
     handleColumnOk = () => {
-        const { uuuid, id, type, type_value, type_id, merge, order, model_type, config } = this.state;
+        const { uuuid, id, type, type_value, type_id, show_id, merge, order, model_type, config } = this.state;
         const { column_obj } = config;
         if (model_type == "new") { // 新建
             const uuuid = reportBoardUtils.getUUUID();
             // 制造json
-            const obj = { uuuid: uuuid, id: id, type: type, type_value: type_value, type_id: type_id, merge: merge, order: order };
+            const obj = { uuuid: uuuid, id: id, type: type, type_value: type_value, type_id: type_id, show_id: show_id, merge: merge, order: order };
             column_obj.push(obj); // 放入column_obj
         } else if (model_type == "edite") { // 编辑
             for (let item of column_obj) {
@@ -143,6 +150,7 @@ class EditTableDiy1 extends PureComponent {
                     item.type_id = type_id;
                     item.merge = merge;
                     item.order = order;
+                    item.show_id = show_id;
                 }
             }
         }
@@ -200,11 +208,39 @@ class EditTableDiy1 extends PureComponent {
         });
     }
 
+    // column 显示list 
+    getItemTitle = (item) => {
+        const { dataSetList, idColumns } = this.props;
+        const type = item.type;
+        let rsc_display = "";
+        if (type == "normal") {
+            rsc_display = idColumns[item.id].rsc_display;
+        } else if (type == "type") {
+            rsc_display = idColumns[item.type_id].rsc_display;
+        } else if (type == "show") {
+            rsc_display = idColumns[item.show_id].rsc_display;
+        }
+        return rsc_display;
+    }
+    getItemDescription = (item) => {
+        const { dataSetList, idColumns } = this.props;
+        const type = item.type;
+        let rsc_display = "";
+        if (type == "normal") {
+            rsc_display = item.id;
+        } else if (type == "type") {
+            rsc_display = item.type_id;
+        } else if (type == "show") {
+            rsc_display = item.show_id;
+        }
+        return rsc_display;
+    }
+
     /****************************************************************************/
 
     // 展示弹出框的ui
     renderModel = () => {
-        const { id, type, type_value, type_id, merge, config } = this.state;
+        const { id, type, type_value, type_id, show_id, merge, config } = this.state;
         const { dataSetList, idColumns } = this.props;
         const { dataSetName } = config;
         const dataSet = dataSetList[dataSetName]; // 当前数据集的对象
@@ -240,7 +276,7 @@ class EditTableDiy1 extends PureComponent {
                     </Form.Item>
                 </div>
             );
-        } else {
+        } else if (type == "type") {
             return (
                 <div>
                     <Form.Item
@@ -270,6 +306,24 @@ class EditTableDiy1 extends PureComponent {
                             <Option value="none">不聚合</Option>
                             <Option value="sum">sum</Option>
                             <Option value="count">count</Option>
+                        </Select>
+                    </Form.Item>
+                </div>
+            );
+        } else if (type == "show") { // 展示字段
+            return (
+                <div>
+                    <Form.Item
+                        label="展示字段"
+                        {...formItemLayout}
+                    >
+                        <Select
+                            size="default"
+                            value={show_id}
+                            onChange={this.handleChangeInput.bind(this, "show_id")}
+                            style={{ width: 200 }}
+                        >
+                            {type_id_arr}
                         </Select>
                     </Form.Item>
                 </div>
@@ -330,8 +384,8 @@ class EditTableDiy1 extends PureComponent {
                                         <a href="javascript:void(0);" onClick={this.deleteColumn.bind(this, item.uuuid)}>delete</a>
                                     ]}>
                                         <List.Item.Meta
-                                            title={item.type == "normal" ? idColumns[item.id].rsc_display + "-基础字段" : idColumns[item.type_id].rsc_display + "-类型字段"}
-                                            description={item.type == "normal" ? `${item.id}` : `${item.type_id}`}
+                                            title={this.getItemTitle(item)}
+                                            description={this.getItemDescription(item)}
                                         />
                                     </List.Item>
                                 )}
@@ -350,6 +404,7 @@ class EditTableDiy1 extends PureComponent {
                                 <Select value={type} onChange={this.handleChangeInput.bind(this, "type")}>
                                     <Option value="normal">普通字段</Option>
                                     <Option value="type">类型字段</Option>
+                                    <Option value="show">显示字段</Option>
                                 </Select>
                             </Form.Item>
                             {this.renderModel()}
