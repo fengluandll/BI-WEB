@@ -91,6 +91,22 @@
 
 
 /************************************mCharts图表************************************/
+{
+	"mCharts对应码":"", // 1开头:搜索框,2开头:表格,3开头:图表,6开头:文本控件,0~9:历史遗留
+	"0":"line", // 折线图
+	"1":"bar", // 柱状图
+	"2":"pie", // 饼图
+	"3":"table", // handsontable
+	"4":"pivottable", // 透视表
+	"5":"perspective", // 这个不用了gg
+	"6":"text", // 文本控件
+	"61":"textStandard", // 标准文本控件,自己写的
+	"7":"tableDiy", // 自定义table,完全写死的,只能用一次
+	"21":"antdTable", // antdTable主力table
+	"22":"pivotDiy", // 透视表,自己写的
+	"23":"tableDiy1", // 自定义table1,行转列,自己写的
+	"11":"search", // 搜索框
+}
 
 { // antdTable
 	"name":"antdTable",  // 图表名称，这个在表的字段里也有
@@ -141,8 +157,8 @@
 			"uuuid":"", // 唯一键id
 			"id":"", // 字段id
 			"type":"", // 显示字段类型 normal:普通字段,type:分类字段,show:显示值字段
-			"type_value":"", // 如果type为type的时候,type_value就是根据type分类的值
 			"type_id":"", // 如果type为type的时候,分类字段id,一级标题id
+			"type_value":"", // 如果type为type的时候,type_value就是根据type分类的值
 			"type_title_id":"", // 如果type为type的时候,分类二级标题的id
 			"merge":"", // 如果type是type的时候,选择聚合方式。 种类: sum count none
 			"show_id":"", // 如果type是show,选择显示值的id

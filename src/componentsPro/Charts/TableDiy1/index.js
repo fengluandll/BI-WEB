@@ -43,15 +43,6 @@ class TableDiy1 extends PureComponent {
 
     /***
     * 
-    * 获取数据
-    * 
-    * ***/
-    getTableData = () => {
-
-    }
-
-    /***
-    * 
     * 获取高度
     * 
     * ***/
@@ -70,18 +61,9 @@ class TableDiy1 extends PureComponent {
 
     render() {
         const tableDate = this.getTableData();
-        const { columns, data } = tableDate;
-        const height = this.getHeight();
-        const scroll = this.getScroll();
+
         return (
-            <div style={{ overflow: 'auto', height: height }}>
-                <Table
-                    columns={columns}
-                    dataSource={data}
-                    scroll={scroll}
-                    pagination={false}
-                />
-            </div>
+           <div></div>
         );
     }
 }

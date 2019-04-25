@@ -28,10 +28,10 @@ class EditTableDiy1 extends PureComponent {
 
             uuuid: "", // 当前uuuid,编辑的时候才有值
             id: "", // 字段弹出框-id
-            type_id: "", // 字段弹出框-类型id
-            type_title_id: "", // 字段弹出框-类型二级标题id
             type: "normal", // 字段弹出框-类型
+            type_id: "", // 字段弹出框-类型id
             type_value: "", // 字段弹出框-分类值
+            type_title_id: "", // 字段弹出框-类型二级标题id
             merge: "none", // 字段弹出框-聚合方式
             show_id: "", // 展示字段
             order: 0, // 字段弹出框-排序
@@ -102,7 +102,7 @@ class EditTableDiy1 extends PureComponent {
         const { column_obj } = config;
         let column = ""; // 先清空column
         for (let item of column_obj) {
-            const { type, id, type_id, show_id } = item;
+            const { type, id, type_id, type_title_id, show_id } = item;
             if (type == "normal") {
                 column = column + id + ",";
             } else if (type == "type") {
@@ -127,11 +127,12 @@ class EditTableDiy1 extends PureComponent {
         this.setState({
             uuuid: "",
             id: "",
-            type_id: "",
-            type_title_id: "",
             type: "normal",
+            type_id: "",
             type_value: "",
+            type_title_id: "",
             merge: "none",
+            show_id: "",
             order: 0,
             model_type: "new", // 弹出类型 新建
             modal_column: true,
@@ -145,7 +146,7 @@ class EditTableDiy1 extends PureComponent {
         if (model_type == "new") { // 新建
             const uuuid = reportBoardUtils.getUUUID();
             // 制造json
-            const obj = { uuuid: uuuid, id: id, type: type, type_value: type_value, type_id: type_id, type_title_id: type_title_id, show_id: show_id, merge: merge, order: order };
+            const obj = { uuuid: uuuid, id: id, type: type, type_id: type_id, type_value: type_value, type_title_id: type_title_id, show_id: show_id, merge: merge, order: order };
             column_obj.push(obj); // 放入column_obj
         } else if (model_type == "edite") { // 编辑
             for (let item of column_obj) {
@@ -155,8 +156,8 @@ class EditTableDiy1 extends PureComponent {
                     item.type_value = type_value;
                     item.type_id = type_id;
                     item.merge = merge;
-                    item.order = order;
                     item.show_id = show_id;
+                    item.order = order;
                     item.type_title_id = type_title_id;
                 }
             }
@@ -186,14 +187,15 @@ class EditTableDiy1 extends PureComponent {
             }
         }
         this.setState({
-            id: obj.id,
-            type_id: obj.type_id,
-            type_title_id: obj.type_title_id,
-            type: obj.type,
-            type_value: obj.type_value,
-            merge: obj.merge,
-            order: obj.order,
             uuuid: uuuid,
+            id: obj.id,
+            type: obj.type,
+            type_id: obj.type_id,
+            type_value: obj.type_value,
+            type_title_id: obj.type_title_id,
+            merge: obj.merge,
+            show_id: obj.show_id,
+            order: obj.order,
             model_type: "edite", // 弹出类型 编辑
             modal_column: true, // 打开弹出框
             refreshUI: this.state.refreshUI + 1,
@@ -248,7 +250,7 @@ class EditTableDiy1 extends PureComponent {
 
     // 展示弹出框的ui
     renderModel = () => {
-        const { id, type, type_value, type_id, show_id, merge, config } = this.state;
+        const { id, type, type_value, type_id, type_title_id, show_id, merge, config } = this.state;
         const { dataSetList, idColumns } = this.props;
         const { dataSetName } = config;
         const dataSet = dataSetList[dataSetName]; // 当前数据集的对象
@@ -306,7 +308,7 @@ class EditTableDiy1 extends PureComponent {
                     >
                         <Select
                             size="default"
-                            value={type_id}
+                            value={type_title_id}
                             onChange={this.handleChangeInput.bind(this, "type_title_id")}
                             style={{ width: 200 }}
                         >
