@@ -29,6 +29,7 @@ class EditTableDiy1 extends PureComponent {
             uuuid: "", // 当前uuuid,编辑的时候才有值
             id: "", // 字段弹出框-id
             type_id: "", // 字段弹出框-类型id
+            type_title_id: "", // 字段弹出框-类型二级标题id
             type: "normal", // 字段弹出框-类型
             type_value: "", // 字段弹出框-分类值
             merge: "none", // 字段弹出框-聚合方式
@@ -81,6 +82,10 @@ class EditTableDiy1 extends PureComponent {
             this.setState({
                 show_id: event,
             });
+        } else if (key == "type_title_id") { // 字段弹出框-二级标题id
+            this.setState({
+                type_title_id: event,
+            });
         }
         this.setState({
             config,
@@ -101,7 +106,7 @@ class EditTableDiy1 extends PureComponent {
             if (type == "normal") {
                 column = column + id + ",";
             } else if (type == "type") {
-                column = column + type_id + ",";
+                column = column + type_id + "," + type_title_id + ",";
             } else if (type == "show") {
                 column = column + show_id + ",";
             }
@@ -123,6 +128,7 @@ class EditTableDiy1 extends PureComponent {
             uuuid: "",
             id: "",
             type_id: "",
+            type_title_id: "",
             type: "normal",
             type_value: "",
             merge: "none",
@@ -134,12 +140,12 @@ class EditTableDiy1 extends PureComponent {
     }
     // 弹窗ok回调
     handleColumnOk = () => {
-        const { uuuid, id, type, type_value, type_id, show_id, merge, order, model_type, config } = this.state;
+        const { uuuid, id, type, type_value, type_id, type_title_id, show_id, merge, order, model_type, config } = this.state;
         const { column_obj } = config;
         if (model_type == "new") { // 新建
             const uuuid = reportBoardUtils.getUUUID();
             // 制造json
-            const obj = { uuuid: uuuid, id: id, type: type, type_value: type_value, type_id: type_id, show_id: show_id, merge: merge, order: order };
+            const obj = { uuuid: uuuid, id: id, type: type, type_value: type_value, type_id: type_id, type_title_id: type_title_id, show_id: show_id, merge: merge, order: order };
             column_obj.push(obj); // 放入column_obj
         } else if (model_type == "edite") { // 编辑
             for (let item of column_obj) {
@@ -151,6 +157,7 @@ class EditTableDiy1 extends PureComponent {
                     item.merge = merge;
                     item.order = order;
                     item.show_id = show_id;
+                    item.type_title_id = type_title_id;
                 }
             }
         }
@@ -170,7 +177,7 @@ class EditTableDiy1 extends PureComponent {
 
     // 编辑单个字段
     editeColumn = (uuuid) => {
-        const { id, type, type_value, type_id, merge, order, config } = this.state;
+        const { id, type, type_value, type_id, type_title_id, merge, order, config } = this.state;
         const { column_obj } = config;
         let obj = {};
         for (let item of column_obj) {
@@ -181,6 +188,7 @@ class EditTableDiy1 extends PureComponent {
         this.setState({
             id: obj.id,
             type_id: obj.type_id,
+            type_title_id: obj.type_title_id,
             type: obj.type,
             type_value: obj.type_value,
             merge: obj.merge,
@@ -280,13 +288,26 @@ class EditTableDiy1 extends PureComponent {
             return (
                 <div>
                     <Form.Item
-                        label="ID"
+                        label="类型字段"
                         {...formItemLayout}
                     >
                         <Select
                             size="default"
                             value={type_id}
                             onChange={this.handleChangeInput.bind(this, "type_id")}
+                            style={{ width: 200 }}
+                        >
+                            {type_id_arr}
+                        </Select>
+                    </Form.Item>
+                    <Form.Item
+                        label="二级标题字段"
+                        {...formItemLayout}
+                    >
+                        <Select
+                            size="default"
+                            value={type_id}
+                            onChange={this.handleChangeInput.bind(this, "type_title_id")}
                             style={{ width: 200 }}
                         >
                             {type_id_arr}

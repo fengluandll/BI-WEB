@@ -142,7 +142,8 @@
 			"id":"", // 字段id
 			"type":"", // 显示字段类型 normal:普通字段,type:分类字段,show:显示值字段
 			"type_value":"", // 如果type为type的时候,type_value就是根据type分类的值
-			"type_id":"", // 如果type为type的时候,分类字段id
+			"type_id":"", // 如果type为type的时候,分类字段id,一级标题id
+			"type_title_id":"", // 如果type为type的时候,分类二级标题的id
 			"merge":"", // 如果type是type的时候,选择聚合方式。 种类: sum count none
 			"show_id":"", // 如果type是show,选择显示值的id
 			"order":"", // 字段的排序
