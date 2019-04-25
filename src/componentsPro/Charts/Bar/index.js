@@ -20,7 +20,7 @@ class Bar extends PureComponent {
     this.node = n;
   };
   renderEmpty = (height) => {
-    return (<div style={{height:height+4}} className={styles.empty}><span>No data</span></div>);
+    return (<div style={{ height: height + 4 }} className={styles.empty}><span>No data</span></div>);
   };
 
   renderChart1() {
@@ -103,28 +103,28 @@ class Bar extends PureComponent {
       if (config.padding) {
         padding = config.padding;
       }
-      if(config.legend == "1"){
-        if(strB > 4 && strB < 8){
+      if (config.legend == "1") {
+        if (strB >= 0 && strB <= 8) {
           padding = [26, 30, 34, 150];
         }
-        if(strB > 10 && strB < 18){
+        if (strB > 8 && strB <= 18) {
           padding = [26, 30, 84, 150];
         }
-        if(strB > 20 && strB < 40){
+        if (strB > 18 && strB <= 40) {
           padding = [26, 30, 94, 150];
         }
-      }else{
-        if(strB > 4 && strB < 8){
+      } else {
+        if (strB >= 0 && strB <= 8) {
           padding = [26, 30, 34, 50];
         }
-        if(strB > 10 && strB < 18){
+        if (strB > 8 && strB <= 18) {
           padding = [26, 30, 84, 50];
         }
-        if(strB > 20 && strB < 40){
+        if (strB > 18 && strB <= 40) {
           padding = [26, 30, 94, 50];
         }
       }
-      if(config.legend == "1" && strB === 10){
+      if (config.legend == "1" && strB === 10) {
         padding = [26, 30, 34, 150];
       }
 
