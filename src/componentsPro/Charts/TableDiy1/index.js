@@ -37,6 +37,34 @@ class TableDiy1 extends PureComponent {
     }
 
     /***
+     * 
+     * 获取头部
+     * 
+     * ***/
+    getHeadDiv = () => {
+        const { mChart } = this.props;
+        const config = JSON.parse(mChart.config);
+        if (config.head == "1") {
+            return (
+                <div style={{ height: '25px', lineHeight: '25px' }}>
+                    <div className={styles['chart-title', 'chart-titleTable']} ref={this.handleTitle}>
+                        {config.name ? config.name : ''}
+                    </div>
+                    <Icon type="download" style={{ fontSize: 16, color: '#08c', position: 'absolute', right: '20px', top: '2.5px' }}
+                        onClick={() => {
+                            this.onExport();
+                        }}
+                    />
+                </div>
+            );
+        } else {
+            return (
+                <div></div>
+            );
+        }
+    }
+
+    /***
     * 
     * 获取高度
     * 
@@ -82,13 +110,19 @@ class TableDiy1 extends PureComponent {
         const height = this.getHeight();
         const scroll = this.getScroll();
         return (
-            <div style={{ overflow: 'auto', height: height }}>
-                <Table
-                    columns={columns}
-                    dataSource={data}
-                    scroll={scroll}
-                    pagination={false}
-                />
+            <div>
+                <div>
+                    {/***head***/}
+                    {this.getHeadDiv()}
+                </div>
+                <div style={{ overflow: 'auto', height: height }}>
+                    <Table
+                        columns={columns}
+                        dataSource={data}
+                        scroll={scroll}
+                        pagination={false}
+                    />
+                </div>
             </div>
         );
     }

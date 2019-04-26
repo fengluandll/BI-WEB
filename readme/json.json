@@ -162,7 +162,6 @@
 			"type_title_id":"", // 如果type为type的时候,分类二级标题的id
 			"merge":"", // 如果type是type的时候,选择聚合方式。 种类: sum count none
 			"show_id":"", // 如果type是show,选择显示值的id
-			"order":"", // 字段的排序
 		},
 	],
 }

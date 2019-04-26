@@ -82,7 +82,9 @@ export default class CalData {
         let base_column_back_arr = []; // 基本列字段数组-后
         let type_column_id = []; // 类型列字段
         let type_column_title_id = []; // 类型列二级标题
+        let merge = ""; // sum count none 类型
         let type_value_set = new Set(); // 类型字段值set
+        let second_title_arr = []; // 二级标题名称数组,里面放set
         let show_column_id = []; // 展示列
         let base_column_data = {}; // 基本列为key的分类数据
         let head_json = []; // 头部数据json
@@ -96,6 +98,7 @@ export default class CalData {
             } if (item.type == "normalback") {
                 base_column_back_arr.push(item.id);
             } else if (item.type == "type") {
+                merge = item.merge;
                 type_column_id = [];
                 type_column_id.push(item.type_id); // 类型id只要一个
                 type_column_title_id = [];
@@ -146,13 +149,23 @@ export default class CalData {
             head_json.push(json);
         }
         const base_column_data_first = base_column_data[Object.keys(base_column_data)[0]]; // 分类数据的第一个数据
-        for (let item of type_value_set) {
+        for (let item of type_value_set) { // 找到二级标题的名称
             const json = { "name": item, "children": [] };
+            const second_title_set = new Set();
             for (let line of base_column_data_first) {
                 if (line[type_column_index] == item) {
                     const second_name = line[title_column_index]; // 找到第二级标题名称,就是show_column
-                    json.children.push(second_name);
+                    second_title_set.add(second_name);
                 }
+            }
+            second_title_arr.push(second_title_set);
+        }
+        for (let key in second_title_arr) { // 把二级标题名称放入set
+            const item = type_value_set[key];
+            const json = { "name": item, "children": [] };
+            const second_title_set = second_title_arr[key];
+            for (let second_name of second_title_set) {
+                json.children.push(second_name);
             }
             head_json.push(json);
         }
@@ -164,7 +177,10 @@ export default class CalData {
 
         // 拼接数据
         for (let key in base_column_data) { // 循环分类好的数据
-            const base_column_data_single = base_column_data[key];
+            let base_column_data_single = base_column_data[key];
+            if (merge != "none") { // 如果要聚合做聚合处理
+                base_column_data_single = this.getDataSum(base_column_data_single, merge, type_value_set, second_title_arr, type_column_index, title_column_index, show_column_index);
+            }
             const data = []; // 每一行的数据
             for (let index of base_column_index) { // 先取每一行的基础列的数据
                 data.push(base_column_data_single[0][index]); // 前面固定列直接取每坨数据的第一行然后按下标取
@@ -199,6 +215,58 @@ export default class CalData {
             }
         }
         return column_index;
+    }
+
+    /***
+     * 
+     * 数据进行 sum count none 处理
+     * 
+     * 参数
+     * base_column_data_single:每一坨的数据
+     * merge: 聚合方式
+     * type_value_set:类型值set
+     * second_title_arr:二级标题名称
+     * type_column_index:类别下标
+     * title_column_index:类别值下标
+     * show_column_index:显示列下标
+     * 
+     * ***/
+    getDataSum = (base_column_data_single, merge, type_value_set, second_title_arr, type_column_index, title_column_index, show_column_index) => {
+        const data = []; // 总数据
+        // 1 拆出second_title_arr中所有的数据
+        const second_name = []; // 二级标题名称
+        for (let item of second_title_arr) {
+            second_name.push(item);
+        }
+        // 2 循环 类别值 循环 二级标题 两者相加找复合的行
+        for (let item of type_value_set) {
+            for (let value of second_name) {
+                const data_line = []; // 每一个 类别+类别值 下的数据集合
+                const name = item + value; // 类别+类别值
+                // 循环所有行数据,找出符合的数据
+                for (let line of base_column_data_single) {
+                    const line_name = line[type_column_index] + line[title_column_index]; // 类别+类别值
+                    if (name == line_name) {
+                        data_line.push(line);
+                    }
+                }
+                // 开始做sum count 处理
+                if (merge == "sum" && data_line.length > 0) {
+                    let sum = 0;
+                    for (let o of data_line) {
+                        sum = sum + o[show_column_index];
+                    }
+                    let tmp_line = data_line[0];
+                    tmp_line[show_column_index] = sum;
+                    data.push(tmp_line);
+                } else if (merge == "count" && data_line.length > 0) {
+                    let tmp_line = data_line[0];
+                    tmp_line[show_column_index] = data_line.length;
+                    data.push(tmp_line);
+                }
+            }
+        }
+        return data;
     }
 
 }

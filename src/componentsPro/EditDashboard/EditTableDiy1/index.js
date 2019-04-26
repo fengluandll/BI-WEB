@@ -34,7 +34,6 @@ class EditTableDiy1 extends PureComponent {
             type_title_id: "", // 字段弹出框-类型二级标题id
             merge: "none", // 字段弹出框-聚合方式
             show_id: "", // 展示字段
-            order: 0, // 字段弹出框-排序
             model_type: "new", // 弹出框类型, new edite
 
             refreshUI: 0, // 用来刷新页面的
@@ -73,10 +72,6 @@ class EditTableDiy1 extends PureComponent {
         } else if (key == "merge") { // 字段弹出框-聚合方式
             this.setState({
                 merge: event,
-            });
-        } else if (key == "order") { // 字段弹出框-排序
-            this.setState({
-                order: event.target.value,
             });
         } else if (key == "show_id") { // 展示字段
             this.setState({
@@ -133,7 +128,6 @@ class EditTableDiy1 extends PureComponent {
             type_title_id: "",
             merge: "none",
             show_id: "",
-            order: 0,
             model_type: "new", // 弹出类型 新建
             modal_column: true,
             refreshUI: this.state.refreshUI + 1,
@@ -141,12 +135,12 @@ class EditTableDiy1 extends PureComponent {
     }
     // 弹窗ok回调
     handleColumnOk = () => {
-        const { uuuid, id, type, type_value, type_id, type_title_id, show_id, merge, order, model_type, config } = this.state;
+        const { uuuid, id, type, type_value, type_id, type_title_id, show_id, merge, model_type, config } = this.state;
         const { column_obj } = config;
         if (model_type == "new") { // 新建
             const uuuid = reportBoardUtils.getUUUID();
             // 制造json
-            const obj = { uuuid: uuuid, id: id, type: type, type_id: type_id, type_value: type_value, type_title_id: type_title_id, show_id: show_id, merge: merge, order: order };
+            const obj = { uuuid: uuuid, id: id, type: type, type_id: type_id, type_value: type_value, type_title_id: type_title_id, show_id: show_id, merge: merge };
             column_obj.push(obj); // 放入column_obj
         } else if (model_type == "edite") { // 编辑
             for (let item of column_obj) {
@@ -157,7 +151,6 @@ class EditTableDiy1 extends PureComponent {
                     item.type_id = type_id;
                     item.merge = merge;
                     item.show_id = show_id;
-                    item.order = order;
                     item.type_title_id = type_title_id;
                 }
             }
@@ -178,7 +171,7 @@ class EditTableDiy1 extends PureComponent {
 
     // 编辑单个字段
     editeColumn = (uuuid) => {
-        const { id, type, type_value, type_id, type_title_id, merge, order, config } = this.state;
+        const { id, type, type_value, type_id, type_title_id, merge, config } = this.state;
         const { column_obj } = config;
         let obj = {};
         for (let item of column_obj) {
@@ -195,7 +188,6 @@ class EditTableDiy1 extends PureComponent {
             type_title_id: obj.type_title_id,
             merge: obj.merge,
             show_id: obj.show_id,
-            order: obj.order,
             model_type: "edite", // 弹出类型 编辑
             modal_column: true, // 打开弹出框
             refreshUI: this.state.refreshUI + 1,
@@ -204,7 +196,7 @@ class EditTableDiy1 extends PureComponent {
 
     // 删除单个字段
     deleteColumn = (uuuid) => {
-        const { id, type, type_value, type_id, merge, order, config } = this.state;
+        const { id, type, type_value, type_id, merge, config } = this.state;
         const { column_obj } = config;
         for (let key in column_obj) {
             if (column_obj[key].uuuid == uuuid) {
@@ -355,7 +347,7 @@ class EditTableDiy1 extends PureComponent {
     }
 
     render() {
-        const { config, type, order } = this.state;
+        const { config, type } = this.state;
         const { dataSetList, idColumns } = this.props;
         const dataSetArr = [];
         for (let key in dataSetList) {
@@ -432,12 +424,6 @@ class EditTableDiy1 extends PureComponent {
                                 </Select>
                             </Form.Item>
                             {this.renderModel()}
-                            <Form.Item
-                                label="排序"
-                                {...formItemLayout}
-                            >
-                                <Input placeholder="输入排序数字" value={order} onChange={this.handleChangeInput.bind(this, "order")} />
-                            </Form.Item>
                         </Modal>
                     </Form.Item>
                     <Form.Item {...buttonItemLayout}>
