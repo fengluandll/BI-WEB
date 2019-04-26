@@ -75,7 +75,7 @@ class TableDiy1 extends PureComponent {
     * ***/
     getScroll = () => {
         const { data } = this.getTableData();
-        const width = Object.keys(data[0]).length * 157;
+        const width = Object.keys(data[0]).length * 300;
         const height = this.getHeight();
         const scroll = { x: width, y: height - 58 };// x轴滚动是列个数乘200,y轴是根据dragact算出的高度减去图表控件额外的高度。
         return scroll;

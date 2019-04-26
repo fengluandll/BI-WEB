@@ -104,23 +104,23 @@ class Bar extends PureComponent {
         padding = config.padding;
       }
       if (config.legend == "1") {
-        if (strB >= 0 && strB <= 8) {
+        if (strB >= 0 && strB < 8) {
           padding = [26, 30, 34, 150];
         }
-        if (strB > 8 && strB <= 18) {
+        if (strB >= 8 && strB < 18) {
           padding = [26, 30, 84, 150];
         }
-        if (strB > 18 && strB <= 40) {
+        if (strB >= 18 && strB <= 40) {
           padding = [26, 30, 94, 150];
         }
       } else {
-        if (strB >= 0 && strB <= 8) {
+        if (strB >= 0 && strB < 8) {
           padding = [26, 30, 34, 50];
         }
-        if (strB > 8 && strB <= 18) {
+        if (strB >= 8 && strB < 18) {
           padding = [26, 30, 84, 50];
         }
-        if (strB > 18 && strB <= 40) {
+        if (strB >= 18 && strB <= 40) {
           padding = [26, 30, 94, 50];
         }
       }

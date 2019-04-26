@@ -47,10 +47,13 @@ export default class CalData {
                 columns.push(obj);
             }
         }
+        // 后面加一列没用的因为实在是对不齐没办法
+        const obj = { "title": "", "dataIndex": "", "key": "", "align": "center" };
+        columns.push(obj);
         // 制造body
         for (let key in body_data) {
             const obj = { "key": key };
-            const body_line = body_arr_final[key];
+            const body_line = body_data[key];
             for (let k in body_line) {
                 let value = body_line[k];
                 obj[head_for_data[k]] = value;
