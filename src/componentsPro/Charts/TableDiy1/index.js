@@ -32,12 +32,7 @@ class TableDiy1 extends PureComponent {
      * 
      * ***/
     getTableData = () => {
-        const { mChart, dateSetList, editModel, dragactStyle, idColumns } = this.props;
-        const config = JSON.parse(mChart.config);
-        const { header, body } = dateSetList;
-
         const tableDate = calData.getData(this.props);
-
         return tableDate;
     }
 

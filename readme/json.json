@@ -156,7 +156,7 @@
 		{
 			"uuuid":"", // 唯一键id
 			"id":"", // 字段id
-			"type":"", // 显示字段类型 normal:普通字段,type:分类字段,show:显示值字段
+			"type":"", // 显示字段类型 normal:普通字段,normalback:普通字段放在分类后面的,type:分类字段,show:显示值字段
 			"type_id":"", // 如果type为type的时候,分类字段id,一级标题id
 			"type_value":"", // 如果type为type的时候,type_value就是根据type分类的值
 			"type_title_id":"", // 如果type为type的时候,分类二级标题的id

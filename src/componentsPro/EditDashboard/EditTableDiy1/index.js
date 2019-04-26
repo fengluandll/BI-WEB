@@ -103,7 +103,7 @@ class EditTableDiy1 extends PureComponent {
         let column = ""; // 先清空column
         for (let item of column_obj) {
             const { type, id, type_id, type_title_id, show_id } = item;
-            if (type == "normal") {
+            if (type == "normal" || type == "normalback") {
                 column = column + id + ",";
             } else if (type == "type") {
                 column = column + type_id + "," + type_title_id + ",";
@@ -223,7 +223,7 @@ class EditTableDiy1 extends PureComponent {
         const { dataSetList, idColumns } = this.props;
         const type = item.type;
         let rsc_display = "";
-        if (type == "normal") {
+        if (type == "normal" || type == "normalback") {
             rsc_display = idColumns[item.id].rsc_display;
         } else if (type == "type") {
             rsc_display = idColumns[item.type_id].rsc_display;
@@ -236,7 +236,7 @@ class EditTableDiy1 extends PureComponent {
         const { dataSetList, idColumns } = this.props;
         const type = item.type;
         let rsc_display = "";
-        if (type == "normal") {
+        if (type == "normal" || type == "normalback") {
             rsc_display = item.id;
         } else if (type == "type") {
             rsc_display = item.type_id;
@@ -268,7 +268,7 @@ class EditTableDiy1 extends PureComponent {
             }
         }
 
-        if (type == "normal") {
+        if (type == "normal" || type == "normalback") {
             return (
                 <div>
                     <Form.Item
@@ -425,7 +425,8 @@ class EditTableDiy1 extends PureComponent {
                                 {...formItemLayout}
                             >
                                 <Select value={type} onChange={this.handleChangeInput.bind(this, "type")}>
-                                    <Option value="normal">普通字段</Option>
+                                    <Option value="normal">普通字段-前</Option>
+                                    <Option value="normalback">显示字段-后</Option>
                                     <Option value="type">类型字段</Option>
                                     <Option value="show">显示字段</Option>
                                 </Select>
