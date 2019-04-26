@@ -20,8 +20,45 @@ export default class CalData {
      * ***/
     getData = (props) => {
         const { mChart, dateSetList, editModel, dragactStyle, idColumns } = props;
-        const data = this.calData(props);
-        console.log(JSON.stringify(data) + "------data-----------------");
+        const cal_data = this.calData(props);
+        console.log(JSON.stringify(cal_data) + "------data-----------------");
+
+        //制造antdTable需要的json
+        const columns = [];
+        const data = [];
+        const tableDate = { columns, data };
+        const { head_json, body_data } = cal_data;
+        const head_for_data = []; //每个行所有字段的中文用来给下面的data拼接做key引导的
+        // 制造head
+        for (let item of head_json) {
+            const { name, children } = item;
+            if (null == children) { // 基础列
+                const obj = { "title": name, "dataIndex": name, "key": name, "align": "center", "width": 300, "fixed": "left" };
+                columns.push(obj);
+                head_for_data.push(name);
+            } else { // 复杂标题
+                const obj = { "title": name, children: [] };
+                for (let key in children) {
+                    const value = children[key];
+                    const child = { "title": value, "dataIndex": value + key, "key": value + key, "align": "center", "width": 300 };
+                    obj.children.push(child);
+                    head_for_data.push(value + key);
+                }
+                columns.push(obj);
+            }
+        }
+        // 制造body
+        for (let key in body_data) {
+            const obj = { "key": key };
+            const body_line = body_arr_final[key];
+            for (let k in body_line) {
+                let value = body_line[k];
+                obj[head_for_data[k]] = value;
+            }
+            data.push(obj);
+        }
+
+        return tableDate;
     }
 
     /***
