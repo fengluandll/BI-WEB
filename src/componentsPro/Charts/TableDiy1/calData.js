@@ -160,14 +160,15 @@ export default class CalData {
             }
             second_title_arr.push(second_title_set);
         }
-        for (let key in second_title_arr) { // 把二级标题名称放入set
-            const item = type_value_set[key];
+        let second_title_count = 0; // 给下面type_value_set标识循环次数然后能从second_title_arr里找数据
+        for (let item of type_value_set) { // 把二级标题名称放入set
             const json = { "name": item, "children": [] };
-            const second_title_set = second_title_arr[key];
+            const second_title_set = second_title_arr[second_title_count];
             for (let second_name of second_title_set) {
                 json.children.push(second_name);
             }
             head_json.push(json);
+            second_title_count++; // 用完了再自加
         }
         for (let item of base_column_back_arr) { // 基本列的标题-后
             const name = idColumns[item].rsc_display;
@@ -178,9 +179,7 @@ export default class CalData {
         // 拼接数据
         for (let key in base_column_data) { // 循环分类好的数据
             let base_column_data_single = base_column_data[key];
-            if (merge != "none") { // 如果要聚合做聚合处理
-                base_column_data_single = this.getDataSum(base_column_data_single, merge, type_value_set, second_title_arr, type_column_index, title_column_index, show_column_index);
-            }
+            base_column_data_single = this.getDataSum(base_column_data_single, merge, type_value_set, second_title_arr, type_column_index, title_column_index, show_column_index);
             const data = []; // 每一行的数据
             for (let index of base_column_index) { // 先取每一行的基础列的数据
                 data.push(base_column_data_single[0][index]); // 前面固定列直接取每坨数据的第一行然后按下标取
@@ -235,8 +234,11 @@ export default class CalData {
         const data = []; // 总数据
         // 1 拆出second_title_arr中所有的数据
         const second_name = []; // 二级标题名称
-        for (let item of second_title_arr) {
-            second_name.push(item);
+        for (let key in second_title_arr) {
+            const arr = second_title_arr[key];
+            for (let item of arr) {
+                second_name.push(item);
+            }
         }
         // 2 循环 类别值 循环 二级标题 两者相加找复合的行
         for (let item of type_value_set) {

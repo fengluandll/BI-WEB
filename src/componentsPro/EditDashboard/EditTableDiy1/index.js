@@ -32,7 +32,7 @@ class EditTableDiy1 extends PureComponent {
             type_id: "", // 字段弹出框-类型id
             type_value: "", // 字段弹出框-分类值
             type_title_id: "", // 字段弹出框-类型二级标题id
-            merge: "none", // 字段弹出框-聚合方式
+            merge: "sum", // 字段弹出框-聚合方式
             show_id: "", // 展示字段
             model_type: "new", // 弹出框类型, new edite
 
@@ -126,7 +126,7 @@ class EditTableDiy1 extends PureComponent {
             type_id: "",
             type_value: "",
             type_title_id: "",
-            merge: "none",
+            merge: "sum",
             show_id: "",
             model_type: "new", // 弹出类型 新建
             modal_column: true,
@@ -318,7 +318,6 @@ class EditTableDiy1 extends PureComponent {
                         {...formItemLayout}
                     >
                         <Select defaultValue="none" value={merge} onChange={this.handleChangeInput.bind(this, "merge")}>
-                            <Option value="none">不聚合</Option>
                             <Option value="sum">sum</Option>
                             <Option value="count">count</Option>
                         </Select>
