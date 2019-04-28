@@ -288,11 +288,11 @@ export default class CalData {
                 count = count + 1;
                 cat++;
             }
-            if (count > 20) {
+            if (count >= 24) {
                 break;
             }
         }
-        if (count < 20) {
+        if (count < 24) {
             cat = 0; // 没有count>20的cat为0
         }
         return cat;
