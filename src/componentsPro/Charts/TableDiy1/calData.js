@@ -256,7 +256,7 @@ export default class CalData {
                 if (merge == "sum" && data_line.length > 0) {
                     let sum = 0;
                     for (let o of data_line) {
-                        sum = sum + o[show_column_index];
+                        sum = (sum * 1000 + o[show_column_index] * 1000) / 1000; // 解决js相加丢失精度问题
                     }
                     let tmp_line = data_line[0];
                     tmp_line[show_column_index] = sum;
