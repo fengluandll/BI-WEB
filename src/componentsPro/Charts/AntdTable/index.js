@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 import ReactDom from 'react-dom';
 import { Table, Divider, Icon, Tooltip } from 'antd';
-import CalData from './calData'
+import CalData from './calData';
 
 import styles from '../index.less';
 

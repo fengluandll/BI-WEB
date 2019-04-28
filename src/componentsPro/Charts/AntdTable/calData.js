@@ -1,5 +1,8 @@
 import { Tooltip } from 'antd';
+import BrowserUtils from '../../../utils/browserUtils';
 
+
+const browserUtils = new BrowserUtils();
 
 /***
  * 数据中间层
@@ -25,6 +28,7 @@ export default class CalData {
         const { head, body } = dateSetList;
         const head_ret = []; // 返回值head
         const body_ret = []; // 返回值body
+        const width = this.getTableWidth(head.length); // 每列宽度
         // 列数据
         const noWidthKey = this.findNoWidth(head, mChart); //不用设置宽度的head的key
         for (let key in head) {
@@ -42,16 +46,16 @@ export default class CalData {
             const fixed_right_arr = fixed_right.split(",");
             if (fixed_left_arr.indexOf(id) >= 0) { // 该列是固定到左侧的列
                 obj.fixed = "left";
-                obj.width = 200;
+                obj.width = width;
             } else if (fixed_right_arr.indexOf(id) >= 0) { // 该列是固定到右侧的列
                 obj.fixed = "right";
-                obj.width = 200;
+                obj.width = width;
             } else {
                 obj.fixed = "none";
             }
             // f3 设置每列的宽度
             if (fixed_left_arr.indexOf(id) < 0 && fixed_right_arr.indexOf(id) < 0 && forceFit != "1" && key != noWidthKey) { // 如果不是自适应的情况下要显固定头部那么除了最后一列不舍宽度，其他都要设置宽度
-                obj.width = 200;  // 后期改成根据每列的最大字符数来控制
+                obj.width = width;  // 后期改成根据每列的最大字符数来控制
             }
             // f4 被关联字段要加特殊样式 和 点击事件
             const { type, name, chartId, styleConfig, relation } = item;
@@ -77,9 +81,10 @@ export default class CalData {
                 let value = line[k] == null ? "" : line[k]; // 每个数据的值,处理空字符串
                 value = value.toString().replace('\n', ' '); // 替换换行符
                 const obj = { value: value }; // 每个数据 拼成对象
-                // f5 超过12个字符的后面用...表示,并用提示框提示全部内容
-                if (value.length > 12 && config.forceFit != "1") { // 如果字符大于12个的时候那就隐藏用Tooltip提示
-                    const tooltip = value.substring(0, 12) + "...";
+                // f5 超过12个中文字符的后面用...表示,并用提示框提示全部内容
+                const cat = this.getUseTooltip(value); // cat==0 : 不用显示tooltip
+                if (cat > 0 && config.forceFit != "1") { // 如果中文字符大于12个的时候那就隐藏用Tooltip提示
+                    const tooltip = value.substring(0, cat) + "...";
                     obj.tooltip = tooltip;
                 }
                 // f6 值预警,公式比较符合的就要不同颜色显示
@@ -131,7 +136,15 @@ export default class CalData {
             const obj_head = head[key];
             const { rsColumnConf, url, fixed, width, plotParam, style } = obj_head;
             const rsc_display = rsColumnConf == null ? key : rsColumnConf.rsc_display; // 防止rsColumnConf为空
-            const obj = { "title": rsc_display, "dataIndex": rsc_display, "key": rsc_display, "align": obj_head.align };
+            let rsc_display_title = rsc_display; // 表头-如果表头标题大于8个字符直接用tooltip
+            if (null != rsc_display && rsc_display.length > 8) {
+                rsc_display_title = <div key={rsc_display}>
+                    <Tooltip title={rsc_display} placement="top">
+                        <span>{rsc_display.substring(0, 8) + "..."}</span>
+                    </Tooltip>
+                </div>;
+            }
+            const obj = { "title": rsc_display_title, "dataIndex": rsc_display, "key": rsc_display, "align": obj_head.align };
             // f1 判断跳转
             if (null != url) {
                 const { param_id, param_url } = url;
@@ -229,5 +242,59 @@ export default class CalData {
             }
         }
         return ret;
+    }
+
+    /***
+     * 
+     * 获取表格每列的宽度
+     * 
+     * 如果列数多有滚动条就是200,否则每列平均宽度
+     * 
+     * 参数:size : 列的个数
+     * 
+     * ***/
+    getTableWidth = (size) => {
+        let width = 200;
+        const json = browserUtils.getBrowserInfo();
+        const total_px = parseInt(size) * 200; // 现有列数乘以200的值
+        if (json.width > 0 && total_px < json.width) { // 平均分配宽度
+            width = (json.width - 50) / size; // 网页宽度-序号列宽度50 然后除以列个数
+        } else {
+            width = 200;
+        }
+        return width;
+    }
+
+    /***
+     * 
+     * 获取是否要启用tootip
+     * 
+     * 中文单位2,英文单位1,总数大于20开始显示tooltip
+     * 
+     * 参数: value 字符串值
+     * 
+     * 返回值: 0:不用启动tooltip,其他数字后面subString 的参数
+     * 
+     * ***/
+    getUseTooltip = (value) => {
+        let cat = 0; // 返回值,要截取的位数
+        let count = 0; // 计数
+        const ret = /^[\u4e00-\u9fa5],{0,}$/; // 正则表达式判断是否是中文
+        for (let v of value) {
+            if (ret.test(v)) {
+                count = count + 2;
+                cat++;
+            } else {
+                count = count + 1;
+                cat++;
+            }
+            if (count > 20) {
+                break;
+            }
+        }
+        if (count < 20) {
+            cat = 0; // 没有count>20的cat为0
+        }
+        return cat;
     }
 }
