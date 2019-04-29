@@ -127,7 +127,8 @@
 	"pageLoade":false, // 是否分页加载
 	"warning_row":[{"row":0,"formula":""}, // 值预警行数, 数组放多个行 每行{row:行数,formula:公式}
 	"warning_col":[{"col":0,"formula":""}, // 值预警列数
-	}
+	"column_order":"", // 排序字段
+}
 
 
 {  // pivotDiy

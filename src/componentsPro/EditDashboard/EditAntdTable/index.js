@@ -18,11 +18,13 @@ class EditAntdTable extends PureComponent {
             fixed_right: false,
             warning_row: false, // 值预警-行
             warning_col: false, // 值预警-列
+            column_order: false, // 字段排序
             columnCheckbox: config.column, // checkbox弹出框的临时值
             columnUrlCheckbox: config.columnUrl, // checkbox弹出框的临时值
             columnUrlParamCheckbox: config.columnUrlParam, // checkbox弹出框的临时值
             fixed_leftCheckbox: config.fixed_left, // checkbox弹出框的临时值
             fixed_rightCheckbox: config.fixed_right, // checkbox弹出框的临时值
+            column_orderCheckbox: config.column_order, // column_order弹出框的临时值
             warning_rowData: config.warning_row == null ? [] : config.warning_row, // warning_row的临时值
             warning_row_row: "", // warning_row row临时值
             warning_row_formula: "", // formula 临时值
@@ -384,6 +386,49 @@ class EditAntdTable extends PureComponent {
             refreshUI: this.state.refreshUI + 1,
         });
     }
+    /************************字段column_order*****************************/
+
+    // Checkbox
+    handleChangeCheckboxColumn_order = (checkedList) => {
+        let str = "";
+        for (let key in checkedList) {
+            str = str + checkedList[key] + ",";
+        }
+        str = str.substring(0, str.length - 1);
+        this.setState({
+            column_orderCheckbox: str,
+        });
+    }
+    // ref
+    onRefSelectColumn_order = (ref) => {
+        this.selectColumn_order = ref;
+    }
+    // 显示字段 弹出框
+    showColumn_order = () => {
+        this.setState({
+            column_order: true,
+        });
+    }
+    // 显示字段回调函数
+    handleColumn_orderOk = () => {
+        const { config, column_orderCheckbox } = this.state;
+        config.column_order = column_orderCheckbox;
+        this.setState({
+            column_order: false,
+            config,
+            refreshUI: this.state.refreshUI + 1,
+        });
+    }
+    // 取消
+    handleColumn_orderCancel = () => {
+        const { config } = this.state;
+        this.setState({
+            column_order: false,
+            column_orderCheckbox: config.column_order,
+            refreshUI: this.state.refreshUI + 1,
+        });
+        this.selectColumn_order.refreshUI(); // 取消就调用子的方法刷新
+    }
     /*************************************************************/
 
 
@@ -630,6 +675,29 @@ class EditAntdTable extends PureComponent {
                             >
                                 <Input placeholder="输入公式内容" value={this.state.warning_row_formula} onChange={this.handleChangeInput.bind(this, "warning_row_formula")} />
                             </Form.Item>
+                        </Modal>
+                    </Form.Item>
+                    <Form.Item
+                        label="排序字段"
+                        {...formItemLayout}
+                    >
+                        <Button type="primary" onClick={this.showColumn_order}>
+                            选择排序字段
+                        </Button>
+                        <Modal
+                            title="排序字段"
+                            visible={this.state.column_order}
+                            onOk={this.handleColumn_orderOk}
+                            onCancel={this.handleColumn_orderCancel}
+                        >
+                            <SelectColumn
+                                type="column_order"
+                                dataSetList={this.props.dataSetList}
+                                idColumns={this.props.idColumns}
+                                config={this.state.config}
+                                onChange={this.handleChangeCheckboxColumn_order}
+                                ref={this.onRefSelectColumn_order}
+                            />
                         </Modal>
                     </Form.Item>
 

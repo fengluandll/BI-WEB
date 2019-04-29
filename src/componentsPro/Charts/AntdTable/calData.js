@@ -28,7 +28,7 @@ export default class CalData {
         const { head, body } = dateSetList;
         const head_ret = []; // 返回值head
         const body_ret = []; // 返回值body
-        const width = this.getTableWidth(head.length); // 每列宽度
+        const width = this.getTableWidth(head.length, dragactStyle, mChart); // 每列宽度
         // 列数据
         const noWidthKey = this.findNoWidth(head, mChart); //不用设置宽度的head的key
         for (let key in head) {
@@ -250,15 +250,28 @@ export default class CalData {
      * 
      * 如果列数多有滚动条就是200,否则每列平均宽度
      * 
-     * 参数:size : 列的个数
+     * 参数:size : 列的个数;dragactStyle : dragac控件取宽度
+     * 
+     * dragact: 最大宽度是40
      * 
      * ***/
-    getTableWidth = (size) => {
-        let width = 200;
+    getTableWidth = (size, dragactStyle, mChart) => {
+        let width = 200; // 返回参数
+        let table_width = 0; // 整个table的宽度
         const json = browserUtils.getBrowserInfo();
+        let dragact_width = 0; // dragact中的宽度参数
+        if (null != dragactStyle && dragactStyle.length > 0) {
+            const array = dragactStyle;
+            array.map((item, index) => {
+                if (item.key == mChart.id.toString()) {
+                    dragact_width = item.w;
+                }
+            });
+        }
+        table_width = json.width / 40 * dragact_width; // table宽度等于 浏览器宽度/40 * dragact参数宽度
         const total_px = parseInt(size) * 200; // 现有列数乘以200的值
-        if (json.width > 0 && total_px < json.width) { // 平均分配宽度
-            width = (json.width - 50) / size; // 网页宽度-序号列宽度50 然后除以列个数
+        if (table_width > 0 && total_px < table_width) { // 平均分配宽度
+            width = (table_width - 50) / size; // 网页宽度-序号列宽度50 然后除以列个数
         } else {
             width = 200;
         }
@@ -288,12 +301,12 @@ export default class CalData {
                 count = count + 1;
                 cat++;
             }
-            if (count >= 24) {
+            if (count >= 23) {
                 break;
             }
         }
-        if (count < 24) {
-            cat = 0; // 没有count>20的cat为0
+        if (count < 23) {
+            cat = 0; // 没有count>23的cat为0
         }
         return cat;
     }

@@ -994,6 +994,12 @@ class ReportBoard extends PureComponent {
         const params = reportBoardUtils.getSearchJson("plot", value, this.plotChartId, searchAntdTable, this.boardId, this.state.mDashboard, this.state.mDashboard_old, this.state.mCharts, this.state.idColumns);
         const { children } = params;
         this.dataListCount = children.length; // 把要查询的图表的个数赋值
+        if (this.dataListCount == 0 && refreshType == "plot") { // plot点击查询没有图表需要查询的时候
+            this.setState({
+                refreshType: "search", // 修改刷新类型
+                spinning: false, // 设置可以点击
+            });
+        }
         for (let key in children) {
             const params_one = {};
             params_one.report_id = params.report_id;
