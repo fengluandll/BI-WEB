@@ -305,7 +305,7 @@ export default class CalData {
                 break;
             }
         }
-        if (count < 23) {
+        if (count < 25) { // 24为12个中文,
             cat = 0; // 没有count>23的cat为0
         }
         return cat;
