@@ -89,45 +89,21 @@ class Bar extends PureComponent {
     }
     // 边距
     let padding = [26, 30, 34, 50];
+    let x_max_len = 0; // x轴最大长度
     for (var i = 0; i < dateSetList.length; i++) {
-      // 获取x轴的数据
-      var str = dateSetList[i].x;
-      var strL = str.length;
-      var strB = 0;
-      for (var j = 0; j < strL; j++) {
-        if ((str.charCodeAt(j) & 0xff00) != 0) {
-          strB++;
-        }
-        strB++;
+      const len = dateSetList[i].x.length;// 获取x轴的数据长度
+      if (len > x_max_len) {
+        x_max_len = len;
       }
-      if (config.padding) {
-        padding = config.padding;
-      }
-      if (config.legend == "1") {
-        if (strB >= 0 && strB < 8) {
-          padding = [26, 30, 34, 150];
-        }
-        if (strB >= 8 && strB < 18) {
-          padding = [26, 30, 84, 150];
-        }
-        if (strB >= 18 && strB <= 40) {
-          padding = [26, 30, 94, 150];
-        }
-      } else {
-        if (strB >= 0 && strB < 8) {
-          padding = [26, 30, 34, 50];
-        }
-        if (strB >= 8 && strB < 18) {
-          padding = [26, 30, 84, 50];
-        }
-        if (strB >= 18 && strB <= 40) {
-          padding = [26, 30, 94, 50];
-        }
-      }
-      if (config.legend == "1" && strB === 10) {
-        padding = [26, 30, 34, 150];
-      }
-
+    }
+    let padding_bottom = x_max_len * 5 + 15; // 计算bottm距离
+    if (x_max_len > 7) {
+      padding_bottom = x_max_len * 8 + 15;
+    }
+    if (config.legend == "1") {
+      padding = [26, 30, padding_bottom, 150];
+    } else {
+      padding = [26, 30, padding_bottom, 50];
     }
 
     // 控制数据量特别大的情况

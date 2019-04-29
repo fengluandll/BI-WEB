@@ -291,22 +291,39 @@ export default class CalData {
      * ***/
     getUseTooltip = (value) => {
         let cat = 0; // 返回值,要截取的位数
-        let count = 0; // 计数
+        let total = 0; // 总计
         const ret = /^[\u4e00-\u9fa5],{0,}$/; // 正则表达式判断是否是中文
-        for (let v of value) {
-            if (ret.test(v)) {
-                count = count + 2;
-                cat++;
+        const ret_pure_chinese = /^[\u4E00-\u9FA5]+$/; // 纯中文
+        const regEn = /[`~!@#$%^&*()_+<>?:"{},.\/;'[\]]/im; // 正则英文符号
+        const regCn = /[·！#￥（——）：；“”‘、，|《。》？、【】[\]]/im; // 正则中文符号
+        const EnBig = /^[A-Z]+$/; // 大写字母
+        if (ret_pure_chinese.test(value)) { // 纯中文12个字符
+            if (value.length > 12) {
+                cat = 12;
             } else {
-                count = count + 1;
-                cat++;
+                cat = 0;
             }
-            if (count >= 23) {
-                break;
+        } else { // 混合的11个字符
+            for (let v of value) {
+                if (total <= 20) {
+                    if (ret_pure_chinese.test(v) || regCn.test(v) || EnBig.test(v)) {
+                        total = total + 2;
+                        cat++;
+                    } else {
+                        total = total + 1;
+                        cat++;
+                    }
+                } else {
+                    if (ret_pure_chinese.test(v) || regCn.test(v) || EnBig.test(v)) {
+                        total = total + 2;
+                    } else {
+                        total = total + 1;
+                    }
+                }
             }
-        }
-        if (count < 25) { // 24为12个中文,
-            cat = 0; // 没有count>23的cat为0
+            if (total <= 22) {
+                cat = 0;
+            }
         }
         return cat;
     }

@@ -72,6 +72,9 @@ export const getRouterData = (app) => {
     '/editBoard/:t_dashboard_id': {
       component: dynamicWrapper(app, ['editBoard'], () => import('../routes/EditCharts/EditBoard')),
     },
+    '/bigScreen/:screen_id': {
+      component: dynamicWrapper(app, ['bigScreen'], () => import('../routes/BigScreen/BigScreen')),
+    },
   };
   // Get name from ./menu.js or just set it in the router data.
   const menuData = getFlatMenuData(getMenuData());

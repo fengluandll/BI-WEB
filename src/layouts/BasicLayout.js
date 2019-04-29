@@ -81,7 +81,7 @@ class BasicLayout extends React.PureComponent {
           </Switch>
         </Content>
       );
-    } else if (location.pathname.indexOf('/reportBoard/') >= 0) {
+    } else if (location.pathname.indexOf('/reportBoard/') >= 0 || location.pathname.indexOf('/bigScreen/') >= 0) {
       layout = (
         <Content className={styles.content} id="bi-content">
           <Switch>
