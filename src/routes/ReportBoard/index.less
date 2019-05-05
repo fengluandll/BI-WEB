@@ -1,0 +1,317 @@
+.boardLeft {
+    position: fixed;
+    width: 200px;
+    background-color:#eee;
+    height: 100%;
+    top: 0;
+    border-right: 1px solid #ccc;
+}
+.boardRight{
+    right: 0px;
+    position: fixed;
+    width: 200px;
+    background-color: #eee;
+    height: 100%;
+    top: 0;
+    border-left: 1px solid #ccc;
+}
+.boardRight div:first-child>span:nth-child(1){
+  display: inline-block;
+}
+.boardRight div:nth-child(2)>button,.boardRight div:nth-child(3)>button{
+  width: 72px;
+  height: 24px;
+  padding: 0;
+  position: absolute;
+  top: 50px;
+  right: 0;
+}
+.boardRight div:nth-child(2)>button{
+  position: absolute;
+  top: 50px;
+  right: 40px;
+}
+.boardcenter{
+  background-color: '#eee';
+}
+
+.boardcenter_bigScreen{
+  background-color: 		#191970;
+}
+
+
+
+
+
+
+.extraContentSearch {
+    width: 272px;
+  }
+  .dataSourceHeader{
+    padding: 10px 0 10px 10px;
+  }
+  .list{
+    margin:0;
+    padding:5px;
+  }
+  .data-reload{
+    padding:5px 0;
+  
+    // button
+    .ant-btn{
+      height:25px;
+      padding: 0 15px;
+      font-size: 13px;
+    }
+  }
+  .tabInt{
+    border-radius:0;
+    margin-bottom:5px;
+  }
+  .header{
+    height:35px;
+    line-height:35px;
+    padding:0 5px;
+    .header-left{
+      float:left;
+      input{
+        width: 285px;
+        background-color: transparent;
+        font-size: 14px;
+        border: 1px solid #ccc;
+        position: relative;
+        max-width: 100%;
+        height: 25px;
+        line-height: 25px;
+        -webkit-appearance: none;
+        outline: 0;
+        text-indent:5px;
+      }
+    }
+    .header-right{
+      float:right;
+    }
+  }
+  :global{
+    .bi-container{
+      background-color: #fff;
+      position:relative;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      margin-right: 1px;
+      margin-left: 5px;
+      margin-top: 5px;
+  
+      .del-icon{
+        position:absolute;
+        top:3px;
+        right:3px;
+        cursor:pointer;
+      }
+      canvas{
+        cursor: pointer;
+      }
+      .ant-spin-nested-loading{
+        margin-bottom: 4px;
+      }
+    }
+    /** 去除图表外边的边框线 */
+    .bi-container-noBorder{
+      background-color: #eee;
+      position:relative;
+      margin: 5px;
+      margin-right: 4px;
+      margin-left: 8px;
+  
+      .del-icon{
+        position:absolute;
+        top:3px;
+        right:3px;
+        cursor:pointer;
+      }
+      canvas{
+        cursor: pointer;
+      }
+    }
+    /***大屏***/
+    .bi-container-bigScreen{
+      position:relative;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      margin-right: 1px;
+      margin-left: 5px;
+      margin-top: 5px;
+  
+      .del-icon{
+        position:absolute;
+        top:3px;
+        right:3px;
+        cursor:pointer;
+      }
+      canvas{
+        cursor: pointer;
+      }
+      .ant-spin-nested-loading{
+        margin-bottom: 4px;
+      }
+    }
+    .query-container___2qJSj{
+      margin-bottom: 10px !important;
+    }
+    .ant-tabs-bar{
+      border-bottom: 1px solid #ccc;
+      margin: 0;
+    }
+    .ant-tabs.ant-tabs-card > .ant-tabs-bar .ant-tabs-tab-active{
+      background: #eee !important;
+      border-right: 1px solid #ccc;
+      border-top: 1px solid #ccc;  
+      border-top-right-radius:0;
+      border-top-left-radius: 0;
+    }
+    .ant-tabs:not(.ant-tabs-vertical) > .ant-tabs-content{
+      width: 100%;
+      height: 1px;
+      background: #eee;
+    }
+    .ant-tabs.ant-tabs-card > .ant-tabs-bar .ant-tabs-tab{
+      margin-right: 0px;
+      border-radius: 0;
+      border-top-right-radius: 6px;
+      border: 1px solid #ccc;
+      border-left: 0;
+      background: #fff;
+    }
+    div#bi-content{
+      background: #eee;
+    }
+    .ant-tabs-extra-content .ant-tabs-new-tab{
+      border: 0;
+      font-weight: bold;
+      font-size: 18px;
+      vertical-align: middle;
+    }
+    .ant-tabs-extra-content{
+      width: 40px;
+      height: 39px;
+      text-align: center;
+      border-left: 1px solid #ccc;
+      margin-right: 40px;
+    }
+     /** 动态布局 使用的 add by wangliu 0829*/
+    .bi-container-css{
+      background-color: #fff;
+      //margin-bottom: 5px;
+      position:relative;
+      border: 0px;
+      z-index:0;
+  
+      .del-icon{
+        position:absolute;
+        top:3px;
+        right:3px;
+        cursor:pointer;
+      }
+    }
+    /** Card */
+    .ant-layout-content{
+      .dsConfigArea > .ant-card-head{
+          border-left:1px solid #d9d9d9;
+      }
+    }
+    /** Custom */
+    .dsConfigArea{
+      height:100%;
+      .ant-card{
+        height:50%;
+        border-bottom:none;
+      }
+      .ant-card-body > div{
+        height:100%;
+      }
+      .card-icon-shrink{
+        float:right;
+        line-height:20px;
+        transform: rotate(-45deg);
+        font-size: 12px;
+      }
+    }
+    .ant-calendar-month-panel .ant-calendar-month-panel-year-select{
+      pointer-events:none;
+    }
+    
+    .ant-calendar-picker-clear{
+      pointer-events: none !important;
+    }
+    .anticon-cross-circle:before{
+      content: '';
+    }
+    // 切换按钮
+    .ant-radio-group{
+      height: 32px;
+    }
+    .ant-radio-button-wrapper{
+      height: 39px;
+      line-height: 39px;
+      text-align: center;
+      font-size: 16px;
+      z-index: 1001;
+    }
+    .ant-radio-button-wrapper-checked{
+      background: #40a9ff;
+      color: #fff;
+    }
+    .ant-radio-button-wrapper:first-child{
+      width: 99px;
+      position: fixed;
+      top: 0;
+      right: 100px;
+    }
+    .ant-radio-button-wrapper:last-child{
+      width: 99px;
+      position: fixed;
+      top: 0;
+      right: 0;
+    }
+    .ant-radio-button-wrapper-checked:hover{
+      color: #fff;
+    }
+    .ant-radio-group-solid .ant-radio-button-wrapper-checked:not(.ant-radio-button-wrapper-disabled){
+      color: #fff;
+    }
+    .ant-tabs-nav-container{
+      position: relative;
+    }
+    .DraggerLayout.plant-layout{
+      margin-top: 40px;
+    }
+     .ant-tabs.ant-tabs-top.ant-tabs-small.ant-tabs-card.ant-tabs-no-animation{
+      position: fixed;
+      top: 0;
+      z-index: 6;
+    }
+  
+  }
+  .fileLock{
+    display: inline-block;
+    width: 1px;
+    height: 28px;
+    background: #ccc;
+    vertical-align: middle;
+    margin-right: 8px;
+    margin-bottom: 4px;
+  }
+  // add by weilili 新版的拖拽tab编辑
+  // input[type="text"]{
+  //   background: #eee !important;
+  //   width: 100%;
+  //   position: absolute;
+  //   padding-left:10px;
+  //   left: 0;
+  //   z-index: 10;
+  //   height: 39px;
+  //   border: 0;
+  //   outline: none;
+  //   border-radius: 0;
+  // }
+  /***************************上面太乱了,我下面重新写*********************************/

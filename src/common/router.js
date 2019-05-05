@@ -67,7 +67,7 @@ export const getRouterData = (app) => {
       component: dynamicWrapper(app, ['editCharts'], () => import('../routes/EditCharts/EditCharts')),
     },
     '/reportBoard/:boardId': {
-      component: dynamicWrapper(app, ['reportBoard'], () => import('../routes/EditCharts/ReportBoard')),
+      component: dynamicWrapper(app, ['reportBoard'], () => import('../routes/ReportBoard/ReportBoard')),
     },
     '/editBoard/:t_dashboard_id': {
       component: dynamicWrapper(app, ['editBoard'], () => import('../routes/EditCharts/EditBoard')),
