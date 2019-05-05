@@ -1,9 +1,10 @@
 import { connect } from 'dva';
 import React, { PureComponent } from 'react';
 import ReactDom from 'react-dom';
-import { Switch, message, Tabs, Button, Spin, Modal, Radio, Icon } from 'antd';
+import { Drawer, message, Tabs, Button, Spin, Modal, Radio, Icon } from 'antd';
 import ReportBoardUtils from '../../utils/reportBoardUtils';
 import ReportBoardmChartsUtils from '../../utils/reportBoardmChartsUtils';
+import ReportBoardUI from './ReportBoardUI';
 import TabUtils from '../../utils/tabUtils';
 import CssUtils from '../../utils/cssUtils';
 import { ChartList, TabList } from '../../componentsPro/ChartList';
@@ -18,6 +19,7 @@ const TabPane = Tabs.TabPane;
 const confirm = Modal.confirm;
 const reportBoardUtils = new ReportBoardUtils();
 const reportBoardmChartsUtils = new ReportBoardmChartsUtils();
+const reportBoardUI = new ReportBoardUI();
 const tabUtils = new TabUtils();
 const cssUtils = new CssUtils();
 const print = new Print();
@@ -1410,18 +1412,14 @@ class ReportBoard extends PureComponent {
 
     // 打印
     onPrint = () => {
-        //print.onPrint(this.divDom);
-        const { bigScreen } = this.state;
-        this.setState({
-            bigScreen: bigScreen ? false : true,
-            refreshType: bigScreen ? "refreshAll" : "bigScreen",
-        });
+        print.onPrint(this.divDom);
     }
     // 切换大屏
     changeBigScreen = () => {
         const { bigScreen } = this.state;
         this.setState({
             bigScreen: bigScreen ? false : true,
+            refreshType: bigScreen ? "refreshAll" : "bigScreen",
         });
     }
     // 编辑界面点击图表修改right
