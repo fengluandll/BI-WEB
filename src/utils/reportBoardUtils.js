@@ -697,6 +697,27 @@ class ReportBoardUtils {
         return data_mid;
     }
 
+    /***
+     * 获取dragact数据
+     * 
+     * 如果是大屏那么要去掉搜索框,并把其他图表高度-2
+     * 
+     * 参数 dragactStyle:dragact数据对象,bigScreen是否大屏
+     * 
+     * ***/
+    getDragactData = (dragactStyle, bigScreen) => {
+        let data = dragactStyle;
+        if (bigScreen) {
+            for (let key in data) {
+                if (data[key].type == "search") {
+                    data.splice(key, 1);
+                }
+                data[key].GridY = data[key].GridY - 2;
+            }
+        }
+        return data;
+    }
+
     /***************************plot***************************************/
     // 将点击plot后要查询的图表id放入plotChartId
     changePlotChartId = (plotChartId, chartId, mDashboard) => {

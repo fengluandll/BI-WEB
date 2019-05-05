@@ -66,7 +66,7 @@ export default class CalData {
                 }
                 const { relationFields } = relation[id]; // 取出当前字段所在的relationFields
                 if (null != relationFields && Object.keys(relationFields).length > 0) { // 该列字段是关联了其他的图表(relationFields里面有对象)
-                    const style = { backgroundColor: '#F4F4F4' };
+                    const style = { cursor: 'pointer', fontWeight: 'bold' };
                     obj.style = style; // 样式
                     obj.plotParam = id; // 点击参数是当前id
                 }
@@ -93,7 +93,7 @@ export default class CalData {
                     let value_cal = value.replace(/%/g, ""); // 计算value, 先去掉%
                     const ret = /^[0-9]+.?[0-9]*$/; // 正则表达式判断是否是数字
                     if (null != formula && "" != formula && ret.test(value_cal) && eval(value_cal + formula)) { // 如果满足判断公式 value+公式 执行了为true
-                        const style = { color: "red" };
+                        const style = { backgroundColor: '#EBD3E8' };
                         obj.style = style;
                     }
                 } catch (e) { // 打印异常信息
@@ -186,8 +186,8 @@ export default class CalData {
                 let content = <div key={value}>{value}</div>; // 默认值
                 if (null != style) { // 加样式--可能是值预警的样式
                     content =
-                        <div key={value}>
-                            <span style={style}>
+                        <div key={value} style={style}>
+                            <span>
                                 {value}
                             </span>
                         </div>;

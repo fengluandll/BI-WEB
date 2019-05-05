@@ -52,9 +52,11 @@ class ReportBoard extends PureComponent {
             rightProps: {},      //   右侧选择框的参数 type mChart name(m_dashboard图表中的id)
             spinning: false,   // 是否显示加载中,这个state中的spinning用来控制全局是否可点击,图表的加载中spinning用的是局部变量spinning(有两个spinnng不一样)
             refreshType: "init",  // "init":初始化刷新图表显示fack数据,"search":搜索框查询开始填充真实数据,"plot"：plot点击查询,"pageLoade"是分页查询(鼠标下滑触发的查询),"export":excel导出
+            // "bigScreen":大屏模式,"refreshAll":"全部刷新模式",
 
             editModel: "false",   // 是否编辑模式
             dragMoveChecked: false,  // 是否静止dragact移动，移动就点击无法显示右侧的编辑界面。
+            bigScreen: false, // 是否大屏模式
 
             user_type: "", // 权限控制,用户类型
             user_auth: "0", // 权限控制,是否有编辑权限,"1"有权限
@@ -374,13 +376,17 @@ class ReportBoard extends PureComponent {
      * 
      * ***/
     disPlayCharts() {
+        const { mDashboard, bigScreen, refreshType } = this.state;
         const children = JSON.parse(this.state.mDashboard.style_config).children;
         if (children && children.length > 0) {
             let count = 0; // 图表加载的个数
             children.map((item, index) => { // 循环所有图表
                 let spinning = true; // 加载中设为true
                 const { type, name, chartId, styleConfig, relation } = item;
-                if (type == "search" || type == "text" || this.state.editModel == "true") { // 搜索框直接刷新,编辑模式也直接刷新
+                if (refreshType == "refreshAll" || (refreshType == "bigScreen" && type != "search")) { // 切换普通全部刷新||大屏模式,不显示搜索框
+                    spinning = false;
+                    this.renderContent(item, spinning);
+                } else if (refreshType != "bigScreen" && (type == "search" || type == "text" || this.state.editModel == "true")) { // 搜索框直接刷新,编辑模式也直接刷新
                     spinning = false;
                     this.renderContent(item, spinning);
                     if (this.dataListCount == 0) {// 只有搜索框没有图表的时候
@@ -428,7 +434,7 @@ class ReportBoard extends PureComponent {
         }
         // 拼接panes
         const panes = [];
-        const { tagName, tagNames, editModel } = this.state;
+        const { tagName, tagNames, editModel, bigScreen } = this.state;
         for (let key in tagNames) {
             const obj = {};
             obj.title = tagNames[key];
@@ -443,6 +449,11 @@ class ReportBoard extends PureComponent {
         let type = "card";
         if (editModel == "true") {
             type = "editable-card";
+        }
+        if (bigScreen) { // 如果大屏就不显示tab
+            return (
+                <div></div>
+            );
         }
         return (
             <div
@@ -549,8 +560,9 @@ class ReportBoard extends PureComponent {
     /****************************************图形展示*****************************************************************/
     // 展示 折线图
     renderLine(name, dateSetList, mChart, spinning) {
-        let cssName = cssUtils.getBIContainer(mChart);
-        const { dragactStyle } = JSON.parse(this.state.mDashboard.style_config);
+        const { mDashboard, bigScreen } = this.state;
+        let cssName = cssUtils.getBIContainer(mChart, bigScreen);
+        const { dragactStyle } = JSON.parse(mDashboard.style_config);
         ReactDom.render(
             <div className={cssName}
                 onClick={(ev) => {
@@ -573,8 +585,9 @@ class ReportBoard extends PureComponent {
 
     // 展示 柱状图
     renderBar(name, dateSetList, mChart, spinning) {
-        let cssName = cssUtils.getBIContainer(mChart);
-        const { dragactStyle } = JSON.parse(this.state.mDashboard.style_config);
+        const { mDashboard, bigScreen } = this.state;
+        let cssName = cssUtils.getBIContainer(mChart, bigScreen);
+        const { dragactStyle } = JSON.parse(mDashboard.style_config);
         ReactDom.render(
             <div className={cssName}
                 onClick={(ev) => {
@@ -596,8 +609,9 @@ class ReportBoard extends PureComponent {
     }
     // 展示 饼图
     renderPie(name, dateSetList, mChart, spinning) {
-        let cssName = cssUtils.getBIContainer(mChart);
-        const { dragactStyle } = JSON.parse(this.state.mDashboard.style_config);
+        const { mDashboard, bigScreen } = this.state;
+        let cssName = cssUtils.getBIContainer(mChart, bigScreen);
+        const { dragactStyle } = JSON.parse(mDashboard.style_config);
         ReactDom.render(
             <div className={cssName}
                 onClick={(ev) => {
@@ -619,8 +633,9 @@ class ReportBoard extends PureComponent {
     }
     // 展示 交叉表
     renderTable(name, dateSetList, mChart, spinning) {
-        let cssName = cssUtils.getBIContainer(mChart);
-        const { dragactStyle } = JSON.parse(this.state.mDashboard.style_config);
+        const { mDashboard, bigScreen } = this.state;
+        let cssName = cssUtils.getBIContainer(mChart, bigScreen);
+        const { dragactStyle } = JSON.parse(mDashboard.style_config);
         ReactDom.render(
             <div className={cssName}>
                 <Spin spinning={spinning}>
@@ -637,8 +652,9 @@ class ReportBoard extends PureComponent {
     }
     // pivottable
     renderPivottable(name, dateSetList, mChart, spinning) {
-        let cssName = cssUtils.getBIContainer(mChart);
-        const { dragactStyle } = JSON.parse(this.state.mDashboard.style_config);
+        const { mDashboard, bigScreen } = this.state;
+        let cssName = cssUtils.getBIContainer(mChart, bigScreen);
+        const { dragactStyle } = JSON.parse(mDashboard.style_config);
         ReactDom.render(
             <div className={cssName}>
                 <Spin spinning={spinning}>
@@ -654,8 +670,9 @@ class ReportBoard extends PureComponent {
     }
     // perspective
     renderPerspective(name, dateSetList, mChart, spinning) {
-        let cssName = cssUtils.getBIContainer(mChart);
-        const { dragactStyle } = JSON.parse(this.state.mDashboard.style_config);
+        const { mDashboard, bigScreen } = this.state;
+        let cssName = cssUtils.getBIContainer(mChart, bigScreen);
+        const { dragactStyle } = JSON.parse(mDashboard.style_config);
         ReactDom.render(
             <div className={cssName}>
                 <Spin spinning={spinning}>
@@ -671,8 +688,9 @@ class ReportBoard extends PureComponent {
     }
     // text文本控件
     renderText(item, dateSetList, mChart, spinning) {
-        let cssName = cssUtils.getBIContainer(mChart);
-        const { dragactStyle } = JSON.parse(this.state.mDashboard.style_config);
+        const { mDashboard, bigScreen } = this.state;
+        let cssName = cssUtils.getBIContainer(mChart, bigScreen);
+        const { dragactStyle } = JSON.parse(mDashboard.style_config);
         const { name, chartId, value } = item;
         // const { editModel } = this.state;
         ReactDom.render(
@@ -691,8 +709,9 @@ class ReportBoard extends PureComponent {
     }
     // 展示 标准文本控件
     renderTextStandard(item, dateSetList, mChart) {
-        let cssName = cssUtils.getBIContainer(mChart);
-        const { dragactStyle } = JSON.parse(this.state.mDashboard.style_config);
+        const { mDashboard, bigScreen } = this.state;
+        let cssName = cssUtils.getBIContainer(mChart, bigScreen);
+        const { dragactStyle } = JSON.parse(mDashboard.style_config);
         const { name, chartId, value } = item;
         ReactDom.render(
             <div className={cssName}>
@@ -709,8 +728,9 @@ class ReportBoard extends PureComponent {
     }
     // 展示 自定义表格
     renderTableDiy(name, dateSetList, mChart, spinning) {
-        let cssName = cssUtils.getBIContainer(mChart);
-        const { dragactStyle } = JSON.parse(this.state.mDashboard.style_config);
+        const { mDashboard, bigScreen } = this.state;
+        let cssName = cssUtils.getBIContainer(mChart, bigScreen);
+        const { dragactStyle } = JSON.parse(mDashboard.style_config);
         ReactDom.render(
             <div className={cssName}>
                 <TableDiy
@@ -724,8 +744,9 @@ class ReportBoard extends PureComponent {
     }
     // antd table
     renderAntdTable(item, dateSetList, mChart, spinning) {
-        let cssName = cssUtils.getBIContainer(mChart);
-        const { dragactStyle } = JSON.parse(this.state.mDashboard.style_config);
+        const { mDashboard, bigScreen } = this.state;
+        let cssName = cssUtils.getBIContainer(mChart, bigScreen);
+        const { dragactStyle } = JSON.parse(mDashboard.style_config);
         const { type, name, chartId, styleConfig, relation } = item;
         ReactDom.render(
             <div className={cssName}
@@ -752,8 +773,9 @@ class ReportBoard extends PureComponent {
     }
     // antd pivotDiy
     renderPivotDiy(name, dateSetList, mChart, spinning) {
-        let cssName = cssUtils.getBIContainer(mChart);
-        const { dragactStyle } = JSON.parse(this.state.mDashboard.style_config);
+        const { mDashboard, bigScreen } = this.state;
+        let cssName = cssUtils.getBIContainer(mChart, bigScreen);
+        const { dragactStyle } = JSON.parse(mDashboard.style_config);
         ReactDom.render(
             <div className={cssName}>
                 <Spin spinning={spinning}>
@@ -771,8 +793,9 @@ class ReportBoard extends PureComponent {
     }
     // tableDiy1
     renderTableDiy1 = (name, dateSetList, mChart, spinning) => {
-        let cssName = cssUtils.getBIContainer(mChart);
-        const { dragactStyle } = JSON.parse(this.state.mDashboard.style_config);
+        const { mDashboard, bigScreen } = this.state;
+        let cssName = cssUtils.getBIContainer(mChart, bigScreen);
+        const { dragactStyle } = JSON.parse(mDashboard.style_config);
         ReactDom.render(
             <div className={cssName}>
                 <Spin spinning={spinning}>
@@ -792,8 +815,9 @@ class ReportBoard extends PureComponent {
     renderSearch(item, mChart) {
         const { name, chartId, styleConfig, relation } = item;
         const searchEnum = this.props.model.searchEnum;
-        let cssName = cssUtils.getBIContainer(mChart);
-        const { dragactStyle } = JSON.parse(this.state.mDashboard.style_config);
+        const { mDashboard, bigScreen } = this.state;
+        let cssName = cssUtils.getBIContainer(mChart, bigScreen);
+        const { dragactStyle } = JSON.parse(mDashboard.style_config);
         ReactDom.render(
             <div className={cssName}
                 style={{ cursor: 'pointer' }}
@@ -1386,7 +1410,19 @@ class ReportBoard extends PureComponent {
 
     // 打印
     onPrint = () => {
-        print.onPrint(this.divDom);
+        //print.onPrint(this.divDom);
+        const { bigScreen } = this.state;
+        this.setState({
+            bigScreen: bigScreen ? false : true,
+            refreshType: bigScreen ? "refreshAll" : "bigScreen",
+        });
+    }
+    // 切换大屏
+    changeBigScreen = () => {
+        const { bigScreen } = this.state;
+        this.setState({
+            bigScreen: bigScreen ? false : true,
+        });
     }
     // 编辑界面点击图表修改right
     changeEditRightProps = (type, mChart, name) => {
@@ -1498,7 +1534,7 @@ class ReportBoard extends PureComponent {
         ];
         const style_config = this.state.mDashboard.style_config;
         if (style_config) {
-            const data = JSON.parse(style_config).dragactStyle;
+            const data = reportBoardUtils.getDragactData(JSON.parse(style_config).dragactStyle, this.state.bigScreen); // 获取dragact数据
             const len = data.length; // add by wangliu 20190102 for:当组件少的时候手动增加假数据,不让dragact控件报错
             if (len < this.maxDragactCount) {
                 const maxLen = this.maxDragactCount;
@@ -1516,6 +1552,7 @@ class ReportBoard extends PureComponent {
 
     /****************************************************************************************************************/
     render() {
+        const { dragMoveChecked, editModel, bigScreen } = this.state;
         const data = this.getDragactData();
         //  设置dragact静止拖动  展示的时候和右侧开关为开的时候静止拖动
         if (this.state.editModel == "false" || this.state.dragMoveChecked == true) {
@@ -1528,7 +1565,7 @@ class ReportBoard extends PureComponent {
             col: 40,
             rowHeight: 40,
             margin: [0, 0],
-            className: 'plant-layout',
+            className: bigScreen ? '' : 'plant-layout',
             layout: data,
             placeholder: true,
             style: {
@@ -1556,7 +1593,7 @@ class ReportBoard extends PureComponent {
                         {this.state.editModel == "true" ? '' : <Icon onClick={this.onPrint} type="printer" />}
                     </div>}
                 {this.state.editModel == "true" ? <div className={styles['boardLeft']}>{this.disPlayLeft()} </div> : <div></div>}
-                <div id="contents" className={`boardcenter_report`} ref={(instance) => { this.center = instance; }} style={{ paddingLeft: (this.state.editModel == "true") ? "200px" : "0", paddingRight: (this.state.editModel == "true") ? "200px" : "0", background: '#eee' }}>
+                <div id="contents" className={bigScreen ? styles['boardcenter_bigScreen'] : styles['boardcenter']} ref={(instance) => { this.center = instance; }} style={{ paddingLeft: (this.state.editModel == "true") ? "200px" : "0", paddingRight: (this.state.editModel == "true") ? "200px" : "0" }}>
                     {this.renderTab()}
                     <div ref={(n) => { this.divDom = n; }}>
                         <Dragact
@@ -1580,7 +1617,7 @@ class ReportBoard extends PureComponent {
                                             //监听每一个组件的拖拽状态
                                             ...getblockStyle(provided.isDragging),
                                             zIndex: zIndex,
-                                            backgroundColor: this.state.editModel == "true" ? '#eee' : '#eee'
+                                            backgroundColor: bigScreen ? '' : '#eee' // 大屏模式这个不加背景色
                                         }}
                                     >
                                         {this.state.editModel == "true" ?
