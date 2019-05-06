@@ -52,11 +52,13 @@ class EditAntdTable extends PureComponent {
             fixed_right: false,
             warning_row: false, // 值预警-行
             warning_col: false, // 值预警-列
+            column_order: false, // 字段排序
             columnCheckbox: config.column, // checkbox弹出框的临时值
             columnUrlCheckbox: config.columnUrl, // checkbox弹出框的临时值
             columnUrlParamCheckbox: config.columnUrlParam, // checkbox弹出框的临时值
             fixed_leftCheckbox: config.fixed_left, // checkbox弹出框的临时值
             fixed_rightCheckbox: config.fixed_right, // checkbox弹出框的临时值
+            column_orderCheckbox: config.column_order, // column_order弹出框的临时值
             warning_rowData: config.warning_row == null ? [] : config.warning_row, // warning_row的临时值
             warning_row_row: "", // warning_row row临时值
             warning_row_formula: "", // formula 临时值
