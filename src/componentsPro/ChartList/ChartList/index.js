@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import ReactDom from 'react-dom';
-import { Collapse, Checkbox } from 'antd';
+import { Collapse, Checkbox, Icon } from 'antd';
 import styles from './index.less';
 import ReportBoardUtils from '../../../utils/reportBoardUtils';
 
@@ -8,12 +8,20 @@ const Panel = Collapse.Panel;
 const CheckboxGroup = Checkbox.Group;
 const reportBoardUtils = new ReportBoardUtils();
 
-//  仪表板 左侧的  图表列表 组件
+/***
+ * 左侧图表list,用来添加删除图表
+ * 
+ * @author: wangliu
+ * 
+ * ***/
 export default class Index extends PureComponent {
     constructor(props) {
         super(props);
         this.state = {
-            chartIdArrayLine: [],// 选中的列表
+            mCharts: {},
+            mDashboard: {},
+
+            chartIdArrayLine: [],
             chartIdArrayBar: [],
             chartIdArrayPie: [],
             chartIdArrayTable: [],
@@ -25,11 +33,194 @@ export default class Index extends PureComponent {
             chartIdArrayAntdTable: [],
             chartIdArrayPivotDiy: [],
             chartIdArrayTableDiy1: [],
-        };
+
+            arrLine: [],
+            arrBar: [],
+            arrPie: [],
+            arrTable: [],
+            arrPivottable: [],
+            arrPerspective: [],
+            arrText: [],
+            arrTextStandard: [],
+            arrTableDiy: [],
+            arrAntdTable: [],
+            arrPivotDiy: [],
+            arrTableDiy1: [],
+            refreshUI: 0, // 刷新ui
+        }
+    }
+
+    componentWillReceiveProps(nextProps) {
+        this.changeState(nextProps);
     }
 
     componentDidMount() {
-        this.renderChart();
+        this.changeState(this.props);
+    }
+
+    /***
+     * 
+     * 给state赋值
+     * 
+     * 
+     * 
+     * ***/
+    changeState = (props) => {
+        const { mCharts, mDashboard } = props;
+        // 选中图表
+        const chartIdArrayLine = [];
+        const chartIdArrayBar = [];
+        const chartIdArrayPie = [];
+        const chartIdArrayTable = [];
+        const chartIdArrayPivottable = [];
+        const chartIdArrayPerspective = [];
+        const chartIdArrayText = [];
+        const chartIdArrayTextStandard = [];
+        const chartIdArrayTableDiy = [];
+        const chartIdArrayAntdTable = [];
+        const chartIdArrayPivotDiy = [];
+        const chartIdArrayTableDiy1 = [];
+        // 全部图表
+        const arrLine = [];
+        const arrBar = [];
+        const arrPie = [];
+        const arrTable = [];
+        const arrPivottable = [];
+        const arrPerspective = [];
+        const arrText = [];
+        const arrTextStandard = [];
+        const arrTableDiy = [];
+        const arrAntdTable = [];
+        const arrPivotDiy = [];
+        const arrTableDiy1 = [];
+        const style_config = JSON.parse(mDashboard.style_config);
+        const { children } = style_config;
+        // 制造选中图表
+        children.map((item, index) => {
+            const type = reportBoardUtils.getTypeByChartId(mCharts, item.chartId);// 获取图表类型
+            if (type == "0") {
+                chartIdArrayLine.push(item.chartId);
+            } else if (type == "1") {
+                chartIdArrayBar.push(item.chartId);
+            } else if (type == "2") {
+                chartIdArrayPie.push(item.chartId);
+            } else if (type == "3") {
+                chartIdArrayTable.push(item.chartId);
+            } else if (type == "4") {
+                chartIdArrayPivottable.push(item.chartId);
+            } else if (type == "5") {
+                chartIdArrayPerspective.push(item.chartId);
+            } else if (type == "6") {
+                chartIdArrayText.push(item.chartId);
+            } else if (type == "61") {
+                chartIdArrayTextStandard.push(item.chartId);
+            } else if (type == "7") {
+                chartIdArrayTableDiy.push(item.chartId);
+            } else if (type == "21") {
+                chartIdArrayAntdTable.push(item.chartId);
+            } else if (type == "22") {
+                chartIdArrayPivotDiy.push(item.chartId);
+            } else if (type == "23") {
+                chartIdArrayTableDiy1.push(item.chartId);
+            }
+        });
+        // 制造全部图表
+        mCharts.map((item, index) => {
+            const type = reportBoardUtils.getTypeByChartId(mCharts, item.id.toString());// 获取图表类型
+            if (type == "0") {
+                arrLine.push({
+                    "label": item.name,
+                    "value": item.id.toString(),
+                });
+            } else if (type == "1") {
+                arrBar.push({
+                    "label": item.name,
+                    "value": item.id.toString(),
+                });
+            } else if (type == "2") {
+                arrPie.push({
+                    "label": item.name,
+                    "value": item.id.toString(),
+                });
+            } else if (type == "3") {
+                arrTable.push({
+                    "label": item.name,
+                    "value": item.id.toString(),
+                });
+            } else if (type == "4") {
+                arrPivottable.push({
+                    "label": item.name,
+                    "value": item.id.toString(),
+                });
+            } else if (type == "5") {
+                arrPerspective.push({
+                    "label": item.name,
+                    "value": item.id.toString(),
+                });
+            } else if (type == "6") {
+                arrText.push({
+                    "label": item.name,
+                    "value": item.id.toString(),
+                });
+            } else if (type == "61") {
+                arrTextStandard.push({
+                    "label": item.name,
+                    "value": item.id.toString(),
+                });
+            } else if (type == "7") {
+                arrTableDiy.push({
+                    "label": item.name,
+                    "value": item.id.toString(),
+                });
+            } else if (type == "21") {
+                arrAntdTable.push({
+                    "label": item.name,
+                    "value": item.id.toString(),
+                });
+            } else if (type == "22") {
+                arrPivotDiy.push({
+                    "label": item.name,
+                    "value": item.id.toString(),
+                });
+            } else if (type == "23") {
+                arrTableDiy1.push({
+                    "label": item.name,
+                    "value": item.id.toString(),
+                });
+            }
+        });
+        // 更新state
+        this.setState({
+            mCharts,
+            mDashboard,
+
+            chartIdArrayLine,
+            chartIdArrayBar,
+            chartIdArrayPie,
+            chartIdArrayTable,
+            chartIdArrayPivottable,
+            chartIdArrayPerspective,
+            chartIdArrayText,
+            chartIdArrayTextStandard,
+            chartIdArrayTableDiy,
+            chartIdArrayAntdTable,
+            chartIdArrayPivotDiy,
+            chartIdArrayTableDiy1,
+
+            arrLine,
+            arrBar,
+            arrPie,
+            arrTable,
+            arrPivottable,
+            arrPerspective,
+            arrText,
+            arrTextStandard,
+            arrTableDiy,
+            arrAntdTable,
+            arrPivotDiy,
+            arrTableDiy1,
+            refreshUI: this.state.refreshUI + 1,
+        });
     }
 
     //  点击事件  增加或删除 chart
@@ -112,129 +303,7 @@ export default class Index extends PureComponent {
     };
 
     renderChart() {
-        const { mCharts, mDashboard } = this.props;
-        const node = this.node;
-        const arrLine = [];
-        const arrBar = [];
-        const arrPie = [];
-        const arrTable = [];
-        const arrPivottable = [];
-        const arrPerspective = [];
-        const arrText = [];
-        const arrTextStandard = [];
-        const arrTableDiy = [];
-        const arrAntdTable = [];
-        const arrPivotDiy = [];
-        const arrTableDiy1 = [];
-        //  列表全部数据  mCharts 表中的
-        mCharts.map((item, index) => {
-            const type = reportBoardUtils.getTypeByChartId(mCharts, item.id.toString());// 获取图表类型
-            if (type == "0") {
-                arrLine.push({
-                    "label": item.name,
-                    "value": item.id.toString(),
-                });
-            } else if (type == "1") {
-                arrBar.push({
-                    "label": item.name,
-                    "value": item.id.toString(),
-                });
-            } else if (type == "2") {
-                arrPie.push({
-                    "label": item.name,
-                    "value": item.id.toString(),
-                });
-            } else if (type == "3") {
-                arrTable.push({
-                    "label": item.name,
-                    "value": item.id.toString(),
-                });
-            } else if (type == "4") {
-                arrPivottable.push({
-                    "label": item.name,
-                    "value": item.id.toString(),
-                });
-            } else if (type == "5") {
-                arrPerspective.push({
-                    "label": item.name,
-                    "value": item.id.toString(),
-                });
-            } else if (type == "6") {
-                arrText.push({
-                    "label": item.name,
-                    "value": item.id.toString(),
-                });
-            } else if (type == "61") {
-                arrTextStandard.push({
-                    "label": item.name,
-                    "value": item.id.toString(),
-                });
-            } else if (type == "7") {
-                arrTableDiy.push({
-                    "label": item.name,
-                    "value": item.id.toString(),
-                });
-            } else if (type == "21") {
-                arrAntdTable.push({
-                    "label": item.name,
-                    "value": item.id.toString(),
-                });
-            } else if (type == "22") {
-                arrPivotDiy.push({
-                    "label": item.name,
-                    "value": item.id.toString(),
-                });
-            } else if (type == "23") {
-                arrTableDiy1.push({
-                    "label": item.name,
-                    "value": item.id.toString(),
-                });
-            }
-        });
-        //  列表选中数据  mDashboard 表中的
-        const chartIdArrayLine = [];
-        const chartIdArrayBar = [];
-        const chartIdArrayPie = [];
-        const chartIdArrayTable = [];
-        const chartIdArrayPivottable = [];
-        const chartIdArrayPerspective = [];
-        const chartIdArrayText = [];
-        const chartIdArrayTextStandard = [];
-        const chartIdArrayTableDiy = [];
-        const chartIdArrayAntdTable = [];
-        const chartIdArrayPivotDiy = [];
-        const chartIdArrayTableDiy1 = [];
-        const children = JSON.parse(mDashboard.style_config).children;
-        children.map((item, index) => {
-            const type = reportBoardUtils.getTypeByChartId(mCharts, item.chartId);// 获取图表类型
-            if (type == "0") {
-                chartIdArrayLine.push(item.chartId);
-            } else if (type == "1") {
-                chartIdArrayBar.push(item.chartId);
-            } else if (type == "2") {
-                chartIdArrayPie.push(item.chartId);
-            } else if (type == "3") {
-                chartIdArrayTable.push(item.chartId);
-            } else if (type == "4") {
-                chartIdArrayPivottable.push(item.chartId);
-            } else if (type == "5") {
-                chartIdArrayPerspective.push(item.chartId);
-            } else if (type == "6") {
-                chartIdArrayText.push(item.chartId);
-            } else if (type == "61") {
-                chartIdArrayTextStandard.push(item.chartId);
-            } else if (type == "7") {
-                chartIdArrayTableDiy.push(item.chartId);
-            } else if (type == "21") {
-                chartIdArrayAntdTable.push(item.chartId);
-            } else if (type == "22") {
-                chartIdArrayPivotDiy.push(item.chartId);
-            } else if (type == "23") {
-                chartIdArrayTableDiy1.push(item.chartId);
-            }
-        });
-        // 放入state中让点击后可以有比较对象
-        this.setState({
+        const {
             chartIdArrayLine,
             chartIdArrayBar,
             chartIdArrayPie,
@@ -247,8 +316,21 @@ export default class Index extends PureComponent {
             chartIdArrayAntdTable,
             chartIdArrayPivotDiy,
             chartIdArrayTableDiy1,
-        });
-        const content = (
+            arrLine,
+            arrBar,
+            arrPie,
+            arrTable,
+            arrPivottable,
+            arrPerspective,
+            arrText,
+            arrTextStandard,
+            arrTableDiy,
+            arrAntdTable,
+            arrPivotDiy,
+            arrTableDiy1,
+        } = this.state;
+
+        return (
             <div>
                 <Collapse defaultActiveKey={['1']}>
                     <Panel header={<div><span>组件列表</span></div>} key="1">
@@ -397,12 +479,13 @@ export default class Index extends PureComponent {
                 {/* 页签权限end */}
             </div>
         );
-        ReactDom.render(content, node);
+
     }
+
     render() {
         return (
             <div>
-                <div ref={(instance) => { this.node = instance; }} />
+                {this.renderChart()}
             </div>
         )
     }
