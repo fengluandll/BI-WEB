@@ -40,9 +40,9 @@ export default class CalData {
                 const obj = { "title": name, children: [] };
                 for (let key in children) {
                     const value = children[key];
-                    const child = { "title": value, "dataIndex": value + key, "key": value + key, "align": "center", "width": 300 };
+                    const child = { "title": value, "dataIndex": value + name, "key": value + name, "align": "center", "width": 300 };
                     obj.children.push(child);
-                    head_for_data.push(value + key);
+                    head_for_data.push(value + name); // 二级标题数据key用大标题+小标题
                 }
                 columns.push(obj);
             }
