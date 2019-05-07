@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import ReactDom from 'react-dom';
-import { Collapse, Checkbox } from 'antd';
+import { Collapse, Checkbox, Icon } from 'antd';
 import ReportBoardUtils from '../../../utils/reportBoardUtils';
 import styles from './index.less';
 
@@ -32,21 +32,6 @@ export default class Index extends PureComponent {
 
     /*************************************点击事件***********************************************/
 
-    handleFieldContent = (n) => {
-        this['fieldContent'] = n;
-    };
-
-    toogle = (ev) => {
-        const target = ev.target;
-        if (ev.target.className === 'anticon anticon-down') {
-            target.className = 'anticon anticon-up';
-            this['fieldContent'].style.display = 'block';
-        } else {
-            target.className = 'anticon anticon-down';
-            this['fieldContent'].style.display = 'none';
-        }
-    };
-
     // 修改图表之间的关联关系  参数 name:维度id
     changeCheckRelation = (dimension, checkValue) => {
         // 选中图表的uuuid
@@ -59,7 +44,7 @@ export default class Index extends PureComponent {
 
 
     // 图表的关联UI
-    renderRelationChart = () => {
+    renderContent = () => {
         const { mChart } = this.props;
         const mChart_config = JSON.parse(mChart.config);
         const type = mChart_config.type;//  type:0折线图、1柱状图、2饼图、3交叉表、11搜索框
@@ -134,9 +119,9 @@ export default class Index extends PureComponent {
                             {/* 选择字段后显示关联列表 */}
                             <div className={styles['field-relation']} >
                                 <div className={styles['field-name']} title={`源字段-${idColumn.rsc_display}`}>
-                                    <i className="anticon anticon-up" onClick={this.toogle.bind(this)} style={{ cursor: 'pointer' }} />{`源字段-${idColumn.rsc_display}`}
+                                    <Icon type={"down"} />{`源字段-${idColumn.rsc_display}`}
                                 </div>
-                                <div className={styles['field-content']} ref={this.handleFieldContent.bind(this)}>
+                                <div className={styles['field-content']}>
                                     <CheckboxGroup
                                         options={arr}
                                         defaultValue={value}
@@ -155,7 +140,7 @@ export default class Index extends PureComponent {
     render() {
         return (
             <div>
-                {this.renderRelationChart()}
+                {this.renderContent()}
             </div>
         )
     }

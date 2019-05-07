@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import ReactDom from 'react-dom';
-import { Collapse, Checkbox } from 'antd';
+import { Collapse, Checkbox, Icon } from 'antd';
 import ReportBoardUtils from '../../../utils/reportBoardUtils';
 import styles from './index.less';
 
@@ -19,6 +19,12 @@ const reportBoardUtils = new ReportBoardUtils();
 class RelationTable extends PureComponent {
     constructor(props) {
         super(props);
+        const { mChart, relation, mCharts, tableIdColumns, idColumns, chart_children, changeCheckRelation } = this.props;
+        this.state = {
+            mChart, relation, mCharts, tableIdColumns, idColumns, chart_children, changeCheckRelation,
+            type_map: {}, // 下拉切换图标,{key:index下标,value:"icon值"}
+            refreshUI: 0,   //   state 用来刷新ui
+        }
     }
 
     componentDidMount() {
@@ -28,39 +34,27 @@ class RelationTable extends PureComponent {
     }
 
     componentWillReceiveProps(nextProps) {
+        const { mChart, relation, mCharts, tableIdColumns, idColumns, chart_children, changeCheckRelation } = nextProps;
+        this.setState({
+            mChart, relation, mCharts, tableIdColumns, idColumns, chart_children, changeCheckRelation,
+        });
     }
 
     /****************************点击事件*********************************/
 
-    handleFieldContent = (key, n) => {
-        this[`fieldContent${key}`] = n;
-    };
-
-    toogle = (key, ev) => {
-        const target = ev.target;
-        if (ev.target.className === 'anticon anticon-down') {
-            target.className = 'anticon anticon-up';
-            this[`fieldContent${key}`].style.display = 'block';
-        } else {
-            target.className = 'anticon anticon-down';
-            this[`fieldContent${key}`].style.display = 'none';
-        }
-    };
-
-
-    handleComponentContent = (key, n) => {
-        this[`componentContent${key}`] = n;
-    };
-
-    toogleComponent = (key, ev) => {
-        const target = ev.target;
-        if (ev.target.className === 'anticon anticon-down') {
-            target.className = 'anticon anticon-up';
-            this[`componentContent${key}`].style.display = 'block';
-        } else {
-            target.className = 'anticon anticon-down';
-            this[`componentContent${key}`].style.display = 'none';
-        }
+    /***
+     * 展开和收起列表
+     * 
+     * ***/
+    toogle = (searchIndex, ev) => {
+        const { type_map } = this.state;
+        let type_index = type_map[searchIndex] == null ? "down" : type_map[searchIndex];
+        type_index = type_index == "right" ? "down" : "right";
+        type_map[searchIndex] = type_index;
+        this.setState({
+            type_map,
+            refreshUI: this.state.refreshUI + 1,
+        });
     };
 
     // 修改图表之间的关联关系  参数 name:维度id
@@ -74,7 +68,7 @@ class RelationTable extends PureComponent {
     /*******************************************************************/
 
     renderContent = () => {
-        const { mChart, relation, mCharts, tableIdColumns, idColumns, chart_children, changeCheckRelation } = this.props;
+        const { mChart, relation, mCharts, tableIdColumns, idColumns, chart_children, changeCheckRelation, type_map } = this.state;
         const { column } = JSON.parse(mChart.config);
         const column_id_arr = column.split(","); // table字段id的数组
 
@@ -115,12 +109,13 @@ class RelationTable extends PureComponent {
                                             value.push(relationFields[key][0]);
                                         }
                                     }
+                                    const type_index = type_map[index] == null ? "down" : type_map[index]; // icon下标值
                                     return (
                                         <div className={styles['field-relation']} key={index}>
                                             <div className={styles['field-name']} title={`源字段-${idColumn.rsc_display}`}>
-                                                <i className="anticon anticon-down" onClick={this.toogle.bind(this, index)} style={{ cursor: 'pointer' }} />{`源字段-${idColumn.rsc_display}`}
+                                                <Icon type={type_index} onClick={this.toogle.bind(this, index)} style={{ cursor: 'pointer' }} />{`源字段-${idColumn.rsc_display}`}
                                             </div>
-                                            <div className={styles['field-content']} ref={this.handleFieldContent.bind(this, index)}>
+                                            <div className={styles['field-content']} style={type_index == "down" ? { display: 'block' } : { display: 'none' }}>
                                                 <CheckboxGroup
                                                     options={arr}
                                                     defaultValue={value}
