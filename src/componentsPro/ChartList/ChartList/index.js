@@ -46,6 +46,19 @@ export default class Index extends PureComponent {
             arrAntdTable: [],
             arrPivotDiy: [],
             arrTableDiy1: [],
+
+            type_line: "down",
+            type_bar: "down",
+            type_pie: "down",
+            type_table: "down",
+            type_pivottable: "down",
+            type_perspective: "down",
+            type_text: "down",
+            type_textStandard: "down",
+            type_tableDiy: "down",
+            type_antdTable: "down",
+            type_pivotDiy: "down",
+            type_tableDiy1: "down",
         }
     }
 
@@ -285,18 +298,73 @@ export default class Index extends PureComponent {
         this.props.addOrRemoveChart(operateType, chartId);
     };
 
-    handleFieldContent = (key, n) => {
-        this[`fieldContent${key}`] = n;
-    };
-
+    /***
+     * 展开和收起列表
+     * 
+     * ***/
     toogle = (key, ev) => {
-        const target = ev.target;
-        if (ev.target.className === 'anticon anticon-down') {
-            target.className = 'anticon anticon-up';
-            this[`fieldContent${key}`].style.display = 'block';
-        } else {
-            target.className = 'anticon anticon-down';
-            this[`fieldContent${key}`].style.display = 'none';
+        const {
+            type_line,
+            type_bar,
+            type_pie,
+            type_table,
+            type_pivottable,
+            type_perspective,
+            type_text,
+            type_textStandard,
+            type_tableDiy,
+            type_antdTable,
+            type_pivotDiy,
+            type_tableDiy1,
+        } = this.state;
+        if (key == "line") {
+            this.setState({
+                type_line: type_line == "right" ? "down" : "right",
+            });
+        } else if (key == "bar") {
+            this.setState({
+                type_bar: type_bar == "right" ? "down" : "right",
+            });
+        } else if (key == "pie") {
+            this.setState({
+                type_pie: type_pie == "right" ? "down" : "right",
+            });
+        } else if (key == "table") {
+            this.setState({
+                type_table: type_table == "right" ? "down" : "right",
+            });
+        } else if (key == "pivottable") {
+            this.setState({
+                type_pivottable: type_pivottable == "right" ? "down" : "right",
+            });
+        } else if (key == "perspective") {
+            this.setState({
+                type_perspective: type_perspective == "right" ? "down" : "right",
+            });
+        } else if (key == "text") {
+            this.setState({
+                type_text: type_text == "right" ? "down" : "right",
+            });
+        } else if (key == "textStandard") {
+            this.setState({
+                type_textStandard: type_textStandard == "right" ? "down" : "right",
+            });
+        } else if (key == "tableDiy") {
+            this.setState({
+                type_tableDiy: type_tableDiy == "right" ? "down" : "right",
+            });
+        } else if (key == "antdTable") {
+            this.setState({
+                type_antdTable: type_antdTable == "right" ? "down" : "right",
+            });
+        } else if (key == "pivotDiy") {
+            this.setState({
+                type_pivotDiy: type_pivotDiy == "right" ? "down" : "right",
+            });
+        } else if (key == "tableDiy1") {
+            this.setState({
+                type_tableDiy1: type_tableDiy1 == "right" ? "down" : "right",
+            });
         }
     };
 
@@ -326,6 +394,18 @@ export default class Index extends PureComponent {
             arrAntdTable,
             arrPivotDiy,
             arrTableDiy1,
+            type_line,
+            type_bar,
+            type_pie,
+            type_table,
+            type_pivottable,
+            type_perspective,
+            type_text,
+            type_textStandard,
+            type_tableDiy,
+            type_antdTable,
+            type_pivotDiy,
+            type_tableDiy1,
         } = this.state;
 
         return (
@@ -334,9 +414,9 @@ export default class Index extends PureComponent {
                     <Panel header={<div><span>组件列表</span></div>} key="1">
                         <div className="search-config-selection">
                             <div className={styles['field-name']} title="折线图">
-                                <i className="anticon anticon-up" onClick={this.toogle.bind(this, 'line')} style={{ cursor: 'pointer' }} />折线图
+                                <Icon type={type_line} onClick={this.toogle.bind(this, 'line')} style={{ cursor: 'pointer' }} />折线图
                             </div>
-                            <div className={styles['field-content']} ref={this.handleFieldContent.bind(this, 'line')}>
+                            <div className={styles['field-content']} style={type_line == "down" ? { display: 'block' } : { display: 'none' }}>
                                 <CheckboxGroup
                                     options={arrLine}
                                     value={chartIdArrayLine}
@@ -345,9 +425,9 @@ export default class Index extends PureComponent {
                                 />
                             </div>
                             <div className={styles['field-name']} title="柱状图">
-                                <i className="anticon anticon-up" onClick={this.toogle.bind(this, 'bar')} style={{ cursor: 'pointer' }} />柱状图
+                                <Icon type={type_bar} onClick={this.toogle.bind(this, 'bar')} style={{ cursor: 'pointer' }} />柱状图
                             </div>
-                            <div className={styles['field-content']} ref={this.handleFieldContent.bind(this, 'bar')}>
+                            <div className={styles['field-content']} style={type_bar == "down" ? { display: 'block' } : { display: 'none' }}>
                                 <CheckboxGroup
                                     options={arrBar}
                                     value={chartIdArrayBar}
@@ -356,9 +436,9 @@ export default class Index extends PureComponent {
                                 />
                             </div>
                             <div className={styles['field-name']} title="饼图">
-                                <i className="anticon anticon-up" onClick={this.toogle.bind(this, 'pie')} style={{ cursor: 'pointer' }} />饼图
+                                <Icon type={type_pie} onClick={this.toogle.bind(this, 'pie')} style={{ cursor: 'pointer' }} />饼图
                             </div>
-                            <div className={styles['field-content']} ref={this.handleFieldContent.bind(this, 'pie')}>
+                            <div className={styles['field-content']} style={type_pie == "down" ? { display: 'block' } : { display: 'none' }}>
                                 <CheckboxGroup
                                     options={arrPie}
                                     value={chartIdArrayPie}
@@ -367,9 +447,9 @@ export default class Index extends PureComponent {
                                 />
                             </div>
                             <div className={styles['field-name']} title="交叉表">
-                                <i className="anticon anticon-up" onClick={this.toogle.bind(this, 'table')} style={{ cursor: 'pointer' }} />交叉表
+                                <Icon type={type_table} onClick={this.toogle.bind(this, 'table')} style={{ cursor: 'pointer' }} />交叉表
                             </div>
-                            <div className={styles['field-content']} ref={this.handleFieldContent.bind(this, 'table')}>
+                            <div className={styles['field-content']} style={type_table == "down" ? { display: 'block' } : { display: 'none' }}>
                                 <CheckboxGroup
                                     options={arrTable}
                                     value={chartIdArrayTable}
@@ -378,9 +458,9 @@ export default class Index extends PureComponent {
                                 />
                             </div>
                             <div className={styles['field-name']} title="透视表A">
-                                <i className="anticon anticon-up" onClick={this.toogle.bind(this, 'pivot')} style={{ cursor: 'pointer' }} />透视表A
+                                <Icon type={type_pivottable} onClick={this.toogle.bind(this, 'pivottable')} style={{ cursor: 'pointer' }} />透视表A
                             </div>
-                            <div className={styles['field-content']} ref={this.handleFieldContent.bind(this, 'pivot')}>
+                            <div className={styles['field-content']} style={type_pivottable == "down" ? { display: 'block' } : { display: 'none' }}>
                                 <CheckboxGroup
                                     options={arrPivottable}
                                     value={chartIdArrayPivottable}
@@ -389,9 +469,9 @@ export default class Index extends PureComponent {
                                 />
                             </div>
                             <div className={styles['field-name']} title="透视表B">
-                                <i className="anticon anticon-up" onClick={this.toogle.bind(this, 'perspective')} style={{ cursor: 'pointer' }} />透视表B
+                                <Icon type={type_perspective} onClick={this.toogle.bind(this, 'perspective')} style={{ cursor: 'pointer' }} />透视表B
                             </div>
-                            <div className={styles['field-content']} ref={this.handleFieldContent.bind(this, 'perspective')}>
+                            <div className={styles['field-content']} style={type_perspective == "down" ? { display: 'block' } : { display: 'none' }}>
                                 <CheckboxGroup
                                     options={arrPerspective}
                                     value={chartIdArrayPerspective}
@@ -400,9 +480,9 @@ export default class Index extends PureComponent {
                                 />
                             </div>
                             <div className={styles['field-name']} title="文本控件">
-                                <i className="anticon anticon-up" onClick={this.toogle.bind(this, 'text')} style={{ cursor: 'pointer' }} />文本控件
+                                <Icon type={type_text} onClick={this.toogle.bind(this, 'text')} style={{ cursor: 'pointer' }} />文本控件
                             </div>
-                            <div className={styles['field-content']} ref={this.handleFieldContent.bind(this, 'text')}>
+                            <div className={styles['field-content']} style={type_text == "down" ? { display: 'block' } : { display: 'none' }}>
                                 <CheckboxGroup
                                     options={arrText}
                                     value={chartIdArrayText}
@@ -411,9 +491,9 @@ export default class Index extends PureComponent {
                                 />
                             </div>
                             <div className={styles['field-name']} title="标准文本控件">
-                                <i className="anticon anticon-up" onClick={this.toogle.bind(this, 'textStandard')} style={{ cursor: 'pointer' }} />标准文本控件
+                                <Icon type={type_textStandard} onClick={this.toogle.bind(this, 'textStandard')} style={{ cursor: 'pointer' }} />标准文本控件
                             </div>
-                            <div className={styles['field-content']} ref={this.handleFieldContent.bind(this, 'textStandard')}>
+                            <div className={styles['field-content']} style={type_textStandard == "down" ? { display: 'block' } : { display: 'none' }}>
                                 <CheckboxGroup
                                     options={arrTextStandard}
                                     value={chartIdArrayTextStandard}
@@ -422,9 +502,9 @@ export default class Index extends PureComponent {
                                 />
                             </div>
                             <div className={styles['field-name']} title="自定义table">
-                                <i className="anticon anticon-up" onClick={this.toogle.bind(this, 'tableDiy')} style={{ cursor: 'pointer' }} />自定义table
+                                <Icon type={type_tableDiy} onClick={this.toogle.bind(this, 'tableDiy')} style={{ cursor: 'pointer' }} />自定义table
                             </div>
-                            <div className={styles['field-content']} ref={this.handleFieldContent.bind(this, 'tableDiy')}>
+                            <div className={styles['field-content']} style={type_tableDiy == "down" ? { display: 'block' } : { display: 'none' }}>
                                 <CheckboxGroup
                                     options={arrTableDiy}
                                     value={chartIdArrayTableDiy}
@@ -433,9 +513,9 @@ export default class Index extends PureComponent {
                                 />
                             </div>
                             <div className={styles['field-name']} title="antdTable">
-                                <i className="anticon anticon-up" onClick={this.toogle.bind(this, 'antdTable')} style={{ cursor: 'pointer' }} />antdTable
+                                <Icon type={type_antdTable} onClick={this.toogle.bind(this, 'antdTable')} style={{ cursor: 'pointer' }} />antdTable
                             </div>
-                            <div className={styles['field-content']} ref={this.handleFieldContent.bind(this, 'antdTable')}>
+                            <div className={styles['field-content']} style={type_antdTable == "down" ? { display: 'block' } : { display: 'none' }}>
                                 <CheckboxGroup
                                     options={arrAntdTable}
                                     value={chartIdArrayAntdTable}
@@ -444,9 +524,9 @@ export default class Index extends PureComponent {
                                 />
                             </div>
                             <div className={styles['field-name']} title="pivotDiy">
-                                <i className="anticon anticon-up" onClick={this.toogle.bind(this, 'pivotDiy')} style={{ cursor: 'pointer' }} />pivotDiy
+                                <Icon type={type_pivotDiy} onClick={this.toogle.bind(this, 'pivotDiy')} style={{ cursor: 'pointer' }} />pivotDiy
                             </div>
-                            <div className={styles['field-content']} ref={this.handleFieldContent.bind(this, 'pivotDiy')}>
+                            <div className={styles['field-content']} style={type_pivotDiy == "down" ? { display: 'block' } : { display: 'none' }}>
                                 <CheckboxGroup
                                     options={arrPivotDiy}
                                     value={chartIdArrayPivotDiy}
@@ -455,9 +535,9 @@ export default class Index extends PureComponent {
                                 />
                             </div>
                             <div className={styles['field-name']} title="tableDiy1">
-                                <i className="anticon anticon-up" onClick={this.toogle.bind(this, 'tableDiy1')} style={{ cursor: 'pointer' }} />tableDiy1
+                                <Icon type={type_tableDiy1} onClick={this.toogle.bind(this, 'tableDiy1')} style={{ cursor: 'pointer' }} />tableDiy1
                             </div>
-                            <div className={styles['field-content']} ref={this.handleFieldContent.bind(this, 'tableDiy1')}>
+                            <div className={styles['field-content']} style={type_tableDiy1 == "down" ? { display: 'block' } : { display: 'none' }}>
                                 <CheckboxGroup
                                     options={arrTableDiy1}
                                     value={chartIdArrayTableDiy1}
