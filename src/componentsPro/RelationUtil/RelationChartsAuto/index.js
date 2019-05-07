@@ -9,9 +9,13 @@ const CheckboxGroup = Checkbox.Group;
 const reportBoardUtils = new ReportBoardUtils();
 
 
-//  仪表板 右侧的  图表列表 组件  add by wangliu  20181102 新的 将之前选择每个具体的改为 选某个图表然后里面具体的字段自动关联
 /***
- * 图表的配置关联关系
+ * 图表
+ * 配置图表和其他图表的关联关系
+ * 
+ * @author:wangliu
+ * 
+ * 要求:根据数据集判断是否有字段名相同的(就是可以关联的),找出所有可关联的图表,点击选择程序自动关联上。
  * 
  * ***/
 export default class Index extends PureComponent {

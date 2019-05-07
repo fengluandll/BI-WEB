@@ -9,9 +9,12 @@ const Panel = Collapse.Panel;
 const CheckboxGroup = Checkbox.Group;
 const reportBoardUtils = new ReportBoardUtils();
 
-//  仪表板 右侧的  图表列表 组件
+
 /***
- * 搜索框的配置关联关系
+ * 搜索框
+ * 配置搜索框和其他图表的关联关系
+ * 
+ * @author:wangliu
  * 
  * ***/
 export default class Index extends PureComponent {

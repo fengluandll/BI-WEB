@@ -10,7 +10,10 @@ const reportBoardUtils = new ReportBoardUtils();
 
 /***
  * antdTable关联
- * wangliu
+ * 
+ * @author:wangliu
+ * 
+ * 要求:所有table的字段都去判断其他图表是否可以被关联,选了关联再点击table的字段就可以关联查询。
  * 
  * ***/
 class RelationTable extends PureComponent {
