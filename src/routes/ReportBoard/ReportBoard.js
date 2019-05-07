@@ -188,7 +188,6 @@ class ReportBoard extends PureComponent {
     // 展示 左侧控件列表
     disPlayChartList() {
         const chartList = this.chartList;
-        ReactDom.render(<div></div>, chartList); // 清空
         const { mDashboard, mCharts, mDashboard_old } = this.state;
         ReactDom.render(
             <ChartList

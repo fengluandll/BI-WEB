@@ -46,7 +46,6 @@ export default class Index extends PureComponent {
             arrAntdTable: [],
             arrPivotDiy: [],
             arrTableDiy1: [],
-            refreshUI: 0, // 刷新ui
         }
     }
 
@@ -219,7 +218,6 @@ export default class Index extends PureComponent {
             arrAntdTable,
             arrPivotDiy,
             arrTableDiy1,
-            refreshUI: this.state.refreshUI + 1,
         });
     }
 
@@ -341,7 +339,7 @@ export default class Index extends PureComponent {
                             <div className={styles['field-content']} ref={this.handleFieldContent.bind(this, 'line')}>
                                 <CheckboxGroup
                                     options={arrLine}
-                                    defaultValue={chartIdArrayLine}
+                                    value={chartIdArrayLine}
                                     style={{ display: 'block' }}
                                     onChange={this.addOrRemoveChart.bind(this, "0")}
                                 />
@@ -352,7 +350,7 @@ export default class Index extends PureComponent {
                             <div className={styles['field-content']} ref={this.handleFieldContent.bind(this, 'bar')}>
                                 <CheckboxGroup
                                     options={arrBar}
-                                    defaultValue={chartIdArrayBar}
+                                    value={chartIdArrayBar}
                                     style={{ display: 'block' }}
                                     onChange={this.addOrRemoveChart.bind(this, "1")}
                                 />
@@ -363,7 +361,7 @@ export default class Index extends PureComponent {
                             <div className={styles['field-content']} ref={this.handleFieldContent.bind(this, 'pie')}>
                                 <CheckboxGroup
                                     options={arrPie}
-                                    defaultValue={chartIdArrayPie}
+                                    value={chartIdArrayPie}
                                     style={{ display: 'block' }}
                                     onChange={this.addOrRemoveChart.bind(this, "2")}
                                 />
@@ -374,7 +372,7 @@ export default class Index extends PureComponent {
                             <div className={styles['field-content']} ref={this.handleFieldContent.bind(this, 'table')}>
                                 <CheckboxGroup
                                     options={arrTable}
-                                    defaultValue={chartIdArrayTable}
+                                    value={chartIdArrayTable}
                                     style={{ display: 'block' }}
                                     onChange={this.addOrRemoveChart.bind(this, "3")}
                                 />
@@ -385,7 +383,7 @@ export default class Index extends PureComponent {
                             <div className={styles['field-content']} ref={this.handleFieldContent.bind(this, 'pivot')}>
                                 <CheckboxGroup
                                     options={arrPivottable}
-                                    defaultValue={chartIdArrayPivottable}
+                                    value={chartIdArrayPivottable}
                                     style={{ display: 'block' }}
                                     onChange={this.addOrRemoveChart.bind(this, "4")}
                                 />
@@ -396,7 +394,7 @@ export default class Index extends PureComponent {
                             <div className={styles['field-content']} ref={this.handleFieldContent.bind(this, 'perspective')}>
                                 <CheckboxGroup
                                     options={arrPerspective}
-                                    defaultValue={chartIdArrayPerspective}
+                                    value={chartIdArrayPerspective}
                                     style={{ display: 'block' }}
                                     onChange={this.addOrRemoveChart.bind(this, "5")}
                                 />
@@ -407,7 +405,7 @@ export default class Index extends PureComponent {
                             <div className={styles['field-content']} ref={this.handleFieldContent.bind(this, 'text')}>
                                 <CheckboxGroup
                                     options={arrText}
-                                    defaultValue={chartIdArrayText}
+                                    value={chartIdArrayText}
                                     style={{ display: 'block' }}
                                     onChange={this.addOrRemoveChart.bind(this, "6")}
                                 />
@@ -418,7 +416,7 @@ export default class Index extends PureComponent {
                             <div className={styles['field-content']} ref={this.handleFieldContent.bind(this, 'textStandard')}>
                                 <CheckboxGroup
                                     options={arrTextStandard}
-                                    defaultValue={chartIdArrayTextStandard}
+                                    value={chartIdArrayTextStandard}
                                     style={{ display: 'block' }}
                                     onChange={this.addOrRemoveChart.bind(this, "61")}
                                 />
@@ -429,7 +427,7 @@ export default class Index extends PureComponent {
                             <div className={styles['field-content']} ref={this.handleFieldContent.bind(this, 'tableDiy')}>
                                 <CheckboxGroup
                                     options={arrTableDiy}
-                                    defaultValue={chartIdArrayTableDiy}
+                                    value={chartIdArrayTableDiy}
                                     style={{ display: 'block' }}
                                     onChange={this.addOrRemoveChart.bind(this, "7")}
                                 />
@@ -440,7 +438,7 @@ export default class Index extends PureComponent {
                             <div className={styles['field-content']} ref={this.handleFieldContent.bind(this, 'antdTable')}>
                                 <CheckboxGroup
                                     options={arrAntdTable}
-                                    defaultValue={chartIdArrayAntdTable}
+                                    value={chartIdArrayAntdTable}
                                     style={{ display: 'block' }}
                                     onChange={this.addOrRemoveChart.bind(this, "21")}
                                 />
@@ -451,7 +449,7 @@ export default class Index extends PureComponent {
                             <div className={styles['field-content']} ref={this.handleFieldContent.bind(this, 'pivotDiy')}>
                                 <CheckboxGroup
                                     options={arrPivotDiy}
-                                    defaultValue={chartIdArrayPivotDiy}
+                                    value={chartIdArrayPivotDiy}
                                     style={{ display: 'block' }}
                                     onChange={this.addOrRemoveChart.bind(this, "22")}
                                 />
@@ -462,7 +460,7 @@ export default class Index extends PureComponent {
                             <div className={styles['field-content']} ref={this.handleFieldContent.bind(this, 'tableDiy1')}>
                                 <CheckboxGroup
                                     options={arrTableDiy1}
-                                    defaultValue={chartIdArrayTableDiy1}
+                                    value={chartIdArrayTableDiy1}
                                     style={{ display: 'block' }}
                                     onChange={this.addOrRemoveChart.bind(this, "23")}
                                 />
