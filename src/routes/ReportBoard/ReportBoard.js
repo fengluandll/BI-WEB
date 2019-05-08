@@ -1,19 +1,22 @@
 import { connect } from 'dva';
 import React, { PureComponent } from 'react';
 import ReactDom from 'react-dom';
+import styles from './index.less';
+
 import { Drawer, message, Tabs, Button, Spin, Modal, Radio, Icon } from 'antd';
+import { Dragact } from 'dragact';
+
 import ReportBoardUtils from '../../utils/reportBoardUtils';
 import ReportBoardmChartsUtils from '../../utils/reportBoardmChartsUtils';
 import ReportBoardUI from './ReportBoardUI';
 import TabUtils from '../../utils/tabUtils';
 import CssUtils from '../../utils/cssUtils';
+
 import { ChartList, TabList } from '../../componentsPro/ChartList';
 import { Relation, RelationChartsAuto, TabName, RelationTable, TabsUI } from '../../componentsPro/RelationUtil';
 import { Bar, Pie, Line, Table, Pivottable, Perspective, Text, TextStandard, TableDiy, AntdTable, PivotDiy, TableDiy1 } from '../../componentsPro/Charts';
-import Print from '../../componentsPro/ReportMethod/Print/print';
+import { Print, SearchPro } from '../../componentsPro/ReportMethod';
 import { Search } from '../../componentsPro/NewDashboard';
-import { Dragact } from 'dragact';
-import styles from './index.less';
 
 const TabPane = Tabs.TabPane;
 const confirm = Modal.confirm;
@@ -195,6 +198,17 @@ class ReportBoard extends PureComponent {
                 mDashboard={mDashboard}
                 addOrRemoveChart={this.addOrRemoveChart}
             />, chartList);
+    }
+
+    // 展示左侧搜索框
+    disPlaySearchPro = () => {
+        return (
+            <div>
+                <SearchPro
+                    visible={true}
+                />
+            </div>
+        );
     }
 
 
@@ -1590,6 +1604,7 @@ class ReportBoard extends PureComponent {
                         {this.state.editModel == "true" ? '' : <Icon onClick={this.onPrint} type="printer" />}
                     </div>}
                 {this.state.editModel == "true" ? <div className={styles['boardLeft']}>{this.disPlayLeft()} </div> : <div></div>}
+                {/***左侧搜索框***/ this.disPlaySearchPro()}
                 <div id="contents" className={bigScreen ? styles['boardcenter_bigScreen'] : styles['boardcenter']} ref={(instance) => { this.center = instance; }} style={{ paddingLeft: (this.state.editModel == "true") ? "200px" : "0", paddingRight: (this.state.editModel == "true") ? "200px" : "0" }}>
                     {this.renderTab()}
                     <div ref={(n) => { this.divDom = n; }}>
