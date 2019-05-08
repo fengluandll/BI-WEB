@@ -1,10 +1,47 @@
 import React, { PureComponent } from 'react';
 import ReactDom from 'react-dom';
-import { Drawer, message, Tree, Button, Spin, Modal, Radio, Icon } from 'antd';
+import { Drawer, message, Tree, Button, Input, Modal, Radio, Icon } from 'antd';
 
 
 
 const { TreeNode } = Tree;
+const InputSearch = Input.Search;
+
+const treeData = [{
+    title: '0-0',
+    key: '0-0',
+    children: [{
+        title: '0-0-0',
+        key: '0-0-0',
+        children: [
+            { title: '0-0-0-0', key: '0-0-0-0' },
+            { title: '0-0-0-1', key: '0-0-0-1' },
+            { title: '0-0-0-2', key: '0-0-0-2' },
+        ],
+    }, {
+        title: '0-0-1',
+        key: '0-0-1',
+        children: [
+            { title: '0-0-1-0', key: '0-0-1-0' },
+            { title: '0-0-1-1', key: '0-0-1-1' },
+            { title: '0-0-1-2', key: '0-0-1-2' },
+        ],
+    }, {
+        title: '0-0-2',
+        key: '0-0-2',
+    }],
+}, {
+    title: '0-1',
+    key: '0-1',
+    children: [
+        { title: '0-1-0-0', key: '0-1-0-0' },
+        { title: '0-1-0-1', key: '0-1-0-1' },
+        { title: '0-1-0-2', key: '0-1-0-2' },
+    ],
+}, {
+    title: '0-2',
+    key: '0-2',
+}];
 
 /***
  * 
@@ -24,6 +61,8 @@ class Search extends PureComponent {
             autoExpandParent: true, // 是否自动展开父节点
             checkedKeys: ['0-0-0'], // 选中复选框的树节点
             selectedKeys: [], // 设置选中的树节点
+
+            searchValue: '', // 搜索框的值
         };
     }
 
@@ -58,43 +97,9 @@ class Search extends PureComponent {
      * 
      * ***/
     renderOrgTree = () => {
-        const treeData = [{
-            title: '0-0',
-            key: '0-0',
-            children: [{
-                title: '0-0-0',
-                key: '0-0-0',
-                children: [
-                    { title: '0-0-0-0', key: '0-0-0-0' },
-                    { title: '0-0-0-1', key: '0-0-0-1' },
-                    { title: '0-0-0-2', key: '0-0-0-2' },
-                ],
-            }, {
-                title: '0-0-1',
-                key: '0-0-1',
-                children: [
-                    { title: '0-0-1-0', key: '0-0-1-0' },
-                    { title: '0-0-1-1', key: '0-0-1-1' },
-                    { title: '0-0-1-2', key: '0-0-1-2' },
-                ],
-            }, {
-                title: '0-0-2',
-                key: '0-0-2',
-            }],
-        }, {
-            title: '0-1',
-            key: '0-1',
-            children: [
-                { title: '0-1-0-0', key: '0-1-0-0' },
-                { title: '0-1-0-1', key: '0-1-0-1' },
-                { title: '0-1-0-2', key: '0-1-0-2' },
-            ],
-        }, {
-            title: '0-2',
-            key: '0-2',
-        }];
         return (
             <div>
+                <InputSearch style={{ marginBottom: 8 }} placeholder="Search" onChange={this.onChange} />
                 <Tree
                     checkable={true}
                     onExpand={this.onExpand}
@@ -105,7 +110,7 @@ class Search extends PureComponent {
                     onSelect={this.onSelect}
                     selectedKeys={this.state.selectedKeys}
                 >
-                    {this.renderTreeNodes(treeData)}
+                    {this.loop(treeData)}
                 </Tree>
             </div>
         );
@@ -129,7 +134,7 @@ class Search extends PureComponent {
 
     // 点击树节点触发
     onSelect = (selectedKeys, info) => {
-        console.log('onSelect', info+"--"+selectedKeys);
+        console.log('onSelect', info + "--" + selectedKeys);
         this.setState({ selectedKeys });
     }
 
@@ -143,7 +148,59 @@ class Search extends PureComponent {
             );
         }
         return <TreeNode {...item} />;
-    })
+    });
+
+    loop = data => data.map((item) => {
+        const { searchValue, expandedKeys, autoExpandParent } = this.state;
+        const index = item.title.indexOf(searchValue);
+        const beforeStr = item.title.substr(0, index);
+        const afterStr = item.title.substr(index + searchValue.length);
+        const title = index > -1 ? (
+            <span>
+                {beforeStr}
+                <span style={{ color: '#f50' }}>{searchValue}</span>
+                {afterStr}
+            </span>
+        ) : <span>{item.title}</span>;
+        if (item.children) {
+            return (
+                <TreeNode key={item.key} title={title}>
+                    {this.loop(item.children)}
+                </TreeNode>
+            );
+        }
+        return <TreeNode key={item.key} title={title} />;
+    });
+
+    onChange = (e) => {
+        const value = e.target.value;
+        const expandedKeys = treeData.map((item) => {
+            if (item.title.indexOf(value) > -1) {
+                return this.getParentKey(item.key, treeData);
+            }
+            return null;
+        }).filter((item, i, self) => item && self.indexOf(item) === i);
+        this.setState({
+            expandedKeys,
+            searchValue: value,
+            autoExpandParent: true,
+        });
+    }
+
+    getParentKey = (key, tree) => {
+        let parentKey;
+        for (let i = 0; i < tree.length; i++) {
+            const node = tree[i];
+            if (node.children) {
+                if (node.children.some(item => item.key === key)) {
+                    parentKey = node.key;
+                } else if (this.getParentKey(key, node.children)) {
+                    parentKey = this.getParentKey(key, node.children);
+                }
+            }
+        }
+        return parentKey;
+    };
 
     /***************************************************************************************/
 
@@ -151,7 +208,7 @@ class Search extends PureComponent {
         return (
             <div>
                 <Drawer
-                    title="Create a new account"
+                    title="组织选择"
                     placement="left"
                     width={720}
                     onClose={this.onClose}
