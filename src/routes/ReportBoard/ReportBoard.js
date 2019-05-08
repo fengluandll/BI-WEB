@@ -10,7 +10,7 @@ import CssUtils from '../../utils/cssUtils';
 import { ChartList, TabList } from '../../componentsPro/ChartList';
 import { Relation, RelationChartsAuto, TabName, RelationTable, TabsUI } from '../../componentsPro/RelationUtil';
 import { Bar, Pie, Line, Table, Pivottable, Perspective, Text, TextStandard, TableDiy, AntdTable, PivotDiy, TableDiy1 } from '../../componentsPro/Charts';
-import Print from '../../componentsPro/ReportMethod/print';
+import Print from '../../componentsPro/ReportMethod/Print/print';
 import { Search } from '../../componentsPro/NewDashboard';
 import { Dragact } from 'dragact';
 import styles from './index.less';
