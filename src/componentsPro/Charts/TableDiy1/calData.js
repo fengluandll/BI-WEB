@@ -233,11 +233,11 @@ export default class CalData {
     getDataSum = (base_column_data_single, merge, type_value_set, second_title_arr, type_column_index, title_column_index, show_column_index) => {
         const data = []; // 总数据
         // 1 拆出second_title_arr中所有的数据
-        const second_name = []; // 二级标题名称
+        const second_name = new Set(); // 二级标题名称
         for (let key in second_title_arr) {
             const arr = second_title_arr[key];
             for (let item of arr) {
-                second_name.push(item);
+                second_name.add(item);
             }
         }
         // 2 循环 类别值 循环 二级标题 两者相加找复合的行
