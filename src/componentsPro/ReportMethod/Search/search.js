@@ -43,6 +43,19 @@ const treeData = [{
     key: '0-2',
 }];
 
+const dataList = [];
+const generateList = (data) => {
+    for (let i = 0; i < data.length; i++) {
+        const node = data[i];
+        const key = node.key;
+        dataList.push({ key, title: key });
+        if (node.children) {
+            generateList(node.children);
+        }
+    }
+};
+generateList(treeData);
+
 /***
  * 
  * 报表左侧的搜索组件,
@@ -174,7 +187,7 @@ class Search extends PureComponent {
 
     onChange = (e) => {
         const value = e.target.value;
-        const expandedKeys = treeData.map((item) => {
+        const expandedKeys = dataList.map((item) => {
             if (item.title.indexOf(value) > -1) {
                 return this.getParentKey(item.key, treeData);
             }
