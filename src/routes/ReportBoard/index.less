@@ -196,7 +196,7 @@
       height: 39px;
       text-align: center;
       border-left: 1px solid #ccc;
-      margin-right: 80px;
+      margin-right: 40px;
     }
      /** 动态布局 使用的 add by wangliu 0829*/
     .bi-container-css{
@@ -308,7 +308,7 @@
   // }
   /***************************上面太乱了,我下面重新写*********************************/
   // 悬浮按钮
-  .editMenue-editModel-true{
+  .editMenue-bigScreen{
     opacity: 1;
     border: 2px solid #ccc;
     border-left: 1px solid #ccc;
@@ -323,12 +323,41 @@
     font-size: 22px;
     text-align: center;
     cursor: pointer;
-
-    width:80px;
-    height:40px;
-    border-radius:0px;
-    margin-top:0px;
-    margin-right: 204px;
+    overflow:hidden;
+    display:inline-block;
+    
+    width:0px;
+    height:35px;
+    border-radius:6px;
+    margin-top: 2px;
+    margin-right: 10px;
+  }
+  .editMenue-edit{
+    opacity: 1;
+    border: 2px solid #ccc;
+    border-left: 1px solid #ccc;
+    border-bottom: 1px solid #ccc; 
+    border-top: 1px solid #ccc;
+    background: #eee;
+    color: #000;
+    position: fixed;
+    top: 0;
+    right: -5px;
+    z-index: 1000;
+    font-size: 22px;
+    text-align: center;
+    cursor: pointer;
+    
+    width:40px;
+    height:35px;
+    border-radius:6px;
+    margin-top: 2px;
+    margin-right: 210px;
+  }
+  .editMenue-hidden{
+    width:120px;
+    height:35px;
+    overflow:hidden;
   }
   .editMenue-editModel-false{
     opacity: 1;

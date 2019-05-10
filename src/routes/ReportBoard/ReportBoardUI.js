@@ -28,27 +28,59 @@ class ReportBoardUI {
     /***
      * 
      * 悬停按钮
+     * 要求：如果是大屏 显示悬停按钮;其他: 正常显示--根据权限和编辑模式显示
      * 
      * props:父this
      * 
      * ***/
     getMenue = (props) => {
+        const { bigScreen } = props.state;
+        if (bigScreen) {
+            return this.menueBigScreen(props);
+        } else {
+            return this.menuePc(props);
+        }
+    }
+    // 大屏模式-悬停按钮
+    menueBigScreen = (props) => {
         return (
-            <div>
-                {props.state.user_auth == "1" ?
-                    <div className={styles[props.state.editModel == "true" ? "editMenue-editModel-true" : "editMenue-editModel-false"]} >
-                        {props.state.editModel == "true" ? <Icon onClick={props.changeEditeMode} type="unlock" /> : <Icon onClick={props.changeEditeMode} style={{ marginRight: '5px', marginLeft: (props.state.editModel == "true") ? "0" : "5px" }} type="lock" />}
-                        {<i className={styles['col-line2']}></i>}
-                        {props.state.editModel == "true" ? <Icon onClick={props.changeBigScreen} type="fullscreen" className={styles['bigScreen-change']} /> : <Icon onClick={props.changeBigScreen} type="fullscreen" className={styles['bigScreen-change']} />}
-                        {props.state.editModel == "true" ? '' : <i className={styles['col-line1']}></i>}
-                        {props.state.editModel == "true" ? '' : <Icon onClick={props.onPrint} type="printer" className={styles['print']} />}
-                    </div>
-                    :
-                    <div style={{ marginRight: (props.state.editModel == "true") ? "200px" : "0", width: 40, height: 40, opacity: '1', border: '2px solid #ccc', borderLeft: '1px solid #ccc', borderBottom: '1px solid #ccc', borderTop: '1px solid #ccc', background: '#eee', color: '#000', position: 'absolute', top: 0, right: '-5px', zIndex: 1000, fontSize: 22, textAlign: 'center', cursor: 'pointer' }} >
-                        {props.state.editModel == "true" ? '' : <Icon onClick={props.onPrint} type="printer" />}
-                    </div>}
+            <div className={styles['editMenue-bigScreen']} onMouseEnter={this.onMouseEnterShow.bind(this)} onMouseLeave={this.onMouseLeaveHide.bind(this)} >
+                <Icon onClick={props.changeBigScreen} type="fullscreen" style={{}} />
             </div>
         );
+    }
+    // pc模式-普通按钮
+    menuePc = (props) => {
+        if (props.state.editModel == "true") { // 编辑模式
+            return (
+                <div className={styles['editMenue-edit']} >
+                    <Icon onClick={props.changeEditeMode} type="unlock" />
+                </div>
+            );
+        } else { // 展示模式
+            return (
+                <div className={styles['editMenue-hidden']}>
+                    {props.state.user_auth == "1" ?
+                        <div className={styles["editMenue-editModel-false"]} >
+                            {<Icon onClick={props.changeEditeMode} style={{ marginRight: '5px', marginLeft: "5px" }} type="lock" />}
+                            {<i className={styles['col-line2']}></i>}
+                            {<Icon onClick={props.changeBigScreen} type="fullscreen" className={styles['bigScreen-change']} />}
+                            {<i className={styles['col-line1']}></i>}
+                            {<Icon onClick={props.onPrint} type="printer" className={styles['print']} />}
+                        </div>
+                        :
+                        <div className={styles['editMenue-edit']} >
+                            {<Icon onClick={props.onPrint} type="printer" />}
+                        </div>}
+                </div>
+            );
+        }
+    }
+    onMouseEnterShow = (e) => {
+        e.target.style.width = '40px';
+    }
+    onMouseLeaveHide = (e) => {
+        e.target.style.width = 0;
     }
     /***
      * 
