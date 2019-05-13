@@ -16,14 +16,6 @@ import { Drawer, message, Tabs, Button, Spin, Modal, Radio, Icon } from 'antd';
  * ***/
 class ReportBoardUI {
 
-    /***
-     * 
-     * render函数
-     * 
-     * ***/
-    getRender = (props) => {
-
-    }
 
     /***
      * 

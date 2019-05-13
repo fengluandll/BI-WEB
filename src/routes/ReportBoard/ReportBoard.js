@@ -1,14 +1,13 @@
 import { connect } from 'dva';
 import React, { PureComponent } from 'react';
 import ReactDom from 'react-dom';
-import styles from './index.less';
 
 import { Drawer, message, Tabs, Button, Spin, Modal, Radio, Icon } from 'antd';
 import { Dragact } from 'dragact';
 
 import ReportBoardUtils from '../../utils/reportBoardUtils';
 import ReportBoardmChartsUtils from '../../utils/reportBoardmChartsUtils';
-import ReportBoardUI from './ReportBoardUI';
+
 import TabUtils from '../../utils/tabUtils';
 import CssUtils from '../../utils/cssUtils';
 
@@ -17,6 +16,9 @@ import { Relation, RelationChartsAuto, TabName, RelationTable, TabsUI } from '..
 import { Bar, Pie, Line, Table, Pivottable, Perspective, Text, TextStandard, TableDiy, AntdTable, PivotDiy, TableDiy1 } from '../../componentsPro/Charts';
 import { Print, SearchPro } from '../../componentsPro/ReportMethod';
 import { Search } from '../../componentsPro/NewDashboard';
+
+import ReportBoardUI from './ReportBoardUI';
+import styles from './index.less';
 
 const TabPane = Tabs.TabPane;
 const confirm = Modal.confirm;
@@ -1563,16 +1565,16 @@ class ReportBoard extends PureComponent {
 
     /****************************************************************************************************************/
     render() {
-        const { dragMoveChecked, editModel, bigScreen } = this.state;
+        const { dragMoveChecked, spinning, editModel, bigScreen } = this.state;
         const data = this.getDragactData();
         //  设置dragact静止拖动  展示的时候和右侧开关为开的时候静止拖动
-        if (this.state.editModel == "false" || this.state.dragMoveChecked == true) {
+        if (editModel == "false" || dragMoveChecked == true) {
             data.map((item, index) => {
                 item.static = "true";
             });
         }
         const dragactInit = {
-            width: this.state.editModel == "true" ? document.getElementsByTagName('body')[0].offsetWidth - 400 : document.getElementsByTagName('body')[0].offsetWidth - 10,
+            width: editModel == "true" ? document.getElementsByTagName('body')[0].offsetWidth - 400 : document.getElementsByTagName('body')[0].offsetWidth - 10,
             col: 40,
             rowHeight: 40,
             margin: [0, 0],
@@ -1591,20 +1593,20 @@ class ReportBoard extends PureComponent {
         }
 
         return (
-            <div style={(this.state.spinning == true && this.state.editModel == "false") ? { pointerEvents: 'none' } : {}}>{/*如果有图表在加载中那么就设置样式为不可点击状态*/}
+            <div style={(spinning == true && editModel == "false") ? { pointerEvents: 'none' } : {}}>{/*如果有图表在加载中那么就设置样式为不可点击状态*/}
                 {
                     /***悬停按钮-里面有切换编辑模式,切换大屏,打印按钮***/
                     reportBoardUI.getMenue(this)
                 }
                 {
                     /***左侧编辑***/
-                    this.state.editModel == "true" ? <div className={styles['boardLeft']}>{this.disPlayLeft()} </div> : <div></div>
+                    editModel == "true" ? <div className={styles['boardLeft']}>{this.disPlayLeft()} </div> : <div></div>
                 }
                 {
                     /***左侧搜索框***/
                     this.disPlaySearchPro()
                 }
-                <div id="contents" className={bigScreen ? styles['boardcenter_bigScreen'] : styles['boardcenter']} ref={(instance) => { this.center = instance; }} style={{ paddingLeft: (this.state.editModel == "true") ? "200px" : "0", paddingRight: (this.state.editModel == "true") ? "200px" : "0" }}>
+                <div id="contents" className={bigScreen ? styles['boardcenter_bigScreen'] : styles['boardcenter']} ref={(instance) => { this.center = instance; }} style={{ paddingLeft: (editModel == "true") ? "200px" : "0", paddingRight: (editModel == "true") ? "200px" : "0" }}>
                     {this.renderTab()}
                     <div ref={(n) => { this.divDom = n; }}>
                         <Dragact
@@ -1631,7 +1633,7 @@ class ReportBoard extends PureComponent {
                                             backgroundColor: bigScreen ? '' : '#eee' // 大屏模式这个不加背景色
                                         }}
                                     >
-                                        {this.state.editModel == "true" ?
+                                        {editModel == "true" ?
                                             <span
                                                 //调整大小
                                                 {...provided.resizeHandle}
