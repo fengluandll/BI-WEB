@@ -51,7 +51,7 @@ class ReportBoardUI {
             );
         } else { // 展示模式
             return (
-                <div className={styles['editMenue-hidden']}>
+                <div>
                     {props.state.user_auth == "1" ?
                         <div className={styles["editMenue-editModel-false"]} >
                             {<Icon onClick={props.changeEditeMode} style={{ marginRight: '5px', marginLeft: "5px" }} type="lock" />}
@@ -74,6 +74,9 @@ class ReportBoardUI {
     onMouseLeaveHide = (e) => {
         e.target.style.width = 0;
     }
+
+
+
     /***
      * 
      * 右侧编辑

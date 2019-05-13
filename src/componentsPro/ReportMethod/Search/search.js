@@ -97,10 +97,8 @@ class Search extends PureComponent {
     /***************************************************************************************/
     // 关闭函数
     onClose = () => {
-        const { visible } = this.state;
-        this.setState({
-            visible: visible ? false : true,
-        });
+        const { changeSearchPro } = this.props;
+        changeSearchPro();
     }
 
 

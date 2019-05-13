@@ -60,6 +60,7 @@ class ReportBoard extends PureComponent {
             spinning: false,   // 是否显示加载中,这个state中的spinning用来控制全局是否可点击,图表的加载中spinning用的是局部变量spinning(有两个spinnng不一样)
             refreshType: "init",  // "init":初始化刷新图表显示fack数据,"search":搜索框查询开始填充真实数据,"plot"：plot点击查询,"pageLoade"是分页查询(鼠标下滑触发的查询),"export":excel导出
             // "bigScreen":大屏模式,"refreshAll":"全部刷新模式",
+            searchPro: false, // 左侧组织树搜索框
 
             editModel: "false",   // 是否编辑模式
             dragMoveChecked: false,  // 是否静止dragact移动，移动就点击无法显示右侧的编辑界面。
@@ -204,10 +205,12 @@ class ReportBoard extends PureComponent {
 
     // 展示左侧搜索框
     disPlaySearchPro = () => {
+        const { searchPro } = this.state;
         return (
             <div>
                 <SearchPro
-                    visible={true}
+                    visible={searchPro}
+                    changeSearchPro={this.changeSearchPro}
                 />
             </div>
         );
@@ -857,6 +860,7 @@ class ReportBoard extends PureComponent {
                     searchEnum={searchEnum}
                     clickSearch={this.searchData}
                     changeProps={this.changeProps}
+                    changeSearchPro={this.changeSearchPro}
                 />
 
             </div>, document.getElementById(name));
@@ -1448,6 +1452,12 @@ class ReportBoard extends PureComponent {
                 rightProps,
             });
         }
+    }
+    // 修改组织树搜索框
+    changeSearchPro = () => {
+        this.setState({
+            searchPro: this.state.searchPro ? false : true,
+        });
     }
 
     /*************************************************图表事件********************************************************/

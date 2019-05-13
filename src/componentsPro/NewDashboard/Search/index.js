@@ -4,7 +4,7 @@ import classNames from 'classnames';
 import SearchDate from '../Search-Date';
 import SearchNumber from '../Search-Number';
 import SearchCharacter from '../Search-Character';
-import { Icon } from 'antd';
+import { Icon, Input } from 'antd';
 
 import styles from './index.less';
 
@@ -66,6 +66,11 @@ export default class Index extends PureComponent {
   changeSearch = () => {
     this.clickTime++;
     this.renderItem();
+  }
+
+  // 组织树
+  onSearchProClick = () => {
+    this.props.changeSearchPro();
   }
 
   //  render searchitem
@@ -138,6 +143,20 @@ export default class Index extends PureComponent {
       ReactDom.render(<div></div>, this.queryArea);
       this.tagName_key = tagName_key;
     } else {
+      ReactDom.render(
+        <div>
+          <div className={styles['query-area-item']} key={-1} >
+            <div className={styles['query-area-item-label']}>
+              组织:
+                </div>
+            <div>
+              <div className={styles['query-field']}>
+                <Input onClick={this.onSearchProClick.bind(this)} style={{ width: '110px' }} />
+              </div>
+            </div>
+          </div>
+        </div>,
+        this.searchPro); // 组织树
       ReactDom.render(<div>
         {
           arrTmp.map((arrItem, index) => {
@@ -230,6 +249,7 @@ export default class Index extends PureComponent {
     }
     return (
       <div className={styles['query-container']} name="search" style={{ height: height }}>
+        <div style={{ width: '120px' }} ref={(instance) => { this.searchPro = instance; }} />
         <div className={styles['query-area-container']} ref={(instance) => { this.queryArea = instance; }} />
         {this.renderNextPage()}
         <div className={styles['query-btn']}>
