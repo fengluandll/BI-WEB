@@ -75,6 +75,8 @@ class ReportBoard extends PureComponent {
         this.plotChartId = [];
         // 本地刷新的数据个数
         this.dataListCount = 0;
+
+        this.searchProData = []; // 组织树数据,因为只会加载一次所以不用放state里
     }
     componentWillMount() {
         const boardId = this.boardId;
@@ -206,10 +208,12 @@ class ReportBoard extends PureComponent {
     // 展示左侧搜索框
     disPlaySearchPro = () => {
         const { searchPro } = this.state;
+        const data = this.searchProData;
         return (
             <div>
                 <SearchPro
                     visible={searchPro}
+                    data={data}
                     changeSearchPro={this.changeSearchPro}
                 />
             </div>
@@ -1116,6 +1120,20 @@ class ReportBoard extends PureComponent {
         });
     }
 
+    // 获取组织树的数据
+    getSearchProData = () => {
+        this.props.dispatch({
+            type: 'reportBoard/getSearchData',
+            payload: {
+                id: this.boardId,
+                callback: (data) => {
+                    this.searchProData = JSON.parse(data.data); // 将string转成对象
+                    this.changeSearchPro();
+                },
+            },
+        });
+    }
+
     // 修改搜索框的数据集
     changeSearchDataSetName = (value) => {
         const { mDashboard } = this.state;
@@ -1455,9 +1473,14 @@ class ReportBoard extends PureComponent {
     }
     // 修改组织树搜索框
     changeSearchPro = () => {
-        this.setState({
-            searchPro: this.state.searchPro ? false : true,
-        });
+        const data = this.searchProData;
+        if (data.length == 0) {
+            this.getSearchProData();
+        } else {
+            this.setState({
+                searchPro: this.state.searchPro ? false : true,
+            });
+        }
     }
 
     /*************************************************图表事件********************************************************/

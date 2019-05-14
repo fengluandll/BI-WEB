@@ -68,6 +68,14 @@ export async function searchItemData(params) {
   });
 }
 
+// 查询 组织树的数据
+export async function getSearchData(params) {
+  return request(`http://localhost:8088/api/reportBoard/getSearchData?${stringify(params)}`, {
+    method: 'POST',
+    mode: 'cors',
+  });
+}
+
 // 拉取每个tab同步
 export async function pullSynchronizationTab(params) {
   return request(`http://localhost:8088/api/reportBoard/pullSynchronizationTab?${stringify(params)}`, {

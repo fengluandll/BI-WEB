@@ -7,54 +7,23 @@ import { Drawer, message, Tree, Button, Input, Modal, Radio, Icon } from 'antd';
 const { TreeNode } = Tree;
 const InputSearch = Input.Search;
 
-const treeData = [{
-    title: '0-0',
-    key: '0-0',
-    children: [{
-        title: '0-0-0',
-        key: '0-0-0',
-        children: [
-            { title: '0-0-0-0', key: '0-0-0-0' },
-            { title: '0-0-0-1', key: '0-0-0-1' },
-            { title: '0-0-0-2', key: '0-0-0-2' },
-        ],
-    }, {
-        title: '0-0-1',
-        key: '0-0-1',
-        children: [
-            { title: '0-0-1-0', key: '0-0-1-0' },
-            { title: '0-0-1-1', key: '0-0-1-1' },
-            { title: '0-0-1-2', key: '0-0-1-2' },
-        ],
-    }, {
-        title: '0-0-2',
-        key: '0-0-2',
-    }],
-}, {
-    title: '0-1',
-    key: '0-1',
-    children: [
-        { title: '0-1-0-0', key: '0-1-0-0' },
-        { title: '0-1-0-1', key: '0-1-0-1' },
-        { title: '0-1-0-2', key: '0-1-0-2' },
-    ],
-}, {
-    title: '0-2',
-    key: '0-2',
-}];
+// let treeData = [{
+//     title: '0-0',
+//     key: '0-0',
+//     children: [{
+//         title: '0-0-0',
+//         key: '0-0-0',
+//         children: [
+//             { title: '0-0-0-0', key: '0-0-0-0' },
+//             { title: '0-0-0-1', key: '0-0-0-1' },
+//             { title: '0-0-0-2', key: '0-0-0-2' },
+//         ],
+//     }]
+// }];
 
-const dataList = [];
-const generateList = (data) => {
-    for (let i = 0; i < data.length; i++) {
-        const node = data[i];
-        const key = node.key;
-        dataList.push({ key, title: key });
-        if (node.children) {
-            generateList(node.children);
-        }
-    }
-};
-generateList(treeData);
+let treeData = []; // 组织树数据
+
+let dataList = []; //所有节点的数据,由组织树数据算出来的,给搜索框用的。
 
 /***
  * 
@@ -70,9 +39,9 @@ class Search extends PureComponent {
         this.state = {
             visible: false, // 是否显示
 
-            expandedKeys: ['0-0-0', '0-0-1'], // 展开指定的树节点
+            expandedKeys: [], // 展开指定的树节点
             autoExpandParent: true, // 是否自动展开父节点
-            checkedKeys: ['0-0-0'], // 选中复选框的树节点
+            checkedKeys: [], // 选中复选框的树节点
             selectedKeys: [], // 设置选中的树节点
 
             searchValue: '', // 搜索框的值
@@ -81,6 +50,7 @@ class Search extends PureComponent {
 
     componentWillReceiveProps(nextProps) {
         const { visible } = nextProps;
+        this.initData(nextProps);
         this.setState({
             visible,
         });
@@ -94,8 +64,52 @@ class Search extends PureComponent {
 
     }
 
-    /***************************************************************************************/
-    // 关闭函数
+    /******************************************函数*********************************************/
+    /***
+     * @name: 初始化制造数据
+     * 
+     * ***/
+    initData = (nextProps) => {
+        const { data } = nextProps;
+        if (treeData.length == 0) {
+            this.getTreeData(data, treeData);
+            this.getDataList(treeData);
+        }
+    }
+    /***
+     * @name: 组织树的数据
+     * @param: data_a:数据库中查出的原始数据;data_b:要拼接成的数据
+     * ***/
+    getTreeData = (data_a, data_b) => {
+        for (let i = 0; i < data_a.length; i++) {
+            const node = data_a[i];
+            const { id, array_id, parent_id, name, code_column, depth, children } = node;
+            const obj = { title: name, key: array_id, column: code_column };
+            data_b.push(obj);
+            if (children) {
+                obj.children = [];
+                this.getTreeData(children, obj.children);
+            }
+        }
+    }
+    /***
+     * @name: 组织树搜索要用到的数据
+     * @param: data: 组织树数据
+     * 
+     * ***/
+    getDataList = (data) => {
+        for (let i = 0; i < data.length; i++) {
+            const node = data[i];
+            const { key, title, children } = node;
+            dataList.push({ key, title });
+            if (node.children) {
+                this.getDataList(node.children);
+            }
+        }
+    }
+    /***
+     * @name: 关闭函数
+     * ***/
     onClose = () => {
         const { changeSearchPro } = this.props;
         changeSearchPro();
@@ -126,41 +140,11 @@ class Search extends PureComponent {
             </div>
         );
     }
-    // 展开收起节点触发事件
-    onExpand = (expandedKeys) => {
-        console.log('onExpand', expandedKeys);
-        // if not set autoExpandParent to false, if children expanded, parent can not collapse.
-        // or, you can remove all expanded children keys.
-        this.setState({
-            expandedKeys,
-            autoExpandParent: false,
-        });
-    }
-
-    // 点击复选框触发事件
-    onCheck = (checkedKeys) => {
-        console.log('onCheck', checkedKeys);
-        this.setState({ checkedKeys });
-    }
-
-    // 点击树节点触发
-    onSelect = (selectedKeys, info) => {
-        console.log('onSelect', info + "--" + selectedKeys);
-        this.setState({ selectedKeys });
-    }
-
-    // 展示每一个节点
-    renderTreeNodes = data => data.map((item) => {
-        if (item.children) {
-            return (
-                <TreeNode title={item.title} key={item.key} dataRef={item}>
-                    {this.renderTreeNodes(item.children)}
-                </TreeNode>
-            );
-        }
-        return <TreeNode {...item} />;
-    });
-
+    /***
+     * 
+     * 循环节点数据
+     * 
+     * ***/
     loop = data => data.map((item) => {
         const { searchValue, expandedKeys, autoExpandParent } = this.state;
         const index = item.title.indexOf(searchValue);
@@ -182,7 +166,28 @@ class Search extends PureComponent {
         }
         return <TreeNode key={item.key} title={title} />;
     });
-
+    /***
+     * @name: 找到父节点的id,为了找到要展开的节点。
+     * 
+     * ***/
+    getParentKey = (key, tree) => {
+        let parentKey;
+        for (let i = 0; i < tree.length; i++) {
+            const node = tree[i];
+            if (node.children) {
+                if (node.children.some(item => item.key === key)) {
+                    parentKey = node.key;
+                } else if (this.getParentKey(key, node.children)) {
+                    parentKey = this.getParentKey(key, node.children);
+                }
+            }
+        }
+        return parentKey;
+    };
+    /***
+     * @name: 搜索框事件
+     * 
+     * ***/
     onChange = (e) => {
         const value = e.target.value;
         const expandedKeys = dataList.map((item) => {
@@ -198,20 +203,28 @@ class Search extends PureComponent {
         });
     }
 
-    getParentKey = (key, tree) => {
-        let parentKey;
-        for (let i = 0; i < tree.length; i++) {
-            const node = tree[i];
-            if (node.children) {
-                if (node.children.some(item => item.key === key)) {
-                    parentKey = node.key;
-                } else if (this.getParentKey(key, node.children)) {
-                    parentKey = this.getParentKey(key, node.children);
-                }
-            }
-        }
-        return parentKey;
-    };
+    // 展开收起节点触发事件
+    onExpand = (expandedKeys) => {
+        //console.log('onExpand', expandedKeys);
+        // if not set autoExpandParent to false, if children expanded, parent can not collapse.
+        // or, you can remove all expanded children keys.
+        this.setState({
+            expandedKeys,
+            autoExpandParent: false,
+        });
+    }
+
+    // 点击复选框触发事件
+    onCheck = (checkedKeys) => {
+        console.log('onCheck', checkedKeys);
+        this.setState({ checkedKeys });
+    }
+
+    // 点击树节点触发
+    onSelect = (selectedKeys, info) => {
+        //console.log('onSelect', info + "--" + selectedKeys);
+        this.setState({ selectedKeys });
+    }
 
     /***************************************************************************************/
 

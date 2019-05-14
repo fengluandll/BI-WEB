@@ -1,4 +1,4 @@
-import { initFetch, fetchEdit, onTableExport, saveDashBoard, searchItemData, search, pullSynchronizationTab } from '../services/reportBoard';
+import { initFetch, fetchEdit, onTableExport, saveDashBoard, searchItemData, search, pullSynchronizationTab, getSearchData } from '../services/reportBoard';
 
 export default {
   // model 的命名空间，同时也是他在全局 state 上的属性，只能用字符串，不支持通过 . 的方式创建多层命名空间。
@@ -59,6 +59,11 @@ export default {
         yield put({ type: 'save', payload: { searchEnum: searchEnum } });
       }
       callback();
+    },
+    *getSearchData({ payload: { id, callback } }, { select, call, put }) {
+      const response = yield call(getSearchData, { id });
+      const data = response.data;
+      callback(data);
     },
     *pullSynchronizationTab({ payload: { id, callback } }, { call, put }) {
       const response = yield call(pullSynchronizationTab, { id });
