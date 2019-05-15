@@ -763,11 +763,12 @@ class ReportBoardUtils {
      * value_plot{ 被点击的chart的参数[字段id,值,mchartid],没点击就是空}
      * plotChartId{ 放入plot点击时候被查询的参数 }
      * pageLoade_param { 分页查询用到的参数 searchAntdTable:start,end,total}
+     * params_pro { 全局搜索框的参数 }
      * report_id { 请求的reportId }
      * search_id { 搜索框图表的id }
      * mDashboard { 你懂的 }
      * **/
-    getSearchJson = (search_type, value_plot, plotChartId, pageLoade_param, report_id, mDashboard, mDashboard_old, mCharts, idColumns) => {
+    getSearchJson = (search_type, value_plot, plotChartId, pageLoade_param, params_pro, report_id, mDashboard, mDashboard_old, mCharts, idColumns) => {
         const style_config = JSON.parse(mDashboard.style_config);
         const style_config_old = JSON.parse(mDashboard_old.style_config);
         const json = { report_id: report_id, name: style_config.name, children: [], dataSet: style_config_old.dataSet, dataSetRelation: style_config_old.dataSetRelation }; // 总的json
@@ -894,6 +895,10 @@ class ReportBoardUtils {
                     searchAntdTable.end = pageLoade_param.end;
                 }
                 json_chart.searchAntdTable = searchAntdTable;
+            }
+            // 放入全局搜索框参数
+            if (null != params_pro) {
+                json_chart.params_pro = params_pro;
             }
             // 最后把chart放入总json
             json.children.push(json_chart);

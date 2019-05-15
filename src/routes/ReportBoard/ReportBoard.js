@@ -77,6 +77,7 @@ class ReportBoard extends PureComponent {
         this.dataListCount = 0;
 
         this.searchProData = []; // 组织树数据,因为只会加载一次所以不用放state里
+        this.searchProParam = {}; // 组织树选中的参数,用来给查询接口拼接参数的
     }
     componentWillMount() {
         const boardId = this.boardId;
@@ -135,7 +136,7 @@ class ReportBoard extends PureComponent {
         // 初始化查询清除plot
         this.plotChartId = [];
         // 拼接查询参数
-        const params = reportBoardUtils.getSearchJson("init", "", this.plotChartId, null, boardId, mDashboard, mDashboard_old, mCharts, idColumns);
+        const params = reportBoardUtils.getSearchJson("init", "", this.plotChartId, null, this.searchProParam, boardId, mDashboard, mDashboard_old, mCharts, idColumns);
         const { children } = params;
         this.dataListCount = children.length; // 把要查询的图表的个数赋值
         for (let key in children) {
@@ -215,6 +216,7 @@ class ReportBoard extends PureComponent {
                     visible={searchPro}
                     data={data}
                     changeSearchPro={this.changeSearchPro}
+                    changeSearchProParam={this.changeSearchProParam}
                 />
             </div>
         );
@@ -1040,7 +1042,7 @@ class ReportBoard extends PureComponent {
             spinning: true, // 设置不能点击
         });
         // 拼接查询参数
-        const params = reportBoardUtils.getSearchJson("plot", value, this.plotChartId, searchAntdTable, this.boardId, this.state.mDashboard, this.state.mDashboard_old, this.state.mCharts, this.state.idColumns);
+        const params = reportBoardUtils.getSearchJson("plot", value, this.plotChartId, searchAntdTable, this.searchProParam, this.boardId, this.state.mDashboard, this.state.mDashboard_old, this.state.mCharts, this.state.idColumns);
         const { children } = params;
         this.dataListCount = children.length; // 把要查询的图表的个数赋值
         if (this.dataListCount == 0 && refreshType == "plot") { // plot点击查询没有图表需要查询的时候
@@ -1482,6 +1484,10 @@ class ReportBoard extends PureComponent {
             });
         }
     }
+    // 组织搜索参数回调
+    changeSearchProParam = (param) => {
+        this.searchProParam = param;
+    }
 
     /*************************************************图表事件********************************************************/
     /***
@@ -1506,7 +1512,7 @@ class ReportBoard extends PureComponent {
         });
         this.plotChartId.push(chart_id);
         // 拼接查询参数
-        const params = reportBoardUtils.getSearchJson("export", null, [], null, this.boardId, this.state.mDashboard, this.state.mDashboard_old, this.state.mCharts, this.state.idColumns);
+        const params = reportBoardUtils.getSearchJson("export", null, [], null, this.searchProParam, this.boardId, this.state.mDashboard, this.state.mDashboard_old, this.state.mCharts, this.state.idColumns);
         const { children } = params;
         const params_one = {};
         params_one.report_id = params.report_id;

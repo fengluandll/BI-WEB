@@ -83,6 +83,9 @@
 			"total":100, // 分页总数据个数(这个参数要后端查询count后返回,前端拼接个无用的100)
 			"chartId":"", // 分页的table的chartId
 		},
+		"params_pro":{ // 全局搜索框-目前是组织树
+			"column":"value", // column:字段名称;value:值
+		},
 	],
 }
 
