@@ -167,8 +167,6 @@ class ReportBoard extends PureComponent {
     }
 
     /****************************************展示左侧仪表盘*****************************************************************/
-
-
     // 展示左侧搜索框
     disPlaySearchPro = () => {
         const { searchPro } = this.state;
@@ -184,10 +182,6 @@ class ReportBoard extends PureComponent {
             </div>
         );
     }
-
-
-    /****************************************展示右侧仪表盘*****************************************************************/
-
     /****************************************展示中间仪表盘*****************************************************************/
     /***
      * 所有图表的展示入口
@@ -688,18 +682,6 @@ class ReportBoard extends PureComponent {
         );
     }
 
-    // 添加新的图表chart
-    addNewChart = (mChart) => {
-        const { mDashboard } = this.state;
-        // 新增
-        reportBoardUtils.addNewChart(mChart, mDashboard);
-        // 加上为搜索框全部Item自动配置和图表的关联 20181101
-        reportBoardUtils.addSearchChartRelationAuto(mDashboard, this.props.model.tableIdColumns, this.props.model.idColumns, mChart, this.props.model.mCharts);
-        this.setState({
-            mDashboard: mDashboard,
-        });
-    }
-
     // 编辑展示把手
     changeEditeMode = (e) => {
         let editModel = this.state.editModel;
@@ -933,26 +915,6 @@ class ReportBoard extends PureComponent {
         });
     }
 
-    // 修改搜索框的数据集
-    changeSearchDataSetName = (value) => {
-        const { mDashboard } = this.state;
-        const { style_config } = mDashboard;
-        const style_config_obj = JSON.parse(style_config);
-        const md_children = style_config_obj.children;
-        md_children.map((item, index) => {
-            if (item.type == "search") {
-                item.dataSetName = value;
-            }
-        });
-        // md_children转回string  然后刷新state
-        style_config_obj.children = md_children;
-        mDashboard.style_config = JSON.stringify(style_config_obj);
-        this.setState({
-            mDashboard: mDashboard,
-        });
-        this.refreshDashboard(); // 刷新页面，mDashboard修改state后页面没有刷新可能是因为它还是用的原来的对象。
-    }
-
     // 编辑界面点击保存
     saveDashBoard = () => {
         // 把单独的报表mDashboard拼成主题提交
@@ -993,205 +955,6 @@ class ReportBoard extends PureComponent {
                 }
             }
         });
-    }
-
-    // 关联关系点击回调
-    // 修改 搜索的 item 增加或减少
-    // id 是当前图表的uuuid  
-    changeSearchItem = (id, value) => {
-        // 思路 看 relation里有没有 name,有就删除，没有就新增一个空的
-        const { mDashboard } = this.state;
-        const { style_config } = mDashboard;
-        const style_config_obj = JSON.parse(style_config);
-        const md_children = style_config_obj.children;
-        md_children.map((item, index) => {
-            if (item.name == id) {
-                // relation 关联关系
-                const relation = item.relation;
-                const relation_keys = Object.keys(relation);
-                const value_keys = value;
-                // 有就删除
-                for (let i = 0; i < relation_keys.length; i++) {
-                    let flag = false;
-                    for (let j = 0; j < value_keys.length; j++) {
-                        if (relation_keys[i] == value_keys[j]) {
-                            flag = true;
-                        }
-                    }
-                    if (!flag) {
-                        delete relation[relation_keys[i]];
-                    }
-                }
-                // 没有就增加一个   relationFields:{"图表Id":[关联字段Id]}
-                for (let i = 0; i < value_keys.length; i++) {
-                    let flag = false;
-                    for (let j = 0; j < relation_keys.length; j++) {
-                        if (value_keys[i] == relation_keys[j]) {
-                            flag = true;
-                        }
-                    }
-                    if (!flag) {
-                        // 增加一个Item，自动配置Item和已有的图表的关联关系
-                        reportBoardUtils.addSearchChartRelationAutoSearch(relation, id, value_keys[i], this.state.mDashboard, this.props.model.tableIdColumns, this.props.model.idColumns, this.props.model.mCharts);
-                    }
-                }
-            }
-        });
-        // md_children转回string  然后刷新state
-        style_config_obj.children = md_children;
-        mDashboard.style_config = JSON.stringify(style_config_obj);
-        this.setState({
-            mDashboard: mDashboard,
-        });
-        // 更新ui(主要是搜索框的子项个数)
-        this.refreshDashboard();
-    }
-
-    // 右侧搜索框配置关联关系  参数 searchItem 搜索框item的子项id
-    changeSearchRelation = (id, searchItem, checkValue) => {
-        const { mDashboard } = this.state;
-        const { style_config } = mDashboard;
-        const style_config_obj = JSON.parse(style_config);
-        const md_children = style_config_obj.children;
-        md_children.map((item, index) => {
-            if (item.name == id) {
-                // relation 关联关系
-                const relation = item.relation;
-                const relation_item = relation[searchItem]; // relation子项
-                const relationFields = relation_item.relationFields;
-                const keys = Object.keys(relationFields); // relationFields里的keys(其他图表的id)
-                const value_keys = checkValue;// 点击后传过来的keys(图表Id) 因为怕重复所有后面加了searchItem
-                // 本地有就删除
-                for (let i = 0; i < keys.length; i++) {
-                    let flag = false;
-                    for (let j = 0; j < value_keys.length; j++) {
-                        if (keys[i] == value_keys[j]) {
-                            flag = true;
-                        }
-                    }
-                    if (!flag) {
-                        delete relationFields[keys[i]];
-                    }
-                }
-                // 本地没有就增加一个
-                for (let i = 0; i < value_keys.length; i++) {
-                    let flag = false;
-                    for (let j = 0; j < keys.length; j++) {
-                        if (value_keys[i] == keys[j]) {
-                            flag = true;
-                        }
-                    }
-                    if (!flag) {
-                        // params relationFields,value_keys[i]:图表id,searchItem:搜索子项id,tableIdColumns数据集,idColumns
-                        reportBoardUtils.addSearchChartRelation(relationFields, value_keys[i], searchItem, this.state.mDashboard, this.props.model.tableIdColumns, this.props.model.idColumns, this.props.model.mCharts);
-                    }
-                }
-            }
-        });
-        // md_children转回string  然后刷新state
-        style_config_obj.children = md_children;
-        mDashboard.style_config = JSON.stringify(style_config_obj);
-        this.setState({
-            mDashboard: mDashboard,
-        });
-        // 更新ui(主要是搜索框的子项个数)
-        this.refreshDashboard();
-    }
-
-    // 修改图表之间的关联关系
-    // 参数  id search里面的itemid(rsc_column_config), dimension维度id , value   relation里拼好的  "name":{ label:,relationFields:{"chart_item_name":[value]},props:, }
-    changeCheckRelation = (id, dimension, value) => {
-        const { mDashboard } = this.state;
-        const { style_config } = mDashboard;
-        const style_config_obj = JSON.parse(style_config);
-        const md_children = style_config_obj.children;
-        let type;// 图表的类型
-        md_children.map((item, index) => {
-            if (item.chartId == id) {
-                // relation 关联关系
-                const relation = item.relation;
-                const object = relation[dimension];
-                let relationFields = object.relationFields;
-                type = item.type;
-                // 拼接 relationFields 里的关联关系  relationFields ["uuuid,columnid"]
-                //const field = `${chart_item_name},${value}`;
-                // 拼接 relationFields 里的关联关系  relationFields {"uuuid":"columnid"}
-                //relationFields[chart_item_name] = value;
-                // 清空relationFields
-                relationFields = {};
-                // 将value中的值放入relationFields
-                value.map((value_item) => {
-                    const arr = value_item.toString().split("\:");
-                    const value_array = [];
-                    value_array.push(value_item.toString());
-                    relationFields[arr[0]] = value_array;
-                });
-                object.relationFields = relationFields;
-            }
-        });
-        // md_children转回string  然后刷新state
-        style_config_obj.children = md_children;
-        mDashboard.style_config = JSON.stringify(style_config_obj);
-        this.setState({
-            mDashboard: mDashboard,
-        });
-    }
-
-    //  左侧配置图表 点击删除或增加图表
-    addOrRemoveChart = (operateType, chartId) => {
-        const { mDashboard } = this.state;
-        const { style_config } = mDashboard;
-        const style_config_obj = JSON.parse(style_config);
-        const children = style_config_obj.children;
-        const dragactStyle = style_config_obj.dragactStyle;
-        if (operateType == "add") {
-            // 找到对应的mChart表，并调用增加方法
-            const mCharts = this.state.mCharts;
-            mCharts.map((item, index) => {
-                if (item.id.toString() == chartId) {
-                    this.addNewChart(item);
-                }
-            });
-            //  刷新ui
-            this.refreshDashboard();
-        } else {
-            //  复选框值比mDashboard中的少 要删除
-            for (let i = 0; i < children.length; i++) {
-                if (children[i].chartId == chartId) {
-                    children.splice(i, 1);//  删除children数组
-                }
-                // 删除dragact样式
-                for (let k = 0; k < dragactStyle.length; k++) {
-                    if (dragactStyle[k].key.toString() == chartId) {
-                        dragactStyle.splice(k, 1);
-                    }
-                }
-            }
-            // md_children转回string  然后刷新state
-            style_config_obj.children = children;
-            style_config_obj.dragactStyle = dragactStyle;
-            mDashboard.style_config = JSON.stringify(style_config_obj);
-            this.setState({
-                mDashboard: mDashboard,
-            }, () => {
-                // 刷新页面
-                this.refreshDashboard();
-            });
-        }
-    }
-
-    //  设置右侧开关 控制dragact是否可移动
-    changeDragMoveChecked = () => {
-        const check = this.state.dragMoveChecked;
-        if (check == true) {
-            this.setState({
-                dragMoveChecked: false,
-            });
-        } else {
-            this.setState({
-                dragMoveChecked: true,
-            });
-        }
     }
 
     // 图表的plot点击事件

@@ -1,5 +1,5 @@
 
-
+import ReportBoardUtils from '../../utils/reportBoardUtils';
 import { ChartList, TabList } from '../../componentsPro/ChartList';
 
 import styles from './index.less';
@@ -17,6 +17,7 @@ import styles from './index.less';
  * ***/
 
 let _this = {}; // 父组件的this对象
+const reportBoardUtils = new ReportBoardUtils();
 
 class BoxLeft {
 
@@ -55,7 +56,7 @@ class BoxLeft {
                     <ChartList
                         mCharts={mCharts}
                         mDashboard={mDashboard}
-                        addOrRemoveChart={_this.addOrRemoveChart}
+                        addOrRemoveChart={this.addOrRemoveChart}
                     />
                 </div>
                 <div>{/*只有customer才有权限看到*/}
@@ -71,6 +72,60 @@ class BoxLeft {
         );
     }
 
+    /*********************************************方法*******************************************************/
+    //  左侧配置图表 点击删除或增加图表
+    addOrRemoveChart = (operateType, chartId) => {
+        const { mDashboard } = _this.state;
+        const { style_config } = mDashboard;
+        const style_config_obj = JSON.parse(style_config);
+        const children = style_config_obj.children;
+        const dragactStyle = style_config_obj.dragactStyle;
+        if (operateType == "add") {
+            // 找到对应的mChart表，并调用增加方法
+            const mCharts = _this.state.mCharts;
+            mCharts.map((item, index) => {
+                if (item.id.toString() == chartId) {
+                    this.addNewChart(item);
+                }
+            });
+            //  刷新ui
+            _this.refreshDashboard();
+        } else {
+            //  复选框值比mDashboard中的少 要删除
+            for (let i = 0; i < children.length; i++) {
+                if (children[i].chartId == chartId) {
+                    children.splice(i, 1);//  删除children数组
+                }
+                // 删除dragact样式
+                for (let k = 0; k < dragactStyle.length; k++) {
+                    if (dragactStyle[k].key.toString() == chartId) {
+                        dragactStyle.splice(k, 1);
+                    }
+                }
+            }
+            // md_children转回string  然后刷新state
+            style_config_obj.children = children;
+            style_config_obj.dragactStyle = dragactStyle;
+            mDashboard.style_config = JSON.stringify(style_config_obj);
+            _this.setState({
+                mDashboard: mDashboard,
+            }, () => {
+                // 刷新页面
+                _this.refreshDashboard();
+            });
+        }
+    }
+    // 添加新的图表chart
+    addNewChart = (mChart) => {
+        const { mDashboard } = _this.state;
+        // 新增
+        reportBoardUtils.addNewChart(mChart, mDashboard);
+        // 加上为搜索框全部Item自动配置和图表的关联 20181101
+        reportBoardUtils.addSearchChartRelationAuto(mDashboard, _this.props.model.tableIdColumns, _this.props.model.idColumns, mChart, _this.props.model.mCharts);
+        _this.setState({
+            mDashboard: mDashboard,
+        });
+    }
 
 
 }
