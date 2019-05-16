@@ -11,20 +11,21 @@ import ReportBoardmChartsUtils from '../../utils/reportBoardmChartsUtils';
 import TabUtils from '../../utils/tabUtils';
 import CssUtils from '../../utils/cssUtils';
 
-import { ChartList, TabList } from '../../componentsPro/ChartList';
 import { Relation, RelationChartsAuto, TabName, RelationTable, TabsUI } from '../../componentsPro/RelationUtil';
 import { Bar, Pie, Line, Table, Pivottable, Perspective, Text, TextStandard, TableDiy, AntdTable, PivotDiy, TableDiy1 } from '../../componentsPro/Charts';
 import { Print, SearchPro } from '../../componentsPro/ReportMethod';
 import { Search } from '../../componentsPro/NewDashboard';
 
-import ReportBoardUI from './ReportBoardUI';
+import BoxLeft from './BoxLeft';
+import BoxRight from './BoxRight';
 import styles from './index.less';
 
 const TabPane = Tabs.TabPane;
 const confirm = Modal.confirm;
 const reportBoardUtils = new ReportBoardUtils();
 const reportBoardmChartsUtils = new ReportBoardmChartsUtils();
-const reportBoardUI = new ReportBoardUI();
+const boxLeft = new BoxLeft();
+const boxRight = new BoxRight();
 const tabUtils = new TabUtils();
 const cssUtils = new CssUtils();
 const print = new Print();
@@ -114,11 +115,6 @@ class ReportBoard extends PureComponent {
         if (null == this.state.mDashboard.style_config) {
             return;
         }
-        if (this.state.editModel == "true") {
-            //  display  左侧的控件列表
-            this.disPlayChartList();
-            this.disPlayRight(this.state.rightProps);
-        }
         //  display  中间的图表
         this.disPlayCharts();
     }
@@ -172,39 +168,6 @@ class ReportBoard extends PureComponent {
 
     /****************************************展示左侧仪表盘*****************************************************************/
 
-    // 展示 左侧控件列表
-    disPlayLeft() {
-        const { mDashboard, mCharts, mDashboard_old } = this.state;
-        const { tDashboard } = this.props.model;
-        return (
-            <div>
-                {/* logo标题start */}
-                <div style={{ height: '39px', position: 'relative', lineHeight: '39px', textAlign: 'center', borderRight: '1px solid #ccc', background: '#eee', overflow: 'hidden' }}><h1 style={{ color: '#1890ff', fontSize: '16px' }}>编辑模式</h1></div>
-                {/* logo标题end */}
-                <div ref={(instance) => { this.chartList = instance }}></div>{/* 控件列表 */}
-                <div>{/*只有customer才有权限看到*/}
-                    {this.state.user_type == 'customer' ?
-                        <TabList
-                            mCharts={mCharts}
-                            mDashboard_old={mDashboard_old}
-                            tDashboard={tDashboard}
-                            updateState={this.updateState}
-                        /> : <div></div>}
-                </div>
-            </div>
-        );
-    }
-    // 展示 左侧控件列表
-    disPlayChartList() {
-        const chartList = this.chartList;
-        const { mDashboard, mCharts, mDashboard_old } = this.state;
-        ReactDom.render(
-            <ChartList
-                mCharts={mCharts}
-                mDashboard={mDashboard}
-                addOrRemoveChart={this.addOrRemoveChart}
-            />, chartList);
-    }
 
     // 展示左侧搜索框
     disPlaySearchPro = () => {
@@ -224,173 +187,6 @@ class ReportBoard extends PureComponent {
 
 
     /****************************************展示右侧仪表盘*****************************************************************/
-
-    // 展示右侧的编辑框
-    disPlayRight = (rightProps) => {
-        const { type, mChart, name } = rightProps;
-        if (type == "search") {
-            this.disPlaySearch(mChart, name);
-        } else if (type == "chart") {
-            this.disPlayRightCharts(mChart, name);
-        } else if (type == "tab") {
-            this.displayTabName();
-        } else if (type == "antdTable") {
-            this.displayRightTable(mChart, name);
-        }
-    }
-
-    /***
-     * 搜索框关联
-     * mChart
-     * chartId:m_dashboard的图表id
-     * ***/
-    disPlaySearch(mChart, name) {
-        //  如果不是编辑模式 右侧不相应监听事件
-        if (this.state.editModel == "false" || this.state.dragMoveChecked == false) {
-            return;
-        }
-        const rightRelation = this.rightRelation;
-        const { mDashboard, mCharts } = this.state;
-        // 取m_dashboard
-        let fatherName;//  搜索框的farherName 用来找到  和 搜索框一起的 其他图表
-        let board_item;//  搜索框的 relation
-        let chart_children = [];//  和搜索框一起的图表的 集合
-        let search_item; // 搜索框自身(mdashboard中 chidren 里的search )
-        const { id, style_config } = mDashboard;
-        const md_children = JSON.parse(style_config).children;
-        md_children.map((item, index) => {
-            if (item.name == name) {
-                board_item = item.relation;
-                fatherName = item.fatherName;
-                search_item = item;
-            }
-        });
-        // 找到和 搜索框一起的 图表
-        md_children.map((item, index) => {
-            if (item.type != "tab" && item.type != "search") {
-                chart_children.push(item);
-            }
-        });
-
-        ReactDom.render(
-            <Relation
-                name={name}
-                mChart={mChart}
-                mDashboard={this.state.mDashboard}
-                mDashboard_old={this.state.mDashboard_old}
-                tableConfig={this.state.tableConfig}
-                relation={board_item}
-                search_item={search_item}
-                idColumns={this.props.model.idColumns}
-                chart_children={chart_children}
-                mCharts={this.props.model.mCharts}
-                tableIdColumns={this.props.model.tableIdColumns}
-                changeSearchItem={this.changeSearchItem}
-                changeSearchRelation={this.changeSearchRelation}
-                changeSearchDataSetName={this.changeSearchDataSetName}
-            />, rightRelation);
-    }
-
-    /***
-     * 图表关联
-     * mChart
-     * chartId:m_dashboard中图表的id
-     * ***/
-    disPlayRightCharts(mChart, name) {
-        //  如果不是编辑模式 右侧不相应监听事件
-        if (this.state.editModel == "false") {
-            return;
-        }
-        // 先清除右侧的样式
-        ReactDom.render(<div></div>, this.rightRelation);
-        const rightRelation = this.rightRelation;
-        const { mDashboard, mCharts } = this.state;
-        // 取m_dashboard
-        let fatherName;//  图表的farherName 用来找到  和 搜索框一起的 其他图表
-        let board_item;//  图表的 relation
-        let chart_children = [];//  和图表一起的图表的 集合
-        const { id, style_config } = mDashboard;
-        const md_children = JSON.parse(style_config).children;
-        md_children.map((item, index) => {
-            if (item.name == name) {
-                board_item = item.relation;
-                fatherName = item.fatherName;
-            }
-        });
-        // 找到和 图表一起的 图表
-        md_children.map((item, index) => {
-            if (item.type != "tab" && item.type != "search" && item.name != name) {
-                chart_children.push(item);
-            }
-        });
-
-        ReactDom.render(
-            <RelationChartsAuto
-                mChart={mChart}
-                relation={board_item}
-                chart_children={chart_children}
-                mCharts={this.props.model.mCharts}
-                tableIdColumns={this.props.model.tableIdColumns}
-                idColumns={this.props.model.idColumns}
-                changeCheckRelation={this.changeCheckRelation}
-                name={name}
-            />, rightRelation);
-    }
-
-    // 展示table的关联
-    displayRightTable = (mChart, name) => {
-        //  如果不是编辑模式 右侧不相应监听事件
-        if (this.state.editModel == "false") {
-            return;
-        }
-        // 先清除右侧的样式
-        ReactDom.render(<div></div>, this.rightRelation);
-        const rightRelation = this.rightRelation;
-        const { mDashboard, mCharts } = this.state;
-        const { id, style_config } = mDashboard;
-        const md_children = JSON.parse(style_config).children;
-        // 找到和 图表一起的 图表
-        let chart_children = [];//  和图表一起的图表的 集合
-        let board_item;//  图表的 relation
-        md_children.map((item, index) => {
-            if (item.type != "tab" && item.type != "search" && item.name != name) {
-                chart_children.push(item);
-            }
-            if (item.name == name) {
-                board_item = item.relation;
-            }
-        });
-        ReactDom.render(
-            <RelationTable
-                mChart={mChart}
-                relation={board_item}
-                mCharts={this.props.model.mCharts}
-                tableIdColumns={this.props.model.tableIdColumns}
-                idColumns={this.props.model.idColumns}
-                chart_children={chart_children}
-                changeCheckRelation={this.changeCheckRelation}
-                name={name}
-            />, rightRelation);
-    }
-
-    // 展示右侧tab的名称
-    displayTabName = () => {
-        //  如果不是编辑模式 右侧不相应监听事件
-        if (this.state.editModel == "false") {
-            return;
-        }
-        // 先清除右侧的样式
-        ReactDom.render(<div></div>, this.rightRelation);
-        const rightRelation = this.rightRelation;
-        const { tagName } = this.state;
-        ReactDom.render(
-            <TabName
-                tagName={tagName}
-                changeTabName={this.changeTabName}
-            />, rightRelation);
-
-    }
-
 
     /****************************************展示中间仪表盘*****************************************************************/
     /***
@@ -484,7 +280,8 @@ class ReportBoard extends PureComponent {
         return (
             <div
                 onClick={(ev) => {
-                    this.displayTabName();
+                    //  讲展示右侧的变量参数放入 state 中
+                    this.changeEditRightProps("tab", null, null);
                 }}
 
 
@@ -1390,8 +1187,6 @@ class ReportBoard extends PureComponent {
             this.setState({
                 dragMoveChecked: false,
             });
-            // 清除右侧的关联界面
-            ReactDom.render(<div></div>, this.rightRelation);
         } else {
             this.setState({
                 dragMoveChecked: true,
@@ -1604,6 +1399,10 @@ class ReportBoard extends PureComponent {
 
     /****************************************************************************************************************/
     render() {
+        // 初始化组件
+        boxLeft.init_this(this);
+        boxRight.init_this(this);
+
         const { dragMoveChecked, spinning, editModel, bigScreen } = this.state;
         const data = this.getDragactData();
         //  设置dragact静止拖动  展示的时候和右侧开关为开的时候静止拖动
@@ -1634,12 +1433,8 @@ class ReportBoard extends PureComponent {
         return (
             <div style={(spinning == true && editModel == "false") ? { pointerEvents: 'none' } : {}}>{/*如果有图表在加载中那么就设置样式为不可点击状态*/}
                 {
-                    /***悬停按钮-里面有切换编辑模式,切换大屏,打印按钮***/
-                    reportBoardUI.getMenue(this)
-                }
-                {
                     /***左侧编辑***/
-                    editModel == "true" ? <div className={styles['boardLeft']}>{this.disPlayLeft()} </div> : <div></div>
+                    editModel == "true" ? <div className={styles['boardLeft']}>{boxLeft.renderContent()} </div> : <div></div>
                 }
                 {
                     /***左侧搜索框***/
@@ -1693,7 +1488,7 @@ class ReportBoard extends PureComponent {
                 </div>
                 {
                     /***右侧编辑***/
-                    reportBoardUI.getEditBoxRight(this)
+                    boxRight.renderContent()
                 }
             </div>
         );
