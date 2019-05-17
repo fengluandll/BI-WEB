@@ -1,6 +1,9 @@
 import Bar from './Bar';
 import Pie from './Pie';
 import Line from './Line';
+import Circular from './Circular';
+import Dashboard from './Dashboard';
+import Barrow from './Barrow';
 import Table from './Table';
 import Pivottable from './Pivottable';
 import Perspective from './Perspective';
@@ -15,6 +18,9 @@ export {
   Bar,
   Pie,
   Line,
+  Circular,
+  Dashboard,
+  Barrow,
   Table,
   Pivottable,
   Perspective,

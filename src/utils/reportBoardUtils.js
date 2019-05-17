@@ -53,6 +53,39 @@ class ReportBoardUtils {
             relation[measure] = item;
             dragactW = 20;
             dragactH = 10;
+        } else if (type == "31") {
+            // 环形图
+            tmpType = "circular";
+            const dimension = config.dimension;
+            const measure = config.measure;
+            const item = {};
+            item.relationFields = {};
+            relation[dimension] = item;
+            relation[measure] = item;
+            dragactW = 20;
+            dragactH = 10;
+        } else if (type == "32") {
+            // 环形图
+            tmpType = "dashboard";
+            const dimension = config.dimension;
+            const measure = config.measure;
+            const item = {};
+            item.relationFields = {};
+            relation[dimension] = item;
+            relation[measure] = item;
+            dragactW = 20;
+            dragactH = 10;
+        } else if (type == "33") {
+            // 环形图
+            tmpType = "barrow";
+            const dimension = config.dimension;
+            const measure = config.measure;
+            const item = {};
+            item.relationFields = {};
+            relation[dimension] = item;
+            relation[measure] = item;
+            dragactW = 20;
+            dragactH = 10;
         } else if (type == "3") {
             //  交叉表
             tmpType = "table";
@@ -292,7 +325,7 @@ class ReportBoardUtils {
                 { x: '1997', y: 7 },
                 { x: '1998', y: 9 },
                 { x: '1999', y: 13 },];
-        } else if (type == "bar") {
+        } else if (type == "bar" || type == "barrow") {
             fakeData =
                 [{ x: '1951 年', y: 38 },
                 { x: '1952 年', y: 52 },
@@ -302,7 +335,7 @@ class ReportBoardUtils {
                 { x: '1959 年', y: 38 },
                 { x: '1960 年', y: 38 },
                 { x: '1962 年', y: 38 }];
-        } else if (type == "pie") {
+        } else if (type == "pie" || type == "circular") {
             fakeData =
                 [{ x: '事例一', y: 40 },
                 { x: '事例二', y: 21 },
@@ -370,6 +403,12 @@ class ReportBoardUtils {
             type_str = "bar";
         } else if (type_num == 2) {
             type_str = "pie";
+        } else if (type_num == 31) {
+            type_str = "circular";
+        } else if (type_num == 32) {
+            type_str = "dashboard";
+        } else if (type_num == 33) {
+            type_str = "barrow";
         } else if (type_num == 3) {
             type_str = "table";
         } else if (type_num == 4) {

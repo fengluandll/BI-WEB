@@ -109,6 +109,9 @@
 	"22":"pivotDiy", // 透视表,自己写的
 	"23":"tableDiy1", // 自定义table1,行转列,自己写的
 	"11":"search", // 搜索框
+	"31":"circular", // 环形图
+	"32":"dashboard", // 仪表盘
+	"33":"barrow", // 条形图
 }
 
 { // antdTable

@@ -12,7 +12,7 @@ import TabUtils from '../../utils/tabUtils';
 import CssUtils from '../../utils/cssUtils';
 
 import { Relation, RelationChartsAuto, TabName, RelationTable, TabsUI } from '../../componentsPro/RelationUtil';
-import { Bar, Pie, Line, Table, Pivottable, Perspective, Text, TextStandard, TableDiy, AntdTable, PivotDiy, TableDiy1 } from '../../componentsPro/Charts';
+import { Bar, Pie, Line, Circular, Dashboard, Barrow, Table, Pivottable, Perspective, Text, TextStandard, TableDiy, AntdTable, PivotDiy, TableDiy1 } from '../../componentsPro/Charts';
 import { Print, SearchPro } from '../../componentsPro/ReportMethod';
 import { Search } from '../../componentsPro/NewDashboard';
 
@@ -352,6 +352,12 @@ class ReportBoard extends PureComponent {
             this.renderBar(name, dateSetList, mChart, spinning);
         } else if (type == "pie") {
             this.renderPie(name, dateSetList, mChart, spinning);
+        } else if (type == "circular") {
+            this.renderCircular(name, dateSetList, mChart, spinning);
+        } else if (type == "dashboard") {
+            this.renderDashboard(name, dateSetList, mChart, spinning);
+        } else if (type == "barrow") {
+            this.renderBarrow(name, dateSetList, mChart, spinning);
         } else if (type == "table") {
             this.renderTable(name, dateSetList, mChart, spinning);
         } else if (type == "search") {
@@ -438,6 +444,78 @@ class ReportBoard extends PureComponent {
             >
                 <Spin spinning={spinning}>
                     <Pie
+                        dragactStyle={dragactStyle}
+                        editModel={this.state.editModel}
+                        mChart={mChart}
+                        dateSetList={dateSetList}
+                        onPlotClick={this.onPlotClick}
+                    />
+                </Spin>
+            </div>,
+            document.getElementById(name));
+    }
+    // 展示 环形图
+    renderCircular(name, dateSetList, mChart, spinning) {
+        const { mDashboard, bigScreen } = this.state;
+        let cssName = cssUtils.getBIContainer(mChart, bigScreen);
+        const { dragactStyle } = JSON.parse(mDashboard.style_config);
+        ReactDom.render(
+            <div className={cssName}
+                onClick={(ev) => {
+                    //  讲展示右侧的变量参数放入 state 中
+                    this.changeEditRightProps("chart", mChart, name);
+                }}
+            >
+                <Spin spinning={spinning}>
+                    <Circular
+                        dragactStyle={dragactStyle}
+                        editModel={this.state.editModel}
+                        mChart={mChart}
+                        dateSetList={dateSetList}
+                        onPlotClick={this.onPlotClick}
+                    />
+                </Spin>
+            </div>,
+            document.getElementById(name));
+    }
+    // 展示 仪表盘
+    renderDashboard(name, dateSetList, mChart, spinning) {
+        const { mDashboard, bigScreen } = this.state;
+        let cssName = cssUtils.getBIContainer(mChart, bigScreen);
+        const { dragactStyle } = JSON.parse(mDashboard.style_config);
+        ReactDom.render(
+            <div className={cssName}
+                onClick={(ev) => {
+                    //  讲展示右侧的变量参数放入 state 中
+                    this.changeEditRightProps("chart", mChart, name);
+                }}
+            >
+                <Spin spinning={spinning}>
+                    <Dashboard
+                        dragactStyle={dragactStyle}
+                        editModel={this.state.editModel}
+                        mChart={mChart}
+                        dateSetList={dateSetList}
+                        onPlotClick={this.onPlotClick}
+                    />
+                </Spin>
+            </div>,
+            document.getElementById(name));
+    }
+    // 展示条形图
+    renderBarrow(name, dateSetList, mChart, spinning) {
+        const { mDashboard, bigScreen } = this.state;
+        let cssName = cssUtils.getBIContainer(mChart, bigScreen);
+        const { dragactStyle } = JSON.parse(mDashboard.style_config);
+        ReactDom.render(
+            <div className={cssName}
+                onClick={(ev) => {
+                    //  讲展示右侧的变量参数放入 state 中
+                    this.changeEditRightProps("chart", mChart, name);
+                }}
+            >
+                <Spin spinning={spinning}>
+                    <Barrow
                         dragactStyle={dragactStyle}
                         editModel={this.state.editModel}
                         mChart={mChart}

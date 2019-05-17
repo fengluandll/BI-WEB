@@ -24,6 +24,9 @@ export default class Index extends PureComponent {
             chartIdArrayLine: [],
             chartIdArrayBar: [],
             chartIdArrayPie: [],
+            chartIdArrayCircular: [],
+            chartIdArrayDashboard: [],
+            chartIdArrayBarrow: [],
             chartIdArrayTable: [],
             chartIdArrayPivottable: [],
             chartIdArrayPerspective: [],
@@ -37,6 +40,9 @@ export default class Index extends PureComponent {
             arrLine: [],
             arrBar: [],
             arrPie: [],
+            arrCircular: [],
+            arrDashboard: [],
+            arrBarrow: [],
             arrTable: [],
             arrPivottable: [],
             arrPerspective: [],
@@ -50,6 +56,9 @@ export default class Index extends PureComponent {
             type_line: "down",
             type_bar: "down",
             type_pie: "down",
+            type_circular: "down",
+            type_dashboard: "down",
+            type_barrow: "down",
             type_table: "down",
             type_pivottable: "down",
             type_perspective: "down",
@@ -83,6 +92,9 @@ export default class Index extends PureComponent {
         const chartIdArrayLine = [];
         const chartIdArrayBar = [];
         const chartIdArrayPie = [];
+        const chartIdArrayCircular = [];
+        const chartIdArrayDashboard = [];
+        const chartIdArrayBarrow = [];
         const chartIdArrayTable = [];
         const chartIdArrayPivottable = [];
         const chartIdArrayPerspective = [];
@@ -96,6 +108,9 @@ export default class Index extends PureComponent {
         const arrLine = [];
         const arrBar = [];
         const arrPie = [];
+        const arrCircular = [];
+        const arrDashboard = [];
+        const arrBarrow = [];
         const arrTable = [];
         const arrPivottable = [];
         const arrPerspective = [];
@@ -116,6 +131,12 @@ export default class Index extends PureComponent {
                 chartIdArrayBar.push(item.chartId);
             } else if (type == "2") {
                 chartIdArrayPie.push(item.chartId);
+            } else if (type == "31") {
+                chartIdArrayCircular.push(item.chartId);
+            } else if (type == "32") {
+                chartIdArrayDashboard.push(item.chartId);
+            } else if (type == "33") {
+                chartIdArrayBarrow.push(item.chartId);
             } else if (type == "3") {
                 chartIdArrayTable.push(item.chartId);
             } else if (type == "4") {
@@ -151,6 +172,21 @@ export default class Index extends PureComponent {
                 });
             } else if (type == "2") {
                 arrPie.push({
+                    "label": item.name,
+                    "value": item.id.toString(),
+                });
+            } else if (type == "31") {
+                arrCircular.push({
+                    "label": item.name,
+                    "value": item.id.toString(),
+                });
+            } else if (type == "32") {
+                arrDashboard.push({
+                    "label": item.name,
+                    "value": item.id.toString(),
+                });
+            } else if (type == "33") {
+                arrBarrow.push({
                     "label": item.name,
                     "value": item.id.toString(),
                 });
@@ -209,6 +245,9 @@ export default class Index extends PureComponent {
             chartIdArrayLine,
             chartIdArrayBar,
             chartIdArrayPie,
+            chartIdArrayCircular,
+            chartIdArrayDashboard,
+            chartIdArrayBarrow,
             chartIdArrayTable,
             chartIdArrayPivottable,
             chartIdArrayPerspective,
@@ -222,6 +261,9 @@ export default class Index extends PureComponent {
             arrLine,
             arrBar,
             arrPie,
+            arrCircular,
+            arrDashboard,
+            arrBarrow,
             arrTable,
             arrPivottable,
             arrPerspective,
@@ -239,13 +281,19 @@ export default class Index extends PureComponent {
         let operateType;// 增加或者减少类型
         let chartId; // 图表Id
         let arr = [];
-        const { chartIdArrayLine, chartIdArrayBar, chartIdArrayPie, chartIdArrayTable, chartIdArrayPivottable, chartIdArrayPerspective, chartIdArrayText, chartIdArrayTextStandard, chartIdArrayTableDiy, chartIdArrayAntdTable, chartIdArrayPivotDiy, chartIdArrayTableDiy1 } = this.state;
+        const { chartIdArrayLine, chartIdArrayBar, chartIdArrayPie, chartIdArrayCircular, chartIdArrayDashboard, chartIdArrayBarrow, chartIdArrayTable, chartIdArrayPivottable, chartIdArrayPerspective, chartIdArrayText, chartIdArrayTextStandard, chartIdArrayTableDiy, chartIdArrayAntdTable, chartIdArrayPivotDiy, chartIdArrayTableDiy1 } = this.state;
         if (type == "0") {
             arr = chartIdArrayLine;
         } else if (type == "1") {
             arr = chartIdArrayBar;
         } else if (type == "2") {
             arr = chartIdArrayPie;
+        } else if (type == "31") {
+            arr = chartIdArrayCircular;
+        } else if (type == "32") {
+            arr = chartIdArrayDashboard;
+        } else if (type == "33") {
+            arr = chartIdArrayBarrow;
         } else if (type == "3") {
             arr = chartIdArrayTable;
         } else if (type == "4") {
@@ -307,6 +355,9 @@ export default class Index extends PureComponent {
             type_line,
             type_bar,
             type_pie,
+            type_circular,
+            type_dashboard,
+            type_barrow,
             type_table,
             type_pivottable,
             type_perspective,
@@ -328,6 +379,18 @@ export default class Index extends PureComponent {
         } else if (key == "pie") {
             this.setState({
                 type_pie: type_pie == "right" ? "down" : "right",
+            });
+        } else if (key == "circular") {
+            this.setState({
+                type_circular: type_circular == "right" ? "down" : "right",
+            });
+        } else if (key == "dashboard") {
+            this.setState({
+                type_dashboard: type_dashboard == "right" ? "down" : "right",
+            });
+        } else if (key == "barrow") {
+            this.setState({
+                type_barrow: type_barrow == "right" ? "down" : "right",
             });
         } else if (key == "table") {
             this.setState({
@@ -373,6 +436,9 @@ export default class Index extends PureComponent {
             chartIdArrayLine,
             chartIdArrayBar,
             chartIdArrayPie,
+            chartIdArrayCircular,
+            chartIdArrayDashboard,
+            chartIdArrayBarrow,
             chartIdArrayTable,
             chartIdArrayPivottable,
             chartIdArrayPerspective,
@@ -385,6 +451,9 @@ export default class Index extends PureComponent {
             arrLine,
             arrBar,
             arrPie,
+            arrCircular,
+            arrDashboard,
+            arrBarrow,
             arrTable,
             arrPivottable,
             arrPerspective,
@@ -397,6 +466,9 @@ export default class Index extends PureComponent {
             type_line,
             type_bar,
             type_pie,
+            type_circular,
+            type_dashboard,
+            type_barrow,
             type_table,
             type_pivottable,
             type_perspective,
@@ -444,6 +516,39 @@ export default class Index extends PureComponent {
                                     value={chartIdArrayPie}
                                     style={{ display: 'block' }}
                                     onChange={this.addOrRemoveChart.bind(this, "2")}
+                                />
+                            </div>
+                            <div className={styles['field-name']} title="环形图">
+                                <Icon type={type_circular} onClick={this.toogle.bind(this, 'circular')} style={{ cursor: 'pointer' }} />环形图
+                            </div>
+                            <div className={styles['field-content']} style={type_circular == "down" ? { display: 'block' } : { display: 'none' }}>
+                                <CheckboxGroup
+                                    options={arrCircular}
+                                    value={chartIdArrayCircular}
+                                    style={{ display: 'block' }}
+                                    onChange={this.addOrRemoveChart.bind(this, "31")}
+                                />
+                            </div>
+                            <div className={styles['field-name']} title="仪表盘">
+                                <Icon type={type_dashboard} onClick={this.toogle.bind(this, 'dashboard')} style={{ cursor: 'pointer' }} />仪表盘
+                            </div>
+                            <div className={styles['field-content']} style={type_dashboard == "down" ? { display: 'block' } : { display: 'none' }}>
+                                <CheckboxGroup
+                                    options={arrDashboard}
+                                    value={chartIdArrayDashboard}
+                                    style={{ display: 'block' }}
+                                    onChange={this.addOrRemoveChart.bind(this, "31")}
+                                />
+                            </div>
+                            <div className={styles['field-name']} title="环形图">
+                                <Icon type={type_barrow} onClick={this.toogle.bind(this, 'barrow')} style={{ cursor: 'pointer' }} />环形图
+                            </div>
+                            <div className={styles['field-content']} style={type_barrow == "down" ? { display: 'block' } : { display: 'none' }}>
+                                <CheckboxGroup
+                                    options={arrBarrow}
+                                    value={chartIdArrayBarrow}
+                                    style={{ display: 'block' }}
+                                    onChange={this.addOrRemoveChart.bind(this, "31")}
                                 />
                             </div>
                             <div className={styles['field-name']} title="交叉表">
