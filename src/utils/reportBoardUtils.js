@@ -388,6 +388,10 @@ class ReportBoardUtils {
                     [10, 11, 12, 13, 15, 16],
                 ],
             };
+        } else if (type == "dashboard") {
+            fakeData = [{
+                value: 5.6
+            }];
         }
         return fakeData;
     }
