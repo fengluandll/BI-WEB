@@ -65,7 +65,7 @@ class ReportBoardUtils {
             dragactW = 20;
             dragactH = 10;
         } else if (type == "32") {
-            // 环形图
+            // 仪表盘
             tmpType = "dashboard";
             const dimension = config.dimension;
             const measure = config.measure;
@@ -76,8 +76,52 @@ class ReportBoardUtils {
             dragactW = 20;
             dragactH = 10;
         } else if (type == "33") {
-            // 环形图
+            // 条形图
             tmpType = "barrow";
+            const dimension = config.dimension;
+            const measure = config.measure;
+            const item = {};
+            item.relationFields = {};
+            relation[dimension] = item;
+            relation[measure] = item;
+            dragactW = 20;
+            dragactH = 10;
+        } else if (type == "34") {
+            // 分组条形图
+            tmpType = "groupedBar";
+            const dimension = config.dimension;
+            const measure = config.measure;
+            const item = {};
+            item.relationFields = {};
+            relation[dimension] = item;
+            relation[measure] = item;
+            dragactW = 20;
+            dragactH = 10;
+        } else if (type == "35") {
+            // 瀑布图
+            tmpType = "waterfall";
+            const dimension = config.dimension;
+            const measure = config.measure;
+            const item = {};
+            item.relationFields = {};
+            relation[dimension] = item;
+            relation[measure] = item;
+            dragactW = 20;
+            dragactH = 10;
+        } else if (type == "36") {
+            // 柱线图
+            tmpType = "barLine";
+            const dimension = config.dimension;
+            const measure = config.measure;
+            const item = {};
+            item.relationFields = {};
+            relation[dimension] = item;
+            relation[measure] = item;
+            dragactW = 20;
+            dragactH = 10;
+        } else if (type == "37") {
+            // 漏斗图
+            tmpType = "funnel";
             const dimension = config.dimension;
             const measure = config.measure;
             const item = {};
@@ -413,6 +457,14 @@ class ReportBoardUtils {
             type_str = "dashboard";
         } else if (type_num == 33) {
             type_str = "barrow";
+        } else if (type_num == 34) {
+            type_str = "groupedBar";
+        } else if (type_num == 35) {
+            type_str = "waterfall";
+        } else if (type_num == 36) {
+            type_str = "barLine";
+        } else if (type_num == 37) {
+            type_str = "funnel";
         } else if (type_num == 3) {
             type_str = "table";
         } else if (type_num == 4) {

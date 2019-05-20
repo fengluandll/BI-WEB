@@ -112,6 +112,10 @@
 	"31":"circular", // 环形图
 	"32":"dashboard", // 仪表盘
 	"33":"barrow", // 条形图
+	"34":"groupedBar", // 分组条形图
+	"35":"waterfall", // 瀑布图
+	"36":"barLine", // 柱线图
+	"37":"funnel", // 漏斗图
 }
 
 { // antdTable

@@ -4,6 +4,10 @@ import Line from './Line';
 import Circular from './Circular';
 import Dashboard from './Dashboard';
 import Barrow from './Barrow';
+import GroupedBar from './GroupedBar';
+import Waterfall from './Waterfall';
+import BarLine from './BarLine';
+import Funnel from './Funnel';
 import Table from './Table';
 import Pivottable from './Pivottable';
 import Perspective from './Perspective';
@@ -21,6 +25,10 @@ export {
   Circular,
   Dashboard,
   Barrow,
+  GroupedBar,
+  Waterfall,
+  BarLine,
+  Funnel,
   Table,
   Pivottable,
   Perspective,

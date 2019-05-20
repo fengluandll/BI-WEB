@@ -49,17 +49,20 @@ class BoxLeft {
         const { tDashboard } = _this.props.model;
         return (
             <div>
-                {/* logo标题start */}
-                <div style={{ height: '39px', position: 'relative', lineHeight: '39px', textAlign: 'center', borderRight: '1px solid #ccc', background: '#eee', overflow: 'hidden' }}><h1 style={{ color: '#1890ff', fontSize: '16px' }}>编辑模式</h1></div>
-                {/* logo标题end */}
-                <div>{/* 控件列表 */}
+                {/* 左侧头部标题 */}
+                <div style={{ height: '39px', position: 'relative', lineHeight: '39px', textAlign: 'center', borderRight: '1px solid #ccc', background: '#eee', overflow: 'hidden' }}>
+                    <h1 style={{ color: '#1890ff', fontSize: '16px' }}>编辑模式</h1>
+                </div>
+                {/* 控件列表 */}
+                <div>
                     <ChartList
                         mCharts={mCharts}
                         mDashboard={mDashboard}
                         addOrRemoveChart={this.addOrRemoveChart}
                     />
                 </div>
-                <div>{/*只有customer才有权限看到*/}
+                {/* 页签-customer有权限 */}
+                <div>
                     {_this.state.user_type == 'customer' ?
                         <TabList
                             mCharts={mCharts}

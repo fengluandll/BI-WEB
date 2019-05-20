@@ -358,6 +358,14 @@ class ReportBoard extends PureComponent {
             this.renderDashboard(name, dateSetList, mChart, spinning);
         } else if (type == "barrow") {
             this.renderBarrow(name, dateSetList, mChart, spinning);
+        } else if (type == "groupedBar") {
+
+        } else if (type == "waterfall") {
+
+        } else if (type == "barLine") {
+
+        } else if (type == "funnel") {
+
         } else if (type == "table") {
             this.renderTable(name, dateSetList, mChart, spinning);
         } else if (type == "search") {
