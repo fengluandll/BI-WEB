@@ -12,7 +12,7 @@ import TabUtils from '../../utils/tabUtils';
 import CssUtils from '../../utils/cssUtils';
 
 import { Relation, RelationChartsAuto, TabName, RelationTable, TabsUI } from '../../componentsPro/RelationUtil';
-import { Bar, Pie, Line, Circular, Dashboard, Barrow, Table, Pivottable, Perspective, Text, TextStandard, TableDiy, AntdTable, PivotDiy, TableDiy1 } from '../../componentsPro/Charts';
+import { Bar, Pie, Line, Circular, Dashboard, Barrow, GroupedBar, Waterfall, BarLine, Funnel, Table, Pivottable, Perspective, Text, TextStandard, TableDiy, AntdTable, PivotDiy, TableDiy1 } from '../../componentsPro/Charts';
 import { Print, SearchPro } from '../../componentsPro/ReportMethod';
 import { Search } from '../../componentsPro/NewDashboard';
 
@@ -167,7 +167,12 @@ class ReportBoard extends PureComponent {
     }
 
     /****************************************展示左侧仪表盘*****************************************************************/
-    // 展示左侧搜索框
+
+    /***
+     * 
+     * 展示左侧搜索框
+     * 
+     * ***/
     disPlaySearchPro = () => {
         const { searchPro } = this.state;
         const data = this.searchProData;
@@ -359,13 +364,13 @@ class ReportBoard extends PureComponent {
         } else if (type == "barrow") {
             this.renderBarrow(name, dateSetList, mChart, spinning);
         } else if (type == "groupedBar") {
-
+            this.renderGroupedBar(name, dateSetList, mChart, spinning);
         } else if (type == "waterfall") {
-
+            this.renderWaterfall(name, dateSetList, mChart, spinning);
         } else if (type == "barLine") {
-
+            this.renderBarLine(name, dateSetList, mChart, spinning);
         } else if (type == "funnel") {
-
+            this.renderFunnel(name, dateSetList, mChart, spinning);
         } else if (type == "table") {
             this.renderTable(name, dateSetList, mChart, spinning);
         } else if (type == "search") {
@@ -524,6 +529,102 @@ class ReportBoard extends PureComponent {
             >
                 <Spin spinning={spinning}>
                     <Barrow
+                        dragactStyle={dragactStyle}
+                        editModel={this.state.editModel}
+                        mChart={mChart}
+                        dateSetList={dateSetList}
+                        onPlotClick={this.onPlotClick}
+                    />
+                </Spin>
+            </div>,
+            document.getElementById(name));
+    }
+    // 展示分组条形图
+    renderGroupedBar(name, dateSetList, mChart, spinning) {
+        const { mDashboard, bigScreen } = this.state;
+        let cssName = cssUtils.getBIContainer(mChart, bigScreen);
+        const { dragactStyle } = JSON.parse(mDashboard.style_config);
+        ReactDom.render(
+            <div className={cssName}
+                onClick={(ev) => {
+                    //  讲展示右侧的变量参数放入 state 中
+                    this.changeEditRightProps("chart", mChart, name);
+                }}
+            >
+                <Spin spinning={spinning}>
+                    <GroupedBar
+                        dragactStyle={dragactStyle}
+                        editModel={this.state.editModel}
+                        mChart={mChart}
+                        dateSetList={dateSetList}
+                        onPlotClick={this.onPlotClick}
+                    />
+                </Spin>
+            </div>,
+            document.getElementById(name));
+    }
+    // 展示瀑布图
+    renderWaterfall(name, dateSetList, mChart, spinning) {
+        const { mDashboard, bigScreen } = this.state;
+        let cssName = cssUtils.getBIContainer(mChart, bigScreen);
+        const { dragactStyle } = JSON.parse(mDashboard.style_config);
+        ReactDom.render(
+            <div className={cssName}
+                onClick={(ev) => {
+                    //  讲展示右侧的变量参数放入 state 中
+                    this.changeEditRightProps("chart", mChart, name);
+                }}
+            >
+                <Spin spinning={spinning}>
+                    <Waterfall
+                        dragactStyle={dragactStyle}
+                        editModel={this.state.editModel}
+                        mChart={mChart}
+                        dateSetList={dateSetList}
+                        onPlotClick={this.onPlotClick}
+                    />
+                </Spin>
+            </div>,
+            document.getElementById(name));
+    }
+    // 展示柱线图
+    renderBarLine(name, dateSetList, mChart, spinning) {
+        const { mDashboard, bigScreen } = this.state;
+        let cssName = cssUtils.getBIContainer(mChart, bigScreen);
+        const { dragactStyle } = JSON.parse(mDashboard.style_config);
+        ReactDom.render(
+            <div className={cssName}
+                onClick={(ev) => {
+                    //  讲展示右侧的变量参数放入 state 中
+                    this.changeEditRightProps("chart", mChart, name);
+                }}
+            >
+                <Spin spinning={spinning}>
+                    <BarLine
+                        dragactStyle={dragactStyle}
+                        editModel={this.state.editModel}
+                        mChart={mChart}
+                        dateSetList={dateSetList}
+                        onPlotClick={this.onPlotClick}
+                    />
+                </Spin>
+            </div>,
+            document.getElementById(name));
+    }
+    // 展示漏斗图
+    renderFunnel(name, dateSetList, mChart, spinning) {
+        const { mDashboard, bigScreen } = this.state;
+        let cssName = cssUtils.getBIContainer(mChart, bigScreen);
+        const { dragactStyle } = JSON.parse(mDashboard.style_config);
+        ReactDom.render(
+            <div className={cssName}
+                onClick={(ev) => {
+                    //  讲展示右侧的变量参数放入 state 中
+                    this.changeEditRightProps("chart", mChart, name);
+                }}
+            >
+                <Spin spinning={spinning}>
+                    <Funnel
                         dragactStyle={dragactStyle}
                         editModel={this.state.editModel}
                         mChart={mChart}

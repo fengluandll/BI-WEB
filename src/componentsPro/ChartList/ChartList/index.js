@@ -27,6 +27,10 @@ export default class Index extends PureComponent {
             chartIdArrayCircular: [],
             chartIdArrayDashboard: [],
             chartIdArrayBarrow: [],
+            chartIdArrayGroupedBar: [],
+            chartIdArrayWaterfall: [],
+            chartIdArrayBarLine: [],
+            chartIdArrayFunnel: [],
             chartIdArrayTable: [],
             chartIdArrayPivottable: [],
             chartIdArrayPerspective: [],
@@ -43,6 +47,10 @@ export default class Index extends PureComponent {
             arrCircular: [],
             arrDashboard: [],
             arrBarrow: [],
+            arrGroupedBar: [],
+            arrWaterfall: [],
+            arrBarLine: [],
+            arrFunnel: [],
             arrTable: [],
             arrPivottable: [],
             arrPerspective: [],
@@ -59,6 +67,10 @@ export default class Index extends PureComponent {
             type_circular: "down",
             type_dashboard: "down",
             type_barrow: "down",
+            type_groupedBar: "down",
+            type_waterfall: "down",
+            type_barLine: "down",
+            type_funnel: "down",
             type_table: "down",
             type_pivottable: "down",
             type_perspective: "down",
@@ -95,6 +107,10 @@ export default class Index extends PureComponent {
         const chartIdArrayCircular = [];
         const chartIdArrayDashboard = [];
         const chartIdArrayBarrow = [];
+        const chartIdArrayGroupedBar = [];
+        const chartIdArrayWaterfall = [];
+        const chartIdArrayBarLine = [];
+        const chartIdArrayFunnel = [];
         const chartIdArrayTable = [];
         const chartIdArrayPivottable = [];
         const chartIdArrayPerspective = [];
@@ -111,6 +127,10 @@ export default class Index extends PureComponent {
         const arrCircular = [];
         const arrDashboard = [];
         const arrBarrow = [];
+        const arrGroupedBar = [];
+        const arrWaterfall = [];
+        const arrBarLine = [];
+        const arrFunnel = [];
         const arrTable = [];
         const arrPivottable = [];
         const arrPerspective = [];
@@ -137,6 +157,14 @@ export default class Index extends PureComponent {
                 chartIdArrayDashboard.push(item.chartId);
             } else if (type == "33") {
                 chartIdArrayBarrow.push(item.chartId);
+            } else if (type == "34") {
+                chartIdArrayGroupedBar.push(item.chartId);
+            } else if (type == "35") {
+                chartIdArrayWaterfall.push(item.chartId);
+            } else if (type == "36") {
+                chartIdArrayBarLine.push(item.chartId);
+            } else if (type == "37") {
+                chartIdArrayFunnel.push(item.chartId);
             } else if (type == "3") {
                 chartIdArrayTable.push(item.chartId);
             } else if (type == "4") {
@@ -187,6 +215,26 @@ export default class Index extends PureComponent {
                 });
             } else if (type == "33") {
                 arrBarrow.push({
+                    "label": item.name,
+                    "value": item.id.toString(),
+                });
+            } else if (type == "34") {
+                arrGroupedBar.push({
+                    "label": item.name,
+                    "value": item.id.toString(),
+                });
+            } else if (type == "35") {
+                arrWaterfall.push({
+                    "label": item.name,
+                    "value": item.id.toString(),
+                });
+            } else if (type == "36") {
+                arrBarLine.push({
+                    "label": item.name,
+                    "value": item.id.toString(),
+                });
+            } else if (type == "37") {
+                arrFunnel.push({
                     "label": item.name,
                     "value": item.id.toString(),
                 });
@@ -248,6 +296,10 @@ export default class Index extends PureComponent {
             chartIdArrayCircular,
             chartIdArrayDashboard,
             chartIdArrayBarrow,
+            chartIdArrayGroupedBar,
+            chartIdArrayWaterfall,
+            chartIdArrayBarLine,
+            chartIdArrayFunnel,
             chartIdArrayTable,
             chartIdArrayPivottable,
             chartIdArrayPerspective,
@@ -264,6 +316,10 @@ export default class Index extends PureComponent {
             arrCircular,
             arrDashboard,
             arrBarrow,
+            arrGroupedBar,
+            arrWaterfall,
+            arrBarLine,
+            arrFunnel,
             arrTable,
             arrPivottable,
             arrPerspective,
@@ -281,7 +337,7 @@ export default class Index extends PureComponent {
         let operateType;// 增加或者减少类型
         let chartId; // 图表Id
         let arr = [];
-        const { chartIdArrayLine, chartIdArrayBar, chartIdArrayPie, chartIdArrayCircular, chartIdArrayDashboard, chartIdArrayBarrow, chartIdArrayTable, chartIdArrayPivottable, chartIdArrayPerspective, chartIdArrayText, chartIdArrayTextStandard, chartIdArrayTableDiy, chartIdArrayAntdTable, chartIdArrayPivotDiy, chartIdArrayTableDiy1 } = this.state;
+        const { chartIdArrayLine, chartIdArrayBar, chartIdArrayPie, chartIdArrayCircular, chartIdArrayDashboard, chartIdArrayBarrow, chartIdArrayGroupedBar, chartIdArrayWaterfall, chartIdArrayBarLine, chartIdArrayFunnel, chartIdArrayTable, chartIdArrayPivottable, chartIdArrayPerspective, chartIdArrayText, chartIdArrayTextStandard, chartIdArrayTableDiy, chartIdArrayAntdTable, chartIdArrayPivotDiy, chartIdArrayTableDiy1 } = this.state;
         if (type == "0") {
             arr = chartIdArrayLine;
         } else if (type == "1") {
@@ -294,6 +350,14 @@ export default class Index extends PureComponent {
             arr = chartIdArrayDashboard;
         } else if (type == "33") {
             arr = chartIdArrayBarrow;
+        } else if (type == "34") {
+            arr = chartIdArrayGroupedBar;
+        } else if (type == "35") {
+            arr = chartIdArrayWaterfall;
+        } else if (type == "36") {
+            arr = chartIdArrayBarLine;
+        } else if (type == "37") {
+            arr = chartIdArrayFunnel;
         } else if (type == "3") {
             arr = chartIdArrayTable;
         } else if (type == "4") {
@@ -358,6 +422,10 @@ export default class Index extends PureComponent {
             type_circular,
             type_dashboard,
             type_barrow,
+            type_groupedBar,
+            type_waterfall,
+            type_barLine,
+            type_funnel,
             type_table,
             type_pivottable,
             type_perspective,
@@ -391,6 +459,22 @@ export default class Index extends PureComponent {
         } else if (key == "barrow") {
             this.setState({
                 type_barrow: type_barrow == "right" ? "down" : "right",
+            });
+        } else if (key == "groupedBar") {
+            this.setState({
+                type_groupedBar: type_groupedBar == "right" ? "down" : "right",
+            });
+        } else if (key == "waterfall") {
+            this.setState({
+                type_waterfall: type_waterfall == "right" ? "down" : "right",
+            });
+        } else if (key == "barLine") {
+            this.setState({
+                type_barLine: type_barLine == "right" ? "down" : "right",
+            });
+        } else if (key == "funnel") {
+            this.setState({
+                type_funnel: type_funnel == "right" ? "down" : "right",
             });
         } else if (key == "table") {
             this.setState({
@@ -439,6 +523,10 @@ export default class Index extends PureComponent {
             chartIdArrayCircular,
             chartIdArrayDashboard,
             chartIdArrayBarrow,
+            chartIdArrayGroupedBar,
+            chartIdArrayWaterfall,
+            chartIdArrayBarLine,
+            chartIdArrayFunnel,
             chartIdArrayTable,
             chartIdArrayPivottable,
             chartIdArrayPerspective,
@@ -454,6 +542,10 @@ export default class Index extends PureComponent {
             arrCircular,
             arrDashboard,
             arrBarrow,
+            arrGroupedBar,
+            arrWaterfall,
+            arrBarLine,
+            arrFunnel,
             arrTable,
             arrPivottable,
             arrPerspective,
@@ -469,6 +561,10 @@ export default class Index extends PureComponent {
             type_circular,
             type_dashboard,
             type_barrow,
+            type_groupedBar,
+            type_waterfall,
+            type_barLine,
+            type_funnel,
             type_table,
             type_pivottable,
             type_perspective,
@@ -549,6 +645,50 @@ export default class Index extends PureComponent {
                                     value={chartIdArrayBarrow}
                                     style={{ display: 'block' }}
                                     onChange={this.addOrRemoveChart.bind(this, "33")}
+                                />
+                            </div>
+                            <div className={styles['field-name']} title="分组条形图">
+                                <Icon type={type_groupedBar} onClick={this.toogle.bind(this, 'groupedBar')} style={{ cursor: 'pointer' }} />分组条形图
+                            </div>
+                            <div className={styles['field-content']} style={type_groupedBar == "down" ? { display: 'block' } : { display: 'none' }}>
+                                <CheckboxGroup
+                                    options={arrGroupedBar}
+                                    value={chartIdArrayGroupedBar}
+                                    style={{ display: 'block' }}
+                                    onChange={this.addOrRemoveChart.bind(this, "34")}
+                                />
+                            </div>
+                            <div className={styles['field-name']} title="瀑布图">
+                                <Icon type={type_waterfall} onClick={this.toogle.bind(this, 'waterfall')} style={{ cursor: 'pointer' }} />瀑布图
+                            </div>
+                            <div className={styles['field-content']} style={type_waterfall == "down" ? { display: 'block' } : { display: 'none' }}>
+                                <CheckboxGroup
+                                    options={arrWaterfall}
+                                    value={chartIdArrayWaterfall}
+                                    style={{ display: 'block' }}
+                                    onChange={this.addOrRemoveChart.bind(this, "35")}
+                                />
+                            </div>
+                            <div className={styles['field-name']} title="柱线图">
+                                <Icon type={type_barLine} onClick={this.toogle.bind(this, 'barLine')} style={{ cursor: 'pointer' }} />柱线图
+                            </div>
+                            <div className={styles['field-content']} style={type_barLine == "down" ? { display: 'block' } : { display: 'none' }}>
+                                <CheckboxGroup
+                                    options={arrBarLine}
+                                    value={chartIdArrayBarLine}
+                                    style={{ display: 'block' }}
+                                    onChange={this.addOrRemoveChart.bind(this, "36")}
+                                />
+                            </div>
+                            <div className={styles['field-name']} title="漏斗图">
+                                <Icon type={type_funnel} onClick={this.toogle.bind(this, 'funnel')} style={{ cursor: 'pointer' }} />漏斗图
+                            </div>
+                            <div className={styles['field-content']} style={type_funnel == "down" ? { display: 'block' } : { display: 'none' }}>
+                                <CheckboxGroup
+                                    options={arrFunnel}
+                                    value={chartIdArrayFunnel}
+                                    style={{ display: 'block' }}
+                                    onChange={this.addOrRemoveChart.bind(this, "37")}
                                 />
                             </div>
                             <div className={styles['field-name']} title="交叉表">
