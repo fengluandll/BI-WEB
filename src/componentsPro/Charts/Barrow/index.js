@@ -41,8 +41,8 @@ class Barrow extends PureComponent {
         });
         // 填充数据
         chart.source(dateSetList, {
-            value: {
-                max: 1300,
+            y: {
+                max: 300,
                 min: 0,
                 nice: false,
                 alias: '销量（百万）'
