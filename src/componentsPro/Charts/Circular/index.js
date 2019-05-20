@@ -2,8 +2,11 @@
 import React, { PureComponent } from 'react';
 import ReactDom from 'react-dom';
 import G2 from '@antv/g2';
+import ChartHelper from '../base';
 
 import styles from '../index.less';
+
+const chartHelper = new ChartHelper();
 
 /***
  * 
@@ -27,11 +30,13 @@ class Circular extends PureComponent {
         const { dragactStyle, editModel, mChart, dateSetList, onPlotClick } = this.props;
         // clean
         this.node.innerHTML = '';
+        // 读取配置
+        const height = chartHelper.getHeight(dragactStyle, mChart, editModel);
         // 图表创建
         var chart = new G2.Chart({
             container: this.node, // 挂载节点
             forceFit: true, // 宽度自适应
-            height: 300, // 高度
+            height: height, // 高度
             padding: 'auto', // 边距
             animate: false, // 动画
             background: { // 背景

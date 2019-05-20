@@ -121,7 +121,7 @@ class ChartHelper {
    * @param isPercent 是否需要做百分比转换
    */
   initTransform = (dv, config, chartType) => {
-    if (chartType === ChartHelper.PIE) {
+    if (chartType === 'pie') {
       dv.transform({
         type: 'percent',
         field: 'y',
@@ -208,6 +208,33 @@ class ChartHelper {
         + '</li>',
     };
   };
+
+  /*************************************************************************************/
+  /***
+   * 
+   * 获取高度
+   * @param: 
+   * dragactStyle:dragact对象
+   * mChart:
+   * editModel: 编辑模式
+   * 
+   * ***/
+  getHeight = (dragactStyle, mChart, editModel) => {
+    let height = 0;
+    const array = dragactStyle;
+    array.map((item, index) => {
+      if (item.key == mChart.id.toString()) {
+        if (editModel == "true") {
+          height = item.h * 40 - 42;
+        } else {
+          height = item.h * 40 - 42;
+        }
+      }
+    });
+    return height;
+  }
+
+
+
 }
-ChartHelper.PIE = 'pie';
 export default ChartHelper;

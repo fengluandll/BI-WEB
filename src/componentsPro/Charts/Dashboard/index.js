@@ -2,8 +2,11 @@
 import React, { PureComponent } from 'react';
 import ReactDom from 'react-dom';
 import G2 from '@antv/g2';
+import ChartHelper from '../base';
 
 import styles from '../index.less';
+
+const chartHelper = new ChartHelper();
 
 /***
  * 
@@ -26,6 +29,9 @@ class Dashboard extends PureComponent {
         const { dragactStyle, editModel, mChart, dateSetList, onPlotClick } = this.props;
         // clean
         this.node.innerHTML = '';
+        // 读取配置
+        const height = chartHelper.getHeight(dragactStyle, mChart, editModel);
+        // 图表创建
         var Shape = G2.Shape;
         // 自定义Shape 部分
         Shape.registerShape('point', 'pointer', {
@@ -65,7 +71,7 @@ class Dashboard extends PureComponent {
         var chart = new G2.Chart({
             container: this.node,
             forceFit: true,
-            height: 300,
+            height: height,
             padding: [0, 0, 30, 0]
         });
         chart.source(data);

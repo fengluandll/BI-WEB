@@ -537,18 +537,18 @@ export default class Index extends PureComponent {
                                     options={arrDashboard}
                                     value={chartIdArrayDashboard}
                                     style={{ display: 'block' }}
-                                    onChange={this.addOrRemoveChart.bind(this, "31")}
+                                    onChange={this.addOrRemoveChart.bind(this, "32")}
                                 />
                             </div>
-                            <div className={styles['field-name']} title="环形图">
-                                <Icon type={type_barrow} onClick={this.toogle.bind(this, 'barrow')} style={{ cursor: 'pointer' }} />环形图
+                            <div className={styles['field-name']} title="条形图">
+                                <Icon type={type_barrow} onClick={this.toogle.bind(this, 'barrow')} style={{ cursor: 'pointer' }} />条形图
                             </div>
                             <div className={styles['field-content']} style={type_barrow == "down" ? { display: 'block' } : { display: 'none' }}>
                                 <CheckboxGroup
                                     options={arrBarrow}
                                     value={chartIdArrayBarrow}
                                     style={{ display: 'block' }}
-                                    onChange={this.addOrRemoveChart.bind(this, "31")}
+                                    onChange={this.addOrRemoveChart.bind(this, "33")}
                                 />
                             </div>
                             <div className={styles['field-name']} title="交叉表">
