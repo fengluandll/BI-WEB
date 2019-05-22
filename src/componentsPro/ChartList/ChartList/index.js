@@ -47,7 +47,7 @@ export default class Index extends PureComponent {
      * 
      * ***/
     renderChart = (param) => {
-        const { mCharts, mDashboard } = this.props;
+        const { mCharts } = this.props;
         const mCharts_para = []; // 符合的mChart
         for (let item of mCharts) {
             const type = reportBoardUtils.changeTypeStrNum(item.mc_type);
@@ -88,10 +88,10 @@ export default class Index extends PureComponent {
                         const check = this.getMchartChecked(item);
                         return (
                             <li className={styles['titleTwo']} key={`${item.id}${index}`}>
-                                <input type="checkbox" checked={check} onChange={this.onChange} value={item.id} />
-                                <div className={styles['divInline']}>{item.name}</div>
-                                <div className={styles['divInline']}>编辑</div>
-                                <div className={styles['divInline']} style={{}}>删除</div>
+                                <div className={styles['check']}><input type="checkbox" checked={check} onChange={this.onChange} value={item.id} /></div>
+                                <div className={styles['title']}>{item.name}</div>
+                                <div className={styles['edit']}>编辑</div>
+                                <div className={styles['delete']} style={{}}>删除</div>
                             </li>
                         );
                     })
@@ -106,7 +106,7 @@ export default class Index extends PureComponent {
      * 
      * ***/
     getMchartChecked = (mChart) => {
-        const { mCharts, mDashboard } = this.state;
+        const { mDashboard } = this.state;
         const { children } = JSON.parse(mDashboard.style_config);
         for (let item of children) {
             if (item.chartId == mChart.id) {
@@ -175,30 +175,36 @@ export default class Index extends PureComponent {
                 <div className={styles['sideContent']}>
                     <ul>
                         <li>
-                            <div className={styles['titleOne']} onClick={this.onListCheck.bind(this, 'line')}>
-                                <div className={styles['divInline']}>图标</div>
-                                <div className={styles['divInline']}>折线图</div>
-                                <div className={styles['divInline']}>+</div>
+                            <div className={styles['titleOne']} >
+                                <div className={styles['divInline']} onClick={this.onListCheck.bind(this, 'line')}>
+                                    <div className={styles['icon']}>图标</div>
+                                    <div className={styles['title']}><span className={styles['text']}>折线图</span></div>
+                                </div>
+                                <div className={styles['add']}>+</div>
                             </div>
                             <ul style={{}} ref={(instance) => { this.line = instance }}>
                                 {this.renderChart("title_line")}
                             </ul>
                         </li>
                         <li>
-                            <div className={styles['titleOne']} onClick={this.onListCheck.bind(this, 'bar')}>
-                                <div className={styles['divInline']}>图标</div>
-                                <div className={styles['divInline']}>柱状图</div>
-                                <div className={styles['divInline']}>+</div>
+                            <div className={styles['titleOne']}>
+                                <div className={styles['divInline']} onClick={this.onListCheck.bind(this, 'bar')}>
+                                    <div className={styles['icon']}>图标</div>
+                                    <div className={styles['title']}><span className={styles['text']}>柱状图</span></div>
+                                </div>
+                                <div className={styles['add']}>+</div>
                             </div>
                             <ul style={{}} ref={(instance) => { this.bar = instance }}>
                                 {this.renderChart("title_bar")}
                             </ul>
                         </li>
                         <li>
-                            <div className={styles['titleOne']} onClick={this.onListCheck.bind(this, 'pie')}>
-                                <div className={styles['divInline']}>图标</div>
-                                <div className={styles['divInline']}>饼图</div>
-                                <div className={styles['divInline']}>+</div>
+                            <div className={styles['titleOne']}>
+                                <div className={styles['divInline']} onClick={this.onListCheck.bind(this, 'pie')}>
+                                    <div className={styles['icon']}>图标</div>
+                                    <div className={styles['title']}><span className={styles['text']}>饼图</span></div>
+                                </div>
+                                <div className={styles['add']}>+</div>
                             </div>
                             <ul style={{}} ref={(instance) => { this.pie = instance }}>
                                 {this.renderChart("title_pie")}
