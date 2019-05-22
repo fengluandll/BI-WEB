@@ -29,9 +29,7 @@ export default class Index extends PureComponent {
             title_funnel: true, // 漏斗图
             title_antdTable: true, // antdTable
             title_pivotDiy: true, // 透视表
-            title_tableDiy1: true, // 自定义table
             title_text: true, // 文本控件
-            title_textStandard: true, // 标准文本控件
             title_else: true, // 其他
         }
     }
@@ -80,8 +78,20 @@ export default class Index extends PureComponent {
                 if (type == "funnel") {
                     mCharts_para.push(item);
                 }
+            } else if (param == "title_antdTable") {
+                if (type == "antdTable" || type == "table") {
+                    mCharts_para.push(item);
+                }
+            } else if (param == "title_pivotDiy") {
+                if (type == "pivotDiy" || type == "pivottable") {
+                    mCharts_para.push(item);
+                }
+            } else if (param == "title_text" || type == "textStandard") {
+                if (type == "text") {
+                    mCharts_para.push(item);
+                }
             } else if (param == "title_else") {
-                if (type == "") {
+                if (type == "perspective" || type == "tableDiy" || type == "tableDiy1") {
                     mCharts_para.push(item);
                 }
             }
@@ -143,7 +153,7 @@ export default class Index extends PureComponent {
      * 
      * ***/
     onListCheck = (type) => {
-        const { title_line, title_bar, title_barrow, title_pie, title_dashboard, title_funnel } = this.state;
+        const { title_line, title_bar, title_barrow, title_pie, title_dashboard, title_funnel, title_antdTable, title_pivotDiy, title_text, title_else } = this.state;
         if (type == "line") {
             if (title_line) {
                 this.line.style.display = 'none';
@@ -197,6 +207,42 @@ export default class Index extends PureComponent {
             }
             this.setState({
                 title_funnel: title_funnel ? false : true,
+            });
+        } else if (type == "antdTable") {
+            if (title_antdTable) {
+                this.antdTable.style.display = 'none';
+            } else {
+                this.antdTable.style.display = 'inline';
+            }
+            this.setState({
+                title_antdTable: title_antdTable ? false : true,
+            });
+        } else if (type == "pivotDiy") {
+            if (title_pivotDiy) {
+                this.pivotDiy.style.display = 'none';
+            } else {
+                this.pivotDiy.style.display = 'inline';
+            }
+            this.setState({
+                title_pivotDiy: title_pivotDiy ? false : true,
+            });
+        } else if (type == "text") {
+            if (title_text) {
+                this.text.style.display = 'none';
+            } else {
+                this.text.style.display = 'inline';
+            }
+            this.setState({
+                title_text: title_text ? false : true,
+            });
+        } else if (type == "else") {
+            if (title_else) {
+                this.else.style.display = 'none';
+            } else {
+                this.else.style.display = 'inline';
+            }
+            this.setState({
+                title_else: title_else ? false : true,
             });
         }
     }
@@ -276,6 +322,54 @@ export default class Index extends PureComponent {
                             </div>
                             <ul style={{}} ref={(instance) => { this.funnel = instance }}>
                                 {this.renderChart("title_funnel")}
+                            </ul>
+                        </li>
+                        <li>
+                            <div className={styles['titleOne']}>
+                                <div className={styles['divInline']} onClick={this.onListCheck.bind(this, 'antdTable')}>
+                                    <div className={styles['icon']}>图标</div>
+                                    <div className={styles['title']}><span className={styles['text']}>表格</span></div>
+                                </div>
+                                <div className={styles['add']}>+</div>
+                            </div>
+                            <ul style={{}} ref={(instance) => { this.antdTable = instance }}>
+                                {this.renderChart("title_antdTable")}
+                            </ul>
+                        </li>
+                        <li>
+                            <div className={styles['titleOne']}>
+                                <div className={styles['divInline']} onClick={this.onListCheck.bind(this, 'pivotDiy')}>
+                                    <div className={styles['icon']}>图标</div>
+                                    <div className={styles['title']}><span className={styles['text']}>透视表</span></div>
+                                </div>
+                                <div className={styles['add']}>+</div>
+                            </div>
+                            <ul style={{}} ref={(instance) => { this.pivotDiy = instance }}>
+                                {this.renderChart("title_pivotDiy")}
+                            </ul>
+                        </li>
+                        <li>
+                            <div className={styles['titleOne']}>
+                                <div className={styles['divInline']} onClick={this.onListCheck.bind(this, 'text')}>
+                                    <div className={styles['icon']}>图标</div>
+                                    <div className={styles['title']}><span className={styles['text']}>文本</span></div>
+                                </div>
+                                <div className={styles['add']}>+</div>
+                            </div>
+                            <ul style={{}} ref={(instance) => { this.text = instance }}>
+                                {this.renderChart("title_text")}
+                            </ul>
+                        </li>
+                        <li>
+                            <div className={styles['titleOne']}>
+                                <div className={styles['divInline']} onClick={this.onListCheck.bind(this, 'else')}>
+                                    <div className={styles['icon']}>图标</div>
+                                    <div className={styles['title']}><span className={styles['text']}>其他</span></div>
+                                </div>
+                                <div className={styles['add']}>+</div>
+                            </div>
+                            <ul style={{}} ref={(instance) => { this.else = instance }}>
+                                {this.renderChart("title_else")}
                             </ul>
                         </li>
                     </ul>
