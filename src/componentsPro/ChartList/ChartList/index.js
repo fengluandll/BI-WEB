@@ -27,6 +27,11 @@ export default class Index extends PureComponent {
             title_pie: true, // 饼图
             title_dashboard: true, // 仪表盘
             title_funnel: true, // 漏斗图
+            title_antdTable: true, // antdTable
+            title_pivotDiy: true, // 透视表
+            title_tableDiy1: true, // 自定义table
+            title_text: true, // 文本控件
+            title_textStandard: true, // 标准文本控件
             title_else: true, // 其他
         }
     }
@@ -138,7 +143,7 @@ export default class Index extends PureComponent {
      * 
      * ***/
     onListCheck = (type) => {
-        const { title_line, title_bar, title_pie } = this.state;
+        const { title_line, title_bar, title_barrow, title_pie, title_dashboard, title_funnel } = this.state;
         if (type == "line") {
             if (title_line) {
                 this.line.style.display = 'none';
@@ -157,6 +162,15 @@ export default class Index extends PureComponent {
             this.setState({
                 title_bar: title_bar ? false : true,
             });
+        } else if (type == "barrow") {
+            if (title_barrow) {
+                this.barrow.style.display = 'none';
+            } else {
+                this.barrow.style.display = 'inline';
+            }
+            this.setState({
+                title_barrow: title_barrow ? false : true,
+            });
         } else if (type == "pie") {
             if (title_pie) {
                 this.pie.style.display = 'none';
@@ -165,6 +179,24 @@ export default class Index extends PureComponent {
             }
             this.setState({
                 title_pie: title_pie ? false : true,
+            });
+        } else if (type == "dashboard") {
+            if (title_dashboard) {
+                this.dashboard.style.display = 'none';
+            } else {
+                this.dashboard.style.display = 'inline';
+            }
+            this.setState({
+                title_dashboard: title_dashboard ? false : true,
+            });
+        } else if (type == "funnel") {
+            if (title_funnel) {
+                this.funnel.style.display = 'none';
+            } else {
+                this.funnel.style.display = 'inline';
+            }
+            this.setState({
+                title_funnel: title_funnel ? false : true,
             });
         }
     }
@@ -200,6 +232,18 @@ export default class Index extends PureComponent {
                         </li>
                         <li>
                             <div className={styles['titleOne']}>
+                                <div className={styles['divInline']} onClick={this.onListCheck.bind(this, 'barrow')}>
+                                    <div className={styles['icon']}>图标</div>
+                                    <div className={styles['title']}><span className={styles['text']}>条形图</span></div>
+                                </div>
+                                <div className={styles['add']}>+</div>
+                            </div>
+                            <ul style={{}} ref={(instance) => { this.barrow = instance }}>
+                                {this.renderChart("title_barrow")}
+                            </ul>
+                        </li>
+                        <li>
+                            <div className={styles['titleOne']}>
                                 <div className={styles['divInline']} onClick={this.onListCheck.bind(this, 'pie')}>
                                     <div className={styles['icon']}>图标</div>
                                     <div className={styles['title']}><span className={styles['text']}>饼图</span></div>
@@ -208,6 +252,30 @@ export default class Index extends PureComponent {
                             </div>
                             <ul style={{}} ref={(instance) => { this.pie = instance }}>
                                 {this.renderChart("title_pie")}
+                            </ul>
+                        </li>
+                        <li>
+                            <div className={styles['titleOne']}>
+                                <div className={styles['divInline']} onClick={this.onListCheck.bind(this, 'dashboard')}>
+                                    <div className={styles['icon']}>图标</div>
+                                    <div className={styles['title']}><span className={styles['text']}>仪表盘</span></div>
+                                </div>
+                                <div className={styles['add']}>+</div>
+                            </div>
+                            <ul style={{}} ref={(instance) => { this.dashboard = instance }}>
+                                {this.renderChart("title_dashboard")}
+                            </ul>
+                        </li>
+                        <li>
+                            <div className={styles['titleOne']}>
+                                <div className={styles['divInline']} onClick={this.onListCheck.bind(this, 'funnel')}>
+                                    <div className={styles['icon']}>图标</div>
+                                    <div className={styles['title']}><span className={styles['text']}>漏斗图</span></div>
+                                </div>
+                                <div className={styles['add']}>+</div>
+                            </div>
+                            <ul style={{}} ref={(instance) => { this.funnel = instance }}>
+                                {this.renderChart("title_funnel")}
                             </ul>
                         </li>
                     </ul>
