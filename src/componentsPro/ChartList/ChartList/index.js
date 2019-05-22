@@ -1,11 +1,11 @@
 import React, { PureComponent } from 'react';
 import ReactDom from 'react-dom';
-import { Collapse, Checkbox, Icon } from 'antd';
+import { Collapse, Modal, Icon } from 'antd';
 import styles from './index.less';
 import ReportBoardUtils from '../../../utils/reportBoardUtils';
 
 const Panel = Collapse.Panel;
-const CheckboxGroup = Checkbox.Group;
+const confirm = Modal.confirm;
 const reportBoardUtils = new ReportBoardUtils();
 
 /***
@@ -20,7 +20,10 @@ export default class Index extends PureComponent {
         const { mCharts, mDashboard } = this.props;
         this.state = {
             mDashboard,
-            refreshUI: 0,   //   state 用来刷新ui 
+            refreshUI: 0,   //   state 用来刷新ui
+            visible: false, // 编辑弹出框
+            edit_type: "add", // 弹出框类型 add:新建;edie:编辑
+            edit_id: "", // 编辑图表的id 
             title_line: true, // 折线图
             title_bar: true, // 柱状图
             title_barrow: true, // 条形图
@@ -105,8 +108,8 @@ export default class Index extends PureComponent {
                             <li className={styles['titleTwo']} key={`${item.id}${index}`}>
                                 <div className={styles['check']}><input type="checkbox" checked={check} onChange={this.onChange} value={item.id} /></div>
                                 <div className={styles['title']}>{item.name}</div>
-                                <div className={styles['edit']}>编辑</div>
-                                <div className={styles['delete']} style={{}}>删除</div>
+                                <div className={styles['edit']} onClick={this.editChart.bind(this, item.id)}>编辑</div>
+                                <div className={styles['delete']} onClick={this.deleteChart.bind(this, item.id)}>删除</div>
                             </li>
                         );
                     })
@@ -247,6 +250,11 @@ export default class Index extends PureComponent {
         }
     }
 
+    /***
+     * 
+     * 展示UI
+     * 
+     * ***/
     renderContent = () => {
         return (
             <div className={styles['leftSide']}>
@@ -258,7 +266,7 @@ export default class Index extends PureComponent {
                                     <div className={styles['icon']}>图标</div>
                                     <div className={styles['title']}><span className={styles['text']}>折线图</span></div>
                                 </div>
-                                <div className={styles['add']}>+</div>
+                                <div className={styles['add']} onClick={this.newChart.bind(this)}>+</div>
                             </div>
                             <ul style={{}} ref={(instance) => { this.line = instance }}>
                                 {this.renderChart("title_line")}
@@ -270,7 +278,7 @@ export default class Index extends PureComponent {
                                     <div className={styles['icon']}>图标</div>
                                     <div className={styles['title']}><span className={styles['text']}>柱状图</span></div>
                                 </div>
-                                <div className={styles['add']}>+</div>
+                                <div className={styles['add']} onClick={this.newChart.bind(this)}>+</div>
                             </div>
                             <ul style={{}} ref={(instance) => { this.bar = instance }}>
                                 {this.renderChart("title_bar")}
@@ -282,7 +290,7 @@ export default class Index extends PureComponent {
                                     <div className={styles['icon']}>图标</div>
                                     <div className={styles['title']}><span className={styles['text']}>条形图</span></div>
                                 </div>
-                                <div className={styles['add']}>+</div>
+                                <div className={styles['add']} onClick={this.newChart.bind(this)}>+</div>
                             </div>
                             <ul style={{}} ref={(instance) => { this.barrow = instance }}>
                                 {this.renderChart("title_barrow")}
@@ -294,7 +302,7 @@ export default class Index extends PureComponent {
                                     <div className={styles['icon']}>图标</div>
                                     <div className={styles['title']}><span className={styles['text']}>饼图</span></div>
                                 </div>
-                                <div className={styles['add']}>+</div>
+                                <div className={styles['add']} onClick={this.newChart.bind(this)}>+</div>
                             </div>
                             <ul style={{}} ref={(instance) => { this.pie = instance }}>
                                 {this.renderChart("title_pie")}
@@ -306,7 +314,7 @@ export default class Index extends PureComponent {
                                     <div className={styles['icon']}>图标</div>
                                     <div className={styles['title']}><span className={styles['text']}>仪表盘</span></div>
                                 </div>
-                                <div className={styles['add']}>+</div>
+                                <div className={styles['add']} onClick={this.newChart.bind(this)}>+</div>
                             </div>
                             <ul style={{}} ref={(instance) => { this.dashboard = instance }}>
                                 {this.renderChart("title_dashboard")}
@@ -318,7 +326,7 @@ export default class Index extends PureComponent {
                                     <div className={styles['icon']}>图标</div>
                                     <div className={styles['title']}><span className={styles['text']}>漏斗图</span></div>
                                 </div>
-                                <div className={styles['add']}>+</div>
+                                <div className={styles['add']} onClick={this.newChart.bind(this)}>+</div>
                             </div>
                             <ul style={{}} ref={(instance) => { this.funnel = instance }}>
                                 {this.renderChart("title_funnel")}
@@ -330,7 +338,7 @@ export default class Index extends PureComponent {
                                     <div className={styles['icon']}>图标</div>
                                     <div className={styles['title']}><span className={styles['text']}>表格</span></div>
                                 </div>
-                                <div className={styles['add']}>+</div>
+                                <div className={styles['add']} onClick={this.newChart.bind(this)}>+</div>
                             </div>
                             <ul style={{}} ref={(instance) => { this.antdTable = instance }}>
                                 {this.renderChart("title_antdTable")}
@@ -342,7 +350,7 @@ export default class Index extends PureComponent {
                                     <div className={styles['icon']}>图标</div>
                                     <div className={styles['title']}><span className={styles['text']}>透视表</span></div>
                                 </div>
-                                <div className={styles['add']}>+</div>
+                                <div className={styles['add']} onClick={this.newChart.bind(this)}>+</div>
                             </div>
                             <ul style={{}} ref={(instance) => { this.pivotDiy = instance }}>
                                 {this.renderChart("title_pivotDiy")}
@@ -354,7 +362,7 @@ export default class Index extends PureComponent {
                                     <div className={styles['icon']}>图标</div>
                                     <div className={styles['title']}><span className={styles['text']}>文本</span></div>
                                 </div>
-                                <div className={styles['add']}>+</div>
+                                <div className={styles['add']} onClick={this.newChart.bind(this)}>+</div>
                             </div>
                             <ul style={{}} ref={(instance) => { this.text = instance }}>
                                 {this.renderChart("title_text")}
@@ -366,7 +374,7 @@ export default class Index extends PureComponent {
                                     <div className={styles['icon']}>图标</div>
                                     <div className={styles['title']}><span className={styles['text']}>其他</span></div>
                                 </div>
-                                <div className={styles['add']}>+</div>
+                                <div className={styles['add']} onClick={this.newChart.bind(this)}>+</div>
                             </div>
                             <ul style={{}} ref={(instance) => { this.else = instance }}>
                                 {this.renderChart("title_else")}
@@ -374,8 +382,93 @@ export default class Index extends PureComponent {
                         </li>
                     </ul>
                 </div>
+                {this.renderEdit()}
             </div>
         );
+    }
+
+    /***
+     * 
+     * 编辑新建弹出框
+     * 
+     * ***/
+    renderEdit = () => {
+        const { edit_id, visible, edit_type } = this.state;
+        return (
+            <div>
+                <Modal
+                    title="Basic Modal"
+                    visible={visible}
+                    onOk={this.handleOk}
+                    onCancel={this.handleCancel}
+                    bodyStyle={{}}
+                    width={700}
+                >
+                    <p>Some contents...</p>
+                    <p>Some contents...</p>
+                    <p>Some contents...</p>
+                </Modal>
+            </div>
+        );
+    }
+    handleOk = (e) => {
+        console.log(e);
+        this.setState({
+            visible: false,
+        });
+    };
+    handleCancel = (e) => {
+        console.log(e);
+        this.setState({
+            visible: false,
+        });
+    };
+
+    /***
+     * 
+     * 新建图表
+     * 
+     * ***/
+    newChart = () => {
+        this.setState({
+            edit_id: "",
+            visible: true,
+            edit_type: "add",
+        });
+    }
+
+    /***
+    * 
+    * 编辑图表
+    * 
+    * ***/
+    editChart = (id) => {
+        this.setState({
+            edit_id: id,
+            visible: true,
+            edit_type: "edit",
+        });
+    }
+
+    /***
+    * 
+    * 删除图表
+    * 
+    * ***/
+    deleteChart = (id) => {
+        confirm({
+            title: '确认要删除这个图表吗?',
+            content: '删除将彻底不可恢复',
+            okText: '是',
+            okType: 'danger',
+            cancelText: '否',
+            onOk() {
+                console.log('OK');
+            },
+            onCancel() {
+                console.log('Cancel');
+            },
+        });
     }
 
     render() {
