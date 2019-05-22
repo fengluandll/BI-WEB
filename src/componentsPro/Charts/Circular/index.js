@@ -32,6 +32,11 @@ class Circular extends PureComponent {
         this.node.innerHTML = '';
         // 读取配置
         const height = chartHelper.getHeight(dragactStyle, mChart, editModel);
+        // 计算数值
+        let total = 0;
+        for (let item of dateSetList) {
+            total = total + parseInt(item.y);
+        }
         // 图表创建
         var chart = new G2.Chart({
             container: this.node, // 挂载节点
@@ -50,7 +55,7 @@ class Circular extends PureComponent {
         chart.source(dateSetList, {
             y: {
                 formatter: function formatter(val) {
-                    val = val * 100 + '%';
+                    //val = val * 100 + '%';
                     return val;
                 }
             }
@@ -68,7 +73,7 @@ class Circular extends PureComponent {
         // 辅助文本
         chart.guide().html({
             position: ['50%', '50%'],
-            html: '<div style="color:#8c8c8c;font-size: 14px;text-align: center;width: 10em;">主机<br><span style="color:#8c8c8c;font-size:20px">200</span>台</div>',
+            html: `<div style="color:#8c8c8c;font-size: 14px;text-align: center;width: 10em;">合计<br><span style="color:#8c8c8c;font-size:20px">${total}</span></div>`,
             alignX: 'middle',
             alignY: 'middle'
         });
@@ -78,7 +83,7 @@ class Circular extends PureComponent {
                 return item.point.x + ': ' + val;
             }
         }).tooltip('x*y', function (x, y) {
-            y = y * 100 + '%';
+            //y = y * 100 + '%';
             return {
                 name: x,
                 value: y

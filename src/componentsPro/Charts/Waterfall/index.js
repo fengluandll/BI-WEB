@@ -32,6 +32,12 @@ class Waterfall extends PureComponent {
         this.node.innerHTML = '';
         // 读取配置
         const height = chartHelper.getHeight(dragactStyle, mChart, editModel);
+        // 计算数据
+        let total = 0;
+        for (let item of dateSetList) {
+            total = total + parseInt(item.y);
+        }
+        dateSetList.push({ x: '合计', y: total });
 
         var _G = G2,
             Util = _G.Util,
@@ -95,39 +101,13 @@ class Waterfall extends PureComponent {
             }
         });
 
-        var data = [{
-            type: '日用品',
-            money: 300
-        }, {
-            type: '伙食费',
-            money: 900
-        }, {
-            type: '交通费',
-            money: 200
-        }, {
-            type: '水电费',
-            money: 300
-        }, {
-            type: '房租',
-            money: 1200
-        }, {
-            type: '商场消费',
-            money: 1000
-        }, {
-            type: '应酬交际',
-            money: 2000
-        }, {
-            type: '总费用',
-            money: 5900
-        }];
-
-        for (var i = 0; i < data.length; i++) {
-            var item = data[i];
-            if (i > 0 && i < data.length - 1) {
-                if (Util.isArray(data[i - 1].money)) {
-                    item.money = [data[i - 1].money[1], item.money + data[i - 1].money[1]];
+        for (var i = 0; i < dateSetList.length; i++) {
+            var item = dateSetList[i];
+            if (i > 0 && i < dateSetList.length - 1) {
+                if (Util.isArray(dateSetList[i - 1].y)) {
+                    item.y = [dateSetList[i - 1].y[1], item.y + dateSetList[i - 1].y[1]];
                 } else {
-                    item.money = [data[i - 1].money, item.money + data[i - 1].money];
+                    item.y = [dateSetList[i - 1].y, item.y + dateSetList[i - 1].y];
                 }
             }
         }
@@ -137,20 +117,20 @@ class Waterfall extends PureComponent {
             forceFit: true,
             height: height,
         });
-        chart.source(data);
+        chart.source(dateSetList);
         // 自定义图例
         chart.legend({
             custom: true,
             clickable: false,
             items: [{
-                value: '各项花销',
+                value: '各项',
                 marker: {
                     symbol: 'square',
                     fill: '#1890FF',
                     radius: 5
                 }
             }, {
-                value: '总费用',
+                value: '合计',
                 marker: {
                     symbol: 'square',
                     fill: '#8c8c8c',
@@ -158,22 +138,22 @@ class Waterfall extends PureComponent {
                 }
             }]
         });
-        chart.interval().position('type*money').color('type', function (type) {
-            if (type === '总费用') {
+        chart.interval().position('x*y').color('x', function (x) {
+            if (x === '合计') {
                 return '#8c8c8c';
             }
             return '#1890FF';
-        }).tooltip('type*money', function (type, money) {
-            if (Util.isArray(money)) {
+        }).tooltip('x*y', function (x, y) {
+            if (Util.isArray(y)) {
                 return {
-                    name: '生活费',
-                    value: money[1] - money[0]
+                    name: '显示',
+                    value: y[1] - y[0]
                 };
             }
 
             return {
-                name: '生活费',
-                value: money
+                name: '显示',
+                value: y
             };
         }).shape('waterfall');
 

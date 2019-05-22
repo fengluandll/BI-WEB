@@ -32,6 +32,8 @@ class Barrow extends PureComponent {
         this.node.innerHTML = '';
         // 读取配置
         const height = chartHelper.getHeight(dragactStyle, mChart, editModel);
+        const { dashboard_text } = JSON.parse(mChart.config);
+        const text = dashboard_text;
         // 图表创建
         var chart = new G2.Chart({
             container: this.node,
@@ -42,10 +44,10 @@ class Barrow extends PureComponent {
         // 填充数据
         chart.source(dateSetList, {
             y: {
-                max: 300,
-                min: 0,
+                // max: 300,
+                // min: 0,
                 nice: false,
-                alias: '销量（百万）'
+                alias: text,
             }
         });
         chart.axis('x', {

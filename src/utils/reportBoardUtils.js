@@ -369,7 +369,7 @@ class ReportBoardUtils {
                 { x: '1997', y: 7 },
                 { x: '1998', y: 9 },
                 { x: '1999', y: 13 },];
-        } else if (type == "bar" || type == "barrow") {
+        } else if (type == "bar" || type == "barrow" || type == "groupedBar" || type == "barLine" || type == "waterfall") {
             fakeData =
                 [{ x: '1951 年', y: 38 },
                 { x: '1952 年', y: 52 },

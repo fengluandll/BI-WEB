@@ -195,6 +195,7 @@
 	"color":"", // 图例
 	"order":"Y", // 按xy轴排序默认是y轴
 	"line_legend": // 折线图是否在最后一个节点显示图例信息
+	"dashboard_text", // 仪表盘文本
 }
 
 { // search

@@ -31,6 +31,12 @@ class Dashboard extends PureComponent {
         this.node.innerHTML = '';
         // 读取配置
         const height = chartHelper.getHeight(dragactStyle, mChart, editModel);
+        const { dashboard_text } = JSON.parse(mChart.config);
+        const text = dashboard_text;
+        // 计算数据
+        var data = [{
+            value: dateSetList[0].y,
+        }];
         // 图表创建
         var Shape = G2.Shape;
         // 自定义Shape 部分
@@ -65,9 +71,7 @@ class Dashboard extends PureComponent {
             }
         });
 
-        var data = [{
-            value: 5.6
-        }];
+        // 图表创建
         var chart = new G2.Chart({
             container: this.node,
             forceFit: true,
@@ -140,7 +144,7 @@ class Dashboard extends PureComponent {
         // 绘制指标数字
         chart.guide().html({
             position: ['50%', '95%'],
-            html: '<div style="width: 300px;text-align: center;">' + '<p style="font-size: 20px; color: #545454;margin: 0;">合格率</p>' + '<p style="font-size: 36px;color: #545454;margin: 0;">' + data[0].value * 10 + '%</p>' + '</div>'
+            html: `<div style="width: 300px;text-align: center;"> <p style="font-size: 20px; color: #545454;margin: 0;">${text}</p> <p style="font-size: 36px;color: #545454;margin: 0;"> ${data[0].value} </p></div>`
         });
 
         chart.render();
