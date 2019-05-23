@@ -1152,7 +1152,7 @@ class ReportBoard extends PureComponent {
             return;
         }
         const origin = data._origin;
-        const dimensionValue = origin["维度"];  //  图表维度的值
+        const dimensionValue = origin["维度"] || origin["x"];  //  图表维度的值,新版的chart维度、度量用的x,y。后期要统一
         const value = [];
         value.push(dimension);  // 图表维度的字段 id
         value.push(dimensionValue);  // 值

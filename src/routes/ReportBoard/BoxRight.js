@@ -464,6 +464,7 @@ class BoxRight {
         _this.setState({
             mDashboard: mDashboard,
         });
+        _this.refreshDashboard();
     }
 
 

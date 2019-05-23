@@ -32,8 +32,8 @@ class Barrow extends PureComponent {
         this.node.innerHTML = '';
         // 读取配置
         const height = chartHelper.getHeight(dragactStyle, mChart, editModel);
-        const { dashboard_text } = JSON.parse(mChart.config);
-        const text = dashboard_text;
+        const config = JSON.parse(mChart.config);
+        const text = config.dashboard_text;
         // 图表创建
         var chart = new G2.Chart({
             container: this.node,
@@ -84,6 +84,12 @@ class Barrow extends PureComponent {
             offset: 10
         });
         chart.render();
+
+        // plot点击事件
+        chart.on('plotclick', (ev) => {
+            const dimension = config.dimension;
+            this.props.onPlotClick(ev.data, dimension, mChart.id);
+        });
     }
 
     render() {

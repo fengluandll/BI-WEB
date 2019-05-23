@@ -118,7 +118,7 @@ class RelationTable extends PureComponent {
                                             <div className={styles['field-content']} style={type_index == "down" ? { display: 'block' } : { display: 'none' }}>
                                                 <CheckboxGroup
                                                     options={arr}
-                                                    defaultValue={value}
+                                                    value={value}
                                                     style={{ display: 'block' }}
                                                     onChange={this.changeCheckRelation.bind(this, item)}
                                                 />

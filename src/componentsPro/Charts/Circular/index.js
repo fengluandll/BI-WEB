@@ -32,6 +32,7 @@ class Circular extends PureComponent {
         this.node.innerHTML = '';
         // 读取配置
         const height = chartHelper.getHeight(dragactStyle, mChart, editModel);
+        const config = JSON.parse(mChart.config);
         // 计算数值
         let total = 0;
         for (let item of dateSetList) {
@@ -109,6 +110,12 @@ class Circular extends PureComponent {
 
         // 渲染图表 - 最后一步
         chart.render();
+
+        // plot点击事件
+        chart.on('plotclick', (ev) => {
+            const dimension = config.dimension;
+            this.props.onPlotClick(ev.data, dimension, mChart.id);
+        });
     }
 
 

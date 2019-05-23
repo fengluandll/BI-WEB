@@ -21,12 +21,28 @@ const reportBoardUtils = new ReportBoardUtils();
 export default class Index extends PureComponent {
     constructor(props) {
         super(props);
+        const { chart_children, mChart, relation } = this.props;
+        this.state = {
+            chart_children,
+            mChart,
+            relation,
+            refreshUI: 0,   //   state 用来刷新ui
+        }
     }
 
     componentDidMount() {
     }
 
     componentDidUpdate() {
+    }
+    componentWillReceiveProps(props) {
+        const { chart_children, mChart, relation } = props;
+        this.setState({
+            chart_children,
+            mChart,
+            relation,
+            refreshUI: this.state.refreshUI + 1,
+        });
     }
 
 
@@ -45,7 +61,7 @@ export default class Index extends PureComponent {
 
     // 图表的关联UI
     renderContent = () => {
-        const { mChart } = this.props;
+        const { chart_children, mChart, relation } = this.state;
         const mChart_config = JSON.parse(mChart.config);
         const type = mChart_config.type;//  type:0折线图、1柱状图、2饼图、3交叉表、11搜索框
         //所有的维度度量 用来显示右侧的配置框个数,modify by wangliu 新版只需要关联维度
@@ -57,29 +73,29 @@ export default class Index extends PureComponent {
         // 找到其他图表拼接checkbox数据
         const arr = [];
         let value = [];
-        this.props.chart_children.map((chart_item, chart_index) => {
+        chart_children.map((chart_item, chart_index) => {
             // 找到图表的数据集并判断是否有相同名称的字段可以关联不行就不给关联
             const mCharts = this.props.mCharts;
             // 找到被点击图表的数据集
-            const plotChart = this.props.mChart;
+            const plotChart = mChart;
             // plotchart 的config
             const plotConfig = JSON.parse(plotChart.config);
             // 取 数据集的 名称
             const plotDataSetName = plotConfig.dataSetName;
             // 找到当前图表的数据集
             const chartId = chart_item.chartId;
-            let mChart;
+            let mChart_t;
             mCharts.map((m_item, m_index) => {
                 if (m_item.id == chartId) {
-                    mChart = m_item;
+                    mChart_t = m_item;
                 }
             });
             // 没有数据集的图表也return
-            if (reportBoardUtils.getIsNoDataSet(reportBoardUtils.changeTypeStrNum(mChart.mc_type))) {
+            if (reportBoardUtils.getIsNoDataSet(reportBoardUtils.changeTypeStrNum(mChart_t.mc_type))) {
                 return;
             }
             // mchart 的config
-            const config = JSON.parse(mChart.config);
+            const config = JSON.parse(mChart_t.config);
             // 取 数据集的 名称
             const dataSetName = config.dataSetName;
             // 判断两个数据集是否有相同的字段名  todo  读取m_dashboard中配置的字段关联
@@ -94,8 +110,8 @@ export default class Index extends PureComponent {
                         if (columns[j].rsc_name == plotSrc_name) {
                             //存在相同名称字段的情况下,将数组中放入值
                             arr.push({
-                                "label": mChart.name,
-                                "value": `${mChart.id}:${columns[j].id}`,
+                                "label": mChart_t.name,
+                                "value": `${mChart_t.id}:${columns[j].id}`,
                             });
                         }
                     }
@@ -104,7 +120,6 @@ export default class Index extends PureComponent {
 
         });
         //  制造    CheckboxGroup 默认选中的数据
-        const relation = this.props.relation;
         if (relation[dimension]) {
             const relationFields = relation[dimension].relationFields;
             for (let key in relationFields) {
@@ -124,7 +139,7 @@ export default class Index extends PureComponent {
                                 <div className={styles['field-content']}>
                                     <CheckboxGroup
                                         options={arr}
-                                        defaultValue={value}
+                                        value={value}
                                         style={{ display: 'block' }}
                                         onChange={this.changeCheckRelation.bind(this, dimension)}
                                     />

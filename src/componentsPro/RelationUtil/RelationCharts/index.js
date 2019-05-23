@@ -164,7 +164,7 @@ export default class Index extends PureComponent {
                                                                 <div className={styles['component-content']} ref={this.handleComponentContent.bind(this, `${index}${chart_index}`)} >
                                                                     <CheckboxGroup
                                                                         options={arr}
-                                                                        defaultValue={value}
+                                                                        value={value}
                                                                         style={{ display: 'block' }}
                                                                         onChange={this.changeCheckRelation.bind(this, item, chart_item.name)}
                                                                     />

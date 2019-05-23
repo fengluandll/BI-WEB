@@ -171,7 +171,7 @@ export default class Index extends PureComponent {
                                 <div className={styles['check-box-group']}>
                                     <CheckboxGroup
                                         options={searchItemsAll}
-                                        defaultValue={searchItemIds}
+                                        value={searchItemIds}
                                         style={{ display: 'block' }}
                                         onChange={this.changeSearchItem}
                                     />
@@ -213,7 +213,7 @@ export default class Index extends PureComponent {
                                         <div className={styles['field-content']} style={type_index == "down" ? { display: 'block' } : { display: 'none' }}>
                                             <CheckboxGroup
                                                 options={arr}
-                                                defaultValue={value}
+                                                value={value}
                                                 style={{ display: 'block' }}
                                                 onChange={this.changeSearchRelation.bind(this, searchItem)}
                                             />
