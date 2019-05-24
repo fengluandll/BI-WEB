@@ -124,6 +124,7 @@
 	"dataSetName":"",  // 图表数据集名称
 	"head":"1",  // 是否显示头部 1:显示
 	"title":"1", // 是否显示标题 1:显示
+	"download":"1", // 是否显示下载图标 1:显示
 	"forceFit":"1", // 自适应
 	"column":"342cacb586eb00cf620166138b9d60fb,df2af930a7171176df6cc231502d7b1a",   // 显示的字段，为column表的id
 	"border":"1",  // 是否显示边框, 1:显示

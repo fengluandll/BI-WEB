@@ -99,6 +99,12 @@ class EditAntdTable extends PureComponent {
             } else {
                 config.title = "0";
             }
+        } else if (key == "download") {
+            if (event) {
+                config.download = "1";
+            } else {
+                config.download = "0";
+            }
         } else if (key == "pagination") {
             if (event) {
                 config.pagination = "1";
@@ -510,6 +516,12 @@ class EditAntdTable extends PureComponent {
                         {...formItemLayout}
                     >
                         <Switch checked={config.title == "1" ? true : false} onChange={this.handleChangeInput.bind(this, "title")} />
+                    </Form.Item>
+                    <Form.Item
+                        label="显示下载"
+                        {...formItemLayout}
+                    >
+                        <Switch checked={config.download == "1" ? true : false} onChange={this.handleChangeInput.bind(this, "download")} />
                     </Form.Item>
                     <Form.Item
                         label="显示分页"

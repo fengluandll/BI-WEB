@@ -995,7 +995,7 @@ class ReportBoard extends PureComponent {
         let refreshType = "init"; // 刷新类型
         if (null != searchAntdTable) { // antdtable分页查询
             this.plotChartId = [];
-            this.plotChartId = searchAntdTable.chartId; // 分页图表id暂时先放在plotChartId里面
+            this.plotChartId.push(searchAntdTable.chartId); // 分页图表id暂时先放在plotChartId里面
             refreshType = "pageLoade";
         } else if (null != value) { // plot点击查询
             refreshType = "plot";

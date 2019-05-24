@@ -258,9 +258,9 @@ export default class Index extends PureComponent {
                   );
                 })}
               </ul>
-              <div className={styles['multi-select-all']}>
+              {/* <div className={styles['multi-select-all']}>
                 <Checkbox onChange={this.selectAll}>全选</Checkbox>
-              </div>
+              </div> */}
             </div>
             <div className={styles['multi-select-split']} />
             <div className={styles['multi-select-menu']}>
